@@ -1,0 +1,45 @@
+<h2>Register Face</h2>
+<input type="text" id="enrollmentId" placeholder="Enter enrollmentId" value="{{ enrollmentId }}">
+<input type="text" id="name" placeholder="Enter Name" value="{{ name }}">
+<br><br>
+
+<video id="video" width="400" autoplay></video>
+<br><br>
+
+<button onclick="register()">Register</button>
+
+<p id="result"></p>
+
+<script>
+
+
+
+const video = document.getElementById('video');
+
+navigator.mediaDevices.getUserMedia({ video: true })
+.then(stream => video.srcObject = stream);
+
+function register() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 400;
+    canvas.height = 300;
+    canvas.getContext('2d').drawImage(video,0,0,400,300);
+
+    let image = canvas.toDataURL('image/jpeg');
+
+    fetch('/register_face',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+            name:document.getElementById('name').value,
+            enrollmentId:document.getElementById('enrollmentId').value,
+            image:image
+        })
+    })
+    .then(res=>res.json())
+    .then(data=>{
+        document.getElementById('result').innerHTML =
+            JSON.stringify(data);
+    });
+}
+</script>

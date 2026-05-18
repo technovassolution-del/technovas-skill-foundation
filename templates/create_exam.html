@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Create Exam</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+/* RESET */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+/* BACKGROUND */
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#1e1b4b,#312e81,#1e293b);
+    padding:20px;
+}
+
+/* MAIN WRAPPER */
+.wrapper{
+    width:100%;
+    max-width:1000px;
+    display:flex;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 25px 60px rgba(0,0,0,0.5);
+    background:rgba(255,255,255,0.05);
+    backdrop-filter:blur(10px);
+}
+
+/* LEFT PANEL */
+.left{
+    flex:1;
+    background:
+    linear-gradient(rgba(79,70,229,0.6), rgba(30,27,75,0.85)),
+    url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee');
+    background-size:cover;
+    background-position:center;
+    padding:30px;
+    color:white;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    min-height:100%;
+}
+
+/* TOP BAR */
+.left .top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+}
+
+.left h3{
+    font-size:18px;
+    font-weight:600;
+}
+
+/* BACK BUTTON */
+.back{
+    text-decoration:none;
+    color:white;
+    background:rgba(255,255,255,0.2);
+    padding:8px 14px;
+    border-radius:20px;
+    font-size:13px;
+    transition:0.3s;
+    white-space:nowrap;
+}
+
+.back:hover{
+    background:white;
+    color:#1e1b4b;
+}
+
+/* LEFT TEXT */
+.left h2{
+    font-size:22px;
+    line-height:1.4;
+    margin-top:20px;
+}
+
+/* RIGHT PANEL */
+.right{
+    flex:1;
+    padding:35px;
+    color:white;
+    overflow-y:auto;
+}
+
+/* TITLE */
+.right h2{
+    margin-bottom:15px;
+    font-size:24px;
+}
+
+/* INPUTS */
+input,
+textarea{
+    width:100%;
+    padding:12px;
+    margin:8px 0;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.15);
+    background:rgba(255,255,255,0.08);
+    color:white;
+    outline:none;
+    transition:0.3s;
+    font-size:14px;
+}
+
+textarea{
+    min-height:90px;
+    resize:vertical;
+}
+
+input::placeholder,
+textarea::placeholder{
+    color:#cbd5f5;
+}
+
+input:focus,
+textarea:focus{
+    border-color:#6366f1;
+    box-shadow:0 0 0 3px rgba(99,102,241,0.2);
+}
+
+/* ROW */
+.row{
+    display:flex;
+    gap:10px;
+}
+
+.row input{
+    flex:1;
+}
+
+/* CHECKBOX GRID */
+.checkbox-group{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:10px;
+}
+
+.checkbox-group label{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:rgba(255,255,255,0.08);
+    padding:10px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:0.3s;
+    font-size:13px;
+}
+
+.checkbox-group label:hover{
+    background:rgba(255,255,255,0.15);
+}
+
+.checkbox-group input{
+    width:auto;
+    margin:0;
+}
+
+/* BUTTON */
+.btn{
+    width:100%;
+    padding:14px;
+    margin-top:15px;
+    border:none;
+    border-radius:30px;
+    background:linear-gradient(135deg,#6366f1,#8b5cf6);
+    color:white;
+    font-size:15px;
+    cursor:pointer;
+    transition:0.3s;
+    font-weight:600;
+}
+
+.btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 10px 25px rgba(99,102,241,0.5);
+}
+
+/* TABLET */
+@media(max-width:900px){
+
+    .wrapper{
+        flex-direction:column;
+    }
+
+    .left{
+        min-height:220px;
+    }
+
+}
+
+/* MOBILE */
+@media(max-width:600px){
+
+    body{
+        padding:15px;
+    }
+
+    .right{
+        padding:20px;
+    }
+
+    .left h2{
+        font-size:18px;
+    }
+
+    .row{
+        flex-direction:column;
+    }
+
+    .checkbox-group{
+        grid-template-columns:1fr;
+    }
+
+}
+
+/* EXTRA SMALL */
+@media(max-width:400px){
+
+    .right h2{
+        font-size:20px;
+    }
+
+    input,
+    textarea{
+        font-size:13px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <!-- LEFT -->
+    <div class="left">
+
+        <div class="top">
+            <h3>Exam Panel</h3>
+            <a href="#" class="back">← Dashboard</a>
+        </div>
+
+        <h2>Create powerful exams with ease 🚀</h2>
+
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right">
+
+        <h2>Create Exam</h2>
+
+        <form method="POST" action="{{url_for('exam.save_exam')}}">
+
+            <input type="text" placeholder="Exam Title" required>
+
+            <textarea placeholder="Description"></textarea>
+
+            <div class="row">
+                <input type="datetime-local">
+                <input type="datetime-local">
+            </div>
+
+            <input type="number" placeholder="Duration (minutes)" required>
+
+            <div class="row">
+                <input type="number" placeholder="Total Marks">
+                <input type="number" placeholder="Pass Marks">
+            </div>
+
+            <div class="checkbox-group">
+
+                <label><input type="checkbox"> Shuffle Questions</label>
+                <label><input type="checkbox"> Shuffle Options</label>
+                <label><input type="checkbox" checked> Allow Review</label>
+                <label><input type="checkbox"> Publish</label>
+
+            </div>
+
+            <button type="button" class="btn">Create Exam</button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

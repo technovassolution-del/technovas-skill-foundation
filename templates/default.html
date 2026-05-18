@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Technovas Skill Learning</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#f5f7fa;
+}
+
+/* ================= NAVBAR ================= */
+
+.navbar{
+    width:100%;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 8%;
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:1000;
+    border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+/* LOGO */
+
+.logo{
+    font-size:28px;
+    font-weight:700;
+    color:#22c55e;
+}
+
+.logo span{
+    color:#ffffff;
+}
+
+/* LOGO CONTAINER */
+
+.logo-container{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+/* LOGO IMAGE */
+
+.logo-img{
+    width:70px;
+    height:57px;
+    object-fit:contain;
+    border-radius:10px;
+    background:white;
+    padding:4px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* LOGO TEXT */
+
+.logo-text{
+    font-size:28px;
+    font-weight:700;
+    color:#22c55e;
+}
+
+.logo-text span{
+    color:#ffffff;
+}
+
+/* NAV LINKS */
+
+.nav-links{
+    display:flex;
+    gap:28px;
+    align-items:center;
+}
+
+.nav-links a{
+    text-decoration:none;
+    color:#ffffff;
+    font-size:15px;
+    font-weight:500;
+    transition:0.3s;
+    position:relative;
+}
+
+/* HOVER EFFECT */
+
+.nav-links a::after{
+    content:'';
+    position:absolute;
+    left:0;
+    bottom:-5px;
+    width:0%;
+    height:2px;
+    background:#22c55e;
+    transition:0.3s;
+}
+
+.nav-links a:hover::after{
+    width:100%;
+}
+
+.nav-links a:hover{
+    color:#22c55e;
+}
+
+/* LOGIN BUTTON */
+
+.login-btn{
+    background:linear-gradient(135deg,#22c55e,#16a34a);
+    color:#fff;
+    padding:10px 24px;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:600;
+    transition:0.3s;
+    box-shadow:0 0 15px rgba(34,197,94,0.4);
+}
+
+.login-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 0 25px rgba(34,197,94,0.7);
+}
+
+/* MOBILE 3 DOT BUTTON */
+
+.menu-btn{
+    display:none;
+    font-size:30px;
+    color:white;
+    cursor:pointer;
+    background:none;
+    border:none;
+}
+
+/* ================= HERO SECTION ================= */
+
+.hero{
+    width:100%;
+    height:100vh;
+    background:
+    linear-gradient(rgba(15,23,42,0.75), rgba(15,23,42,0.75)),
+    url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1470&auto=format&fit=crop');
+    background-size:cover;
+    background-position:center;
+    display:flex;
+    position: relative;
+    align-items:center;
+    color:white;
+    padding:20px;
+}
+
+.hero-content{
+    max-width:850px;
+    margin:0px 0px 0px 120px;
+}
+
+.hero h1{
+    font-size:54px;
+    margin-bottom:20px;
+    background: linear-gradient(270deg, #139252, #13c451, #8b5cf6, #00c6ff);
+    background-size:600% 600%;
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    animation:gradientMove 6s ease infinite;
+}
+
+@keyframes gradientMove {
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
+
+.hero h1 span{
+    color:#22c55e;
+}
+
+.hero p{
+    font-size:18px;
+    color:#d1d5db;
+    margin-bottom:40px;
+}
+
+/* ================= SEARCH BOX ================= */
+
+.search-box{
+    width:100%;
+    display:flex;
+    background:#fff;
+    border-radius:12px;
+    overflow:hidden;
+    margin-bottom:35px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+}
+
+.search-box input{
+    flex:1;
+    padding:20px;
+    border:none;
+    outline:none;
+    font-size:16px;
+}
+
+.search-box button{
+    width:80px;
+    border:none;
+    background:#22c55e;
+    color:#fff;
+    font-size:22px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.search-box button:hover{
+    background:#16a34a;
+}
+
+/* ================= STATS ================= */
+
+.stats{
+    display:flex;
+    gap:40px;
+    flex-wrap:wrap;
+    margin-top:20px;
+}
+
+.stat-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:15px;
+    color:#f3f4f6;
+}
+
+.stat-item i{
+    color:#22c55e;
+}
+
+/* ================= FEATURES ================= */
+
+.features{
+    background:#24924d;
+    padding:80px 8%;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:30px;
+    background-size:cover;
+    background-position:center;
+}
+
+.feature-card{
+    background:rgba(255,255,255,0.15);
+    backdrop-filter:blur(8px);
+    border-radius:20px;
+    padding:40px 30px;
+    text-align:center;
+    color:#fff;
+    transition:0.4s;
+}
+
+.feature-card:hover{
+    transform:translateY(-10px);
+    background:rgba(255,255,255,0.22);
+}
+
+.feature-icon{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    background:#fff;
+    color:#22c55e;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:40px;
+    margin:auto;
+    margin-bottom:25px;
+}
+
+.feature-card h3{
+    margin-bottom:15px;
+    font-size:24px;
+}
+
+.feature-card p{
+    font-size:15px;
+    line-height:1.7;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:900px){
+
+    .hero h1{
+        font-size:40px;
+    }
+
+    .search-box{
+        flex-direction:column;
+    }
+
+    .search-box button{
+        width:100%;
+        padding:18px;
+    }
+
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    .navbar{
+        padding:15px 5%;
+    }
+
+    .menu-btn{
+        display:block;
+    }
+
+    .nav-links{
+        position:absolute;
+        top:90px;
+        right:5%;
+        width:260px;
+        background:rgba(15,23,42,0.95);
+        backdrop-filter:blur(12px);
+        border-radius:18px;
+        padding:20px;
+        flex-direction:column;
+        align-items:flex-start;
+        gap:20px;
+        display:none;
+        box-shadow:0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    .nav-links.active{
+        display:flex;
+    }
+
+    .login-btn{
+        display:none;
+    }
+
+    .logo-text{
+        font-size:20px;
+    }
+
+    .logo-img{
+        width:55px;
+        height:45px;
+    }
+
+    .hero{
+        padding:20px;
+        text-align:center;
+        justify-content:center;
+    }
+
+    .hero-content{
+        margin:0;
+    }
+
+    .hero h1{
+        font-size:32px;
+    }
+
+    .hero p{
+        font-size:15px;
+    }
+
+    .stats{
+        justify-content:center;
+        gap:15px;
+    }
+
+}
+
+@media(max-width:480px){
+
+    .hero h1{
+        font-size:28px;
+    }
+
+    .search-box input{
+        padding:16px;
+        font-size:14px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar">
+
+   <div class="logo-container">
+
+    <img src="{{ url_for('static', filename='images/technovas_logo.png') }}" alt="Logo" class="logo-img">
+
+    <div class="logo-text">
+        Technovas <span>Skill Foundation</span>
+    </div>
+
+</div>
+
+    <!-- MOBILE 3 DOT BUTTON -->
+    <button class="menu-btn" onclick="toggleMenu()">⋮</button>
+
+    <div class="nav-links" id="mobileMenu">
+        <a href="#">Home</a>
+        <a href="#">Courses</a>
+        <a href="/studentportal">Student Portal</a>
+        <a href="/onlineattendance">Attendance</a>
+        <a href="#">Contact</a>
+        
+    </div>
+
+    <a href="/login" class="login-btn">Login</a>
+
+</nav>
+
+<!-- ================= HERO ================= -->
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <h1>
+            Getting Started With
+            Technovas Skill Foundation
+        </h1>
+
+        <p>
+           Welcome to Technovas Skill Foundation — to help students build real-world skills in coding, AI, computer basics, exams, and professional development.
+
+         At Technovas, we believe learning should be practical, interactive, and future-ready, not just theory.
+        </p>
+
+        <div class="search-box">
+
+            <input type="text" placeholder="What do you want to learn today?">
+
+            <button>🔍</button>
+
+        </div>
+
+        <div class="stats">
+
+            <div class="stat-item">
+                ✅ 50+ Students
+            </div>
+
+            <div class="stat-item">
+                ✅ 30+ Courses
+            </div>
+
+            <div class="stat-item">
+                ✅ Learn Anytime Anywhere
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= FEATURES ================= -->
+
+<section class="features">
+
+    <div class="feature-card">
+
+        <div class="feature-icon">🏆</div>
+
+        <h3>Certified Courses</h3>
+
+        <p>
+            Get professional certificates after completing your learning journey.
+        </p>
+
+    </div>
+
+    <div class="feature-card">
+
+        <div class="feature-icon">💻</div>
+
+        <h3>Online Learning</h3>
+
+        <p>
+            Access live classes, recorded lectures, and smart learning tools.
+        </p>
+
+    </div>
+
+    <div class="feature-card">
+
+        <div class="feature-icon">🤖</div>
+
+        <h3>AI Smart Exams</h3>
+
+        <p>
+            Advanced AI-powered online examination and anti-cheating system.
+        </p>
+
+    </div>
+
+</section>
+
+<script>
+
+function toggleMenu(){
+    document.getElementById("mobileMenu").classList.toggle("active");
+}
+
+</script>
+
+</body>
+</html>

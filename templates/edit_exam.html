@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Edit Exam</title>
+
+<style>
+
+/* RESET */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI', sans-serif;
+}
+
+/* BODY */
+body{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    background:linear-gradient(135deg, #5f6676, #1e293b);
+    color:#e5e7eb;
+}
+
+/* CARD */
+.card{
+    width:100%;
+    max-width:480px;
+    background:#111827;
+    padding:30px;
+    border-radius:18px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.4);
+}
+
+/* TITLE */
+h2{
+    text-align:center;
+    margin-bottom:20px;
+    font-weight:600;
+    font-size:22px;
+}
+
+/* LABEL */
+label{
+    font-size:13px;
+    color:#9ca3af;
+}
+
+/* INPUT */
+input{
+    width:100%;
+    padding:11px;
+    margin-top:6px;
+    margin-bottom:16px;
+    border-radius:10px;
+    border:1px solid transparent;
+    outline:none;
+    background:#1f2937;
+    color:#e5e7eb;
+    transition:0.3s;
+    font-size:14px;
+}
+
+input:focus{
+    border-color:#3b82f6;
+    background:#111827;
+    box-shadow:0 0 0 3px rgba(59,130,246,0.2);
+}
+
+/* ROW */
+.row{
+    display:flex;
+    gap:12px;
+}
+
+.row div{
+    flex:1;
+}
+
+/* BUTTON GROUP */
+.btn-group{
+    display:flex;
+    gap:12px;
+    margin-top:10px;
+}
+
+/* BUTTON */
+.btn{
+    flex:1;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:14px;
+    transition:0.3s;
+    text-align:center;
+}
+
+/* UPDATE */
+.update{
+    background:linear-gradient(135deg,#3b82f6,#2563eb);
+    color:white;
+}
+
+.update:hover{
+    transform:translateY(-2px);
+}
+
+/* CANCEL */
+.cancel{
+    background:#374151;
+    color:#e5e7eb;
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.cancel:hover{
+    background:#4b5563;
+}
+
+/* RESPONSIVE */
+
+/* TABLET */
+@media(max-width:600px){
+
+    .card{
+        padding:22px;
+    }
+
+    h2{
+        font-size:20px;
+    }
+
+}
+
+/* MOBILE */
+@media(max-width:480px){
+
+    body{
+        align-items:flex-start;
+    }
+
+    .row{
+        flex-direction:column;
+    }
+
+    .btn-group{
+        flex-direction:column;
+    }
+
+    .btn{
+        width:100%;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <h2>✏️ Edit Exam</h2>
+
+    <form method="POST">
+
+        <label>Title</label>
+        <input type="text" name="title" value="{{ exam.title }}" required>
+
+        <label>Start Time</label>
+        <input type="datetime-local" name="start_at"
+            value="{{ exam.start_at.strftime('%Y-%m-%dT%H:%M') if exam.start_at else '' }}"
+            required>
+
+        <label>End Time</label>
+        <input type="datetime-local" name="end_at"
+            value="{{ exam.end_at.strftime('%Y-%m-%dT%H:%M') if exam.end_at else '' }}"
+            required>
+
+        <div class="row">
+
+            <div>
+                <label>Duration (min)</label>
+                <input type="number" name="duration" value="{{ exam.duration_minutes }}" required>
+            </div>
+
+            <div>
+                <label>Total Marks</label>
+                <input type="number" name="total_marks" value="{{ exam.total_marks }}" required>
+            </div>
+
+        </div>
+
+        <label>Pass Marks</label>
+        <input type="number" name="pass_marks" value="{{ exam.pass_marks }}" required>
+
+        <div class="btn-group">
+
+            <button type="submit" class="btn update">Update</button>
+
+            <a href="/exam_list" class="btn cancel">Cancel</a>
+
+        </div>
+
+    </form>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Attendance Records</title>
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+            background: #f4f4f4;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h2>Attendance Records</h2>
+    <table>
+        <tr>
+            <th>Sl No</th>
+            <th>Name</th>
+            <th>Enrollment ID</th>
+            <th>In Time</th>
+            <th>Out Time</th>
+        </tr>
+
+        {% for row in records %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ row[0] }}</td>
+            <td>{{ row[1] }}</td>
+            <td>{{ row[2] }}</td>
+            <td>{{ row[3] or '-' }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
