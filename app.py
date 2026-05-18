@@ -5,7 +5,6 @@ import cv2
 import numpy as np
 import base64
 from config import get_db_connection
-
 # Import Blueprints
 from controller.exam_controller import exam_bp
 from controller.question_controller import question_bp   
