@@ -20,9 +20,9 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /home/ubuntu/technovasskillfoundation
+            cd /home/ubuntu/technovas-skill-foundation
             git pull origin main
-            source technovasskillfoundation/bin/activate
+            source venv/bin/activate
             pip install -r requirements.txt
             sudo systemctl restart gunicorn
             sudo systemctl restart nginx
