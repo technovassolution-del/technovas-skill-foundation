@@ -22,7 +22,7 @@ jobs:
           script: |
             cd /home/ubuntu/technovasskillfoundation
             git pull origin main
-            source venv/bin/activate
+            source technovasskillfoundation/bin/activate
             pip install -r requirements.txt
             sudo systemctl restart gunicorn
             sudo systemctl restart nginx
