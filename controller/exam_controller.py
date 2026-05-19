@@ -41,7 +41,7 @@ def save_exam():
         int(request.form.get('shuffle_options', 0)),
         int(request.form.get('allow_review', 1)),
         int(request.form.get('is_published', 0)),
-        1
+        14
     )
 
     create_exam(data)

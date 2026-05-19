@@ -34,7 +34,7 @@ def create_exam(data):
          allow_review, is_published, created_by)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
-
+        print(query)
         cursor.execute(query, new_data)
         conn.commit()
 
