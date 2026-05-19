@@ -9,13 +9,11 @@ from config import get_db_connection
 from controller.exam_controller import exam_bp
 from controller.question_controller import question_bp   
 from controller.user_controller import user_bp
-
 app = Flask(__name__)
 app.secret_key = "secret123"
 # Register Blueprints
 app.register_blueprint(exam_bp)
 app.register_blueprint(question_bp)  
-
 # Register Blueprint
 app.register_blueprint(user_bp) 
 db=get_db_connection()
