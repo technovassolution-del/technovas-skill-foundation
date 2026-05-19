@@ -43,7 +43,6 @@ def save_exam():
         int(request.form.get('is_published', 0)),
         14
     )
-
     create_exam(data)
     return redirect(url_for('exam.exam_list'))
 
