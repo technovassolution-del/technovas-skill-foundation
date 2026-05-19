@@ -273,37 +273,34 @@ textarea:focus{
 
         <h2>Create Exam</h2>
 
-        <form method="POST" action="{{url_for('exam.save_exam')}}">
+       <form method="POST" action="{{ url_for('exam.save_exam') }}">
 
-            <input type="text" placeholder="Exam Title" required>
+            <input type="text" name="title" placeholder="Exam Title" required>
 
-            <textarea placeholder="Description"></textarea>
+            <textarea name="description" placeholder="Description"></textarea>
 
             <div class="row">
-                <input type="datetime-local">
-                <input type="datetime-local">
+                <input type="datetime-local" name="start_at" required>
+                <input type="datetime-local" name="end_at" required>
             </div>
 
-            <input type="number" placeholder="Duration (minutes)" required>
+            <input type="number" name="duration" placeholder="Duration (minutes)" required>
 
             <div class="row">
-                <input type="number" placeholder="Total Marks">
-                <input type="number" placeholder="Pass Marks">
+                <input type="number" name="total_marks" placeholder="Total Marks">
+                <input type="number" name="pass_marks" placeholder="Pass Marks">
             </div>
 
             <div class="checkbox-group">
-
-                <label><input type="checkbox"> Shuffle Questions</label>
-                <label><input type="checkbox"> Shuffle Options</label>
-                <label><input type="checkbox" checked> Allow Review</label>
-                <label><input type="checkbox"> Publish</label>
-
+                <label><input type="checkbox" name="shuffle_questions" value="1"> Shuffle Questions</label>
+                <label><input type="checkbox" name="shuffle_options" value="1"> Shuffle Options</label>
+                <label><input type="checkbox" name="allow_review" value="1" checked> Allow Review</label>
+                <label><input type="checkbox" name="is_published" value="1"> Publish</label>
             </div>
 
-            <button type="button" class="btn">Create Exam</button>
+            <button type="submit" class="btn">Create Exam</button>
 
         </form>
-
     </div>
 
 </div>
