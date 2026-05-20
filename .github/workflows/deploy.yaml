@@ -1,4 +1,4 @@
-name: Deploy Flask App to EC2
+name: Deploy Flask App
 
 on:
   push:
@@ -10,19 +10,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Deploy to EC2 server
+      - name: Deploy to EC2
         uses: appleboy/ssh-action@master
+
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
+          username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
+
           script: |
-            cd /home/ubuntu/technovas-skill-foundation
+            cd ~/technovas-skill-foundation
+
             git pull origin main
+
             source venv/bin/activate
+
             pip install -r requirements.txt
-            sudo systemctl restart gunicorn
+
+            sudo systemctl restart technovas-skill-foundation
+
             sudo systemctl restart nginx
