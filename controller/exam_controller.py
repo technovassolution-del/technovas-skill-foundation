@@ -23,7 +23,7 @@ def create_exam_page():
 @exam_bp.route('/exams')
 def exam_list():
     exams = get_all_exams()
-    return render_template('exam_list.html', exams=exams)
+    return render_template('exam_list.html',exams=exams)
 
 
 @exam_bp.route('/save_exam', methods=['POST'])

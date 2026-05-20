@@ -25,7 +25,6 @@ cursor = db.cursor()
 def home():
        return render_template('default.html')
 
-
 @app.route('/onlineattendance')
 def onlineattendance():
        return render_template('index.html')
