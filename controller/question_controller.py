@@ -9,7 +9,7 @@ question_bp = Blueprint('question', __name__)
 
 @question_bp.route('/add_question')
 def add_question():
-    exams = get_all_exams()  # 👈 create this function
+    exams = get_all_exams() 
     return render_template('add_question.html', exams=exams)
 
 
@@ -17,7 +17,6 @@ def add_question():
 def save_question():
     try:
         exam_id = int(request.form.get("exam_id"))
-
         marks = request.form.get("marks", 1)
         negative_marks = request.form.get("negative_marks", 0)
 

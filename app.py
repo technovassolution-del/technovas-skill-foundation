@@ -1,14 +1,20 @@
-from flask import Flask, render_template, request, jsonify,redirect,url_for,session
+import xml
+
+from flask import Flask, Response, render_template, request, jsonify,redirect,url_for,session
 import mysql.connector
 import face_recognition
 import cv2
 import numpy as np
 import base64
+
+from zeep import Client
 from config import get_db_connection
 # Import Blueprints
 from controller.exam_controller import exam_bp
 from controller.question_controller import question_bp   
 from controller.user_controller import user_bp
+
+
 app = Flask(__name__)
 app.secret_key = "secret123"
 # Register Blueprints
@@ -49,19 +55,24 @@ def admin_dashboard():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-
+    wsdl = "http://localhost:50202/WebService.asmx?WSDL"
+    client = Client(wsdl)
+   
+    result = client.service.GetUser('8334886382','8777487388')
+ 
     error = None
 
-    FIXED_PASSWORD = "12345"
-
+    
     if request.method == 'POST':
 
         phone = request.form['phone']
         password = request.form['password']
-
-        if password == FIXED_PASSWORD:
-
-           
+        result = client.service.GetUser(phone, password)
+        if result.Status == "Success":
+            session['user'] = {
+                    'name': result.Name,
+                    'phone': phone
+                }
             return redirect(url_for('admin_dashboard'))
 
         else:
@@ -88,7 +99,7 @@ def login():
 @app.route('/register')
 def register():
     name = request.args.get('name')
-    enrollmentId = request.args.get('enrollmentId')
+    enrollmentId = request.args.get('enrollmLentId')
     return render_template('register.html',name=name,enrollmentId=enrollmentId)
 
 

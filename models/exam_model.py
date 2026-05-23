@@ -70,10 +70,8 @@ def get_all_exams():
 def get_all_exams():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-
     cursor.execute("SELECT * FROM exams WHERE is_published=1 ORDER BY id DESC")
     exams = cursor.fetchall()
-
     conn.close()
     return exams
 
