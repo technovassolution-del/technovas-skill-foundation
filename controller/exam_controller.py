@@ -11,6 +11,7 @@ from models.exam_model import (
     create_attempt,
     get_db_connection
 )
+from zeep import Client
 
 exam_bp = Blueprint('exam', __name__)
 
@@ -52,18 +53,23 @@ def save_exam():
 @exam_bp.route('/student-login', methods=['GET', 'POST'])
 def student_login():
 
+    wsdl = "https://technovas.in/WebService.asmx?WSDL"
+    client = Client(wsdl)
+    error = None
     if request.method == 'POST':
 
-        student_name = request.form['name']
-        student_id = request.form['student_id']
+        student_id = request.form['name']
+        student_pwd = request.form['student_id']
 
-        # SAVE SESSION
-        session['student'] = {
-            'name': student_name,
-            'student_id': student_id
-        }
+        result = client.service.GetUser(student_id, student_pwd)
+        print("Login Result:", result)
+        if result.Status == "Success":
+            session['user'] = {
+                    'name': result.Name,
+                    'UserId': result.Id
+                }
 
-        return redirect(url_for('exam.student_portal'))
+            return redirect(url_for('exam.student_portal'))
 
     return render_template('student_login.html')
 
@@ -72,15 +78,15 @@ def student_login():
 
 @exam_bp.route('/student-portal')
 def student_portal():
-
+    print("shimul"+ str(session['user']))
     # CHECK LOGIN (FIXED)
-    if 'student' not in session:
-        return redirect(url_for('exam.student_login'))
-
-    return render_template(
+    if session.get('user'):
+         return render_template(
         'student_portal.html',
-        student_name=session['student']['name']
+         student_name=session['user']['name']
     )
+        
+    return redirect(url_for('exam.student_login'))
 
 # ----------------------------student_dashboard-------------
 
@@ -89,15 +95,15 @@ def student_portal():
 
 @exam_bp.route('/student_dashboard')
 def student_dashboard():
-
-    if 'student' not in session:
+    if session.get('user'):
+      student_id = session['user']['UserId']
+      print("Student ID:", student_id)
+    else:
         return redirect(url_for('exam.student_login'))
 
-    student_id = session['student']['student_id']
-
+    
     # assign exams
     assign_exams_to_student(student_id)
-
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 

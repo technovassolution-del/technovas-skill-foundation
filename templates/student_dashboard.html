@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+/* 🌌 BACKGROUND */
+body{
+    min-height:100vh;
+    background:
+        linear-gradient(120deg, rgba(20,30,60,0.9), rgba(10,10,30,0.95)),
+        url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b');
+    background-size:cover;
+    color:white;
+    padding:40px;
+}
+
+/* HEADER */
+.header{
+    margin-bottom:30px;
+    text-align:center;
+    position:relative;
+}
+
+.header h1{
+    font-size:42px;
+    font-weight:600;
+}
+
+.header p{
+    color:#cbd5f5;
+}
+
+/* 🔥 REPLACE OLD .home-btn CSS */
+
+.home-btn{
+
+    position:absolute;
+
+    top:10px;
+
+    right:10px;
+
+    width:auto;
+
+    padding:8px 16px;
+
+    border:none;
+
+    border-radius:20px;
+
+    background:rgba(255,255,255,0.12);
+
+    color:white;
+
+    font-size:13px;
+
+    font-weight:500;
+
+    cursor:pointer;
+
+    backdrop-filter:blur(8px);
+
+    transition:0.3s;
+
+    box-shadow:0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* 🔥 HOVER */
+
+.home-btn:hover{
+
+    background:#10b981;
+
+    transform:translateY(-2px);
+
+    box-shadow:0 8px 20px rgba(16,185,129,0.4);
+}
+
+/* 🌟 CENTER CONTAINER */
+.container{
+    max-width:1100px;
+    margin:0 auto;
+    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(12px);
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.5);
+    border:1px solid rgba(255,255,255,0.1);
+}
+
+/* GRID */
+.grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap:25px;
+}
+
+/* 🧊 CARD */
+.card{
+    backdrop-filter: blur(15px);
+    background: rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:20px;
+    padding:10px;
+    transition:0.3s;
+    position:relative;
+}
+
+/* ✨ HOVER */
+.card:hover{
+    transform: translateY(-8px) scale(1.02);
+    box-shadow:0 20px 40px rgba(0,0,0,0.4);
+}
+
+/* TITLE */
+.card h3{
+    font-size:20px;
+    margin-bottom:5px;
+}
+
+/* DESC */
+.card p{
+    font-size:13px;
+    color:#d1d5db;
+}
+
+/* TIME */
+.time{
+    margin-top:10px;
+    font-size:12px;
+    color:#a5b4fc;
+}
+
+/* STATUS BADGE */
+.badge{
+    position:absolute;
+    top:15px;
+    right:15px;
+    padding:5px 12px;
+    border-radius:20px;
+    font-size:11px;
+}
+
+/* COLORS */
+.live{
+    background:#10b981;
+}
+
+.upcoming{
+    background:#6366f1;
+}
+
+.expired{
+    background:#ef4444;
+}
+
+/* BUTTON */
+button{
+    margin-top:15px;
+    width:100%;
+    padding:10px;
+    border:none;
+    border-radius:25px;
+    background:linear-gradient(135deg,#6366f1,#8b5cf6);
+    color:white;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+/* BUTTON HOVER */
+button:hover{
+    transform:translateY(-3px);
+    box-shadow:0 10px 20px rgba(99,102,241,0.4);
+}
+
+/* DISABLED */
+button:disabled{
+    opacity:0.6;
+    cursor:not-allowed;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+    <!-- 🔥 GO TO HOME -->
+    <button
+        class="home-btn"
+        onclick="student_portal()"
+    >
+        🏠 Go To Dashboard
+    </button>
+
+    <h1>Dashboard</h1>
+
+    <p>
+        Welcome {{ session.user.name }}
+    </p>
+
+</div>
+
+<!-- ✅ CENTER BOX -->
+<div class="container">
+
+    <div class="grid">
+
+    {% for exam in exams %}
+
+    <div class="card">
+
+        <!-- STATUS -->
+        {% if exam.state == 'LIVE' %}
+            <span class="badge live">LIVE</span>
+
+        {% elif exam.state == 'UPCOMING' %}
+            <span class="badge upcoming">UPCOMING</span>
+
+        {% else %}
+            <span class="badge expired">EXPIRED</span>
+
+        {% endif %}
+
+        <!-- TITLE -->
+        <h3>{{ exam.title }}</h3>
+
+        <!-- DESC -->
+        <p>{{ exam.description }}</p>
+
+        <!-- TIME -->
+        <div class="time">
+            ⏰ {{ exam.start_at }} <br>
+            🛑 {{ exam.end_at }}
+        </div>
+
+        <!-- ACTION -->
+        {% if exam.state == 'LIVE' %}
+
+            <a href="{{ url_for('exam.start_exam', exam_id=exam.id) }}">
+
+                <button>
+                    Start Exam
+                </button>
+
+            </a>
+
+        {% elif exam.state == 'UPCOMING' %}
+
+            <button disabled>
+                Not Started
+            </button>
+
+        {% else %}
+
+            <button disabled>
+                Expired
+            </button>
+
+        {% endif %}
+
+    </div>
+
+    {% else %}
+
+    <p>No exams assigned</p>
+
+    {% endfor %}
+
+    </div>
+
+</div>
+
+<script>
+
+function student_portal(){
+
+    // 🔥 NO BACKEND CHANGE
+    window.location.href = "/student-portal";
+
+}
+
+</script>
+
+</body>
+</html>

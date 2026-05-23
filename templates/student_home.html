@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Technovas Solution</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+html, body{
+    height:100%;
+}
+
+/* BODY */
+body{
+    background:#f5f7fa;
+}
+
+/* ================= NAVBAR ================= */
+
+.navbar{
+    width:100%;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 8%;
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:1000;
+    border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+/* LOGO CONTAINER */
+
+.logo-container{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.logo-img{
+    width:70px;
+    height:57px;
+    object-fit:contain;
+    border-radius:10px;
+    background:white;
+    padding:4px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* LOGO */
+
+.logo{
+    font-size:28px;
+    font-weight:700;
+    color:#22c55e;
+}
+
+.logo span{
+    color:#ffffff;
+}
+
+/* LOGO TEXT */
+
+.logo-text{
+    font-size:28px;
+    font-weight:700;
+    color:#22c55e;
+}
+
+.logo-text span{
+    color:#ffffff;
+}
+
+/* NAV LINKS */
+
+.nav-links{
+    display:flex;
+    gap:28px;
+    align-items:center;
+}
+
+.nav-links a{
+    text-decoration:none;
+    color:#ffffff;
+    font-size:15px;
+    font-weight:500;
+    transition:0.3s;
+    position:relative;
+}
+
+/* HOVER EFFECT */
+
+.nav-links a::after{
+    content:'';
+    position:absolute;
+    left:0;
+    bottom:-5px;
+    width:0%;
+    height:2px;
+    background:#22c55e;
+    transition:0.3s;
+}
+
+.nav-links a:hover::after{
+    width:100%;
+}
+
+.nav-links a:hover{
+    color:#22c55e;
+}
+
+/* LOGIN BUTTON */
+
+.login-btn{
+    background:linear-gradient(135deg,#22c55e,#16a34a);
+    color:#fff;
+    padding:10px 24px;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:600;
+    transition:0.3s;
+    box-shadow:0 0 15px rgba(34,197,94,0.4);
+}
+
+.login-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 0 25px rgba(34,197,94,0.7);
+}
+
+/* ================= 3 DOT MENU BUTTON ================= */
+
+.menu-btn{
+
+    display:none;
+
+    flex-direction:column;
+
+    gap:5px;
+
+    cursor:pointer;
+
+    padding:8px;
+
+    border-radius:10px;
+
+    background:rgba(255,255,255,0.1);
+
+    backdrop-filter:blur(10px);
+}
+
+.menu-btn span{
+
+    width:5px;
+
+    height:5px;
+
+    background:white;
+
+    border-radius:50%;
+}
+
+/* HERO SECTION */
+
+.hero{
+    height:100vh;
+    position:relative;
+    display:flex;
+    justify-content:flex-start;
+    align-items:center;
+    padding:60px;
+
+    background:url('https://www.shutterstock.com/image-photo/education-laptop-research-woman-library-260nw-2526262547.jpg') no-repeat center center/cover;
+}
+
+/* OVERLAY */
+
+.hero::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,0.60);
+    backdrop-filter:blur(4px);
+    z-index:0;
+}
+
+/* CONTENT */
+
+.hero > *{
+    position:relative;
+    z-index:1;
+}
+
+.left{
+    max-width:800px;
+}
+
+/* HEADING */
+
+.left h1{
+    font-size:54px;
+    margin-bottom:20px;
+    background: linear-gradient(270deg, #00c6ff, #0072ff, #8b5cf6, #00c6ff);
+    background-size:600% 600%;
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    animation:gradientMove 6s ease infinite;
+}
+
+@keyframes gradientMove {
+
+    0%{
+        background-position:0% 50%;
+    }
+
+    50%{
+        background-position:100% 50%;
+    }
+
+    100%{
+        background-position:0% 50%;
+    }
+}
+
+/* TEXT */
+
+.left p{
+    font-size:16px;
+    color:#e5e7eb;
+    line-height:1.8;
+}
+
+/* CTA */
+
+.cta{
+    margin-top:25px;
+}
+
+/* STUDENT LOGIN BUTTON */
+
+.cta a button{
+    background: linear-gradient(135deg,#4a7cff,#8b5cf6);
+    border:none;
+    padding:14px 32px;
+    border-radius:30px;
+    color:#fff;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.3s;
+    box-shadow:0 0 20px rgba(99,102,241,0.6);
+}
+
+.cta a button:hover{
+    transform:scale(1.08);
+    box-shadow:0 0 30px rgba(99,102,241,0.9),
+               0 0 60px rgba(139,92,246,0.7);
+}
+
+/* FOOT TEXT */
+
+.left p:last-child{
+    margin-top:12px;
+    font-size:12px;
+    color:#cbd5f5;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:900px){
+
+    .left h1{
+        font-size:42px;
+    }
+}
+
+/* MOBILE NAVBAR */
+
+@media(max-width:768px){
+
+    .navbar{
+
+        padding:16px 5%;
+    }
+
+    .menu-btn{
+
+        display:flex;
+    }
+
+    .nav-links{
+
+        position:absolute;
+
+        top:90px;
+
+        right:20px;
+
+        width:220px;
+
+        background:rgba(15,23,42,0.96);
+
+        backdrop-filter:blur(15px);
+
+        border-radius:16px;
+
+        padding:20px;
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:18px;
+
+        display:none;
+
+        box-shadow:0 10px 25px rgba(0,0,0,0.35);
+    }
+
+    .nav-links.active{
+
+        display:flex;
+    }
+
+    .login-btn{
+
+        display:none;
+    }
+
+    .logo-text{
+
+        font-size:20px;
+    }
+
+    .logo-img{
+
+        width:58px;
+
+        height:48px;
+    }
+
+    .hero{
+
+        padding:30px;
+    }
+
+    .left h1{
+
+        font-size:36px;
+    }
+}
+
+@media(max-width:600px){
+
+    .left h1{
+        font-size:32px;
+    }
+
+    .left p{
+        font-size:15px;
+    }
+
+    .hero{
+        padding:25px;
+    }
+
+    .logo-text{
+
+        font-size:17px;
+    }
+
+    .nav-links{
+
+        width:200px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<nav class="navbar">
+
+    <div class="logo-container">
+
+        <img
+            src="{{ url_for('static', filename='images/technovas_logo.png') }}"
+            alt="Logo"
+            class="logo-img"
+        >
+
+        <div class="logo-text">
+            Technovas <span>Skill Foundation</span>
+        </div>
+
+    </div>
+
+    <!-- MOBILE 3 DOT BUTTON -->
+
+    <div class="menu-btn" id="menuBtn">
+
+        <span></span>
+        <span></span>
+        <span></span>
+
+    </div>
+
+    <!-- NAV LINKS -->
+
+    <div class="nav-links" id="navLinks">
+
+        <a href="#">Home</a>
+
+        <a href="#">Courses</a>
+
+        <a href="{{ url_for('studenthome') }}">Student Portal</a>
+
+        <a href="#">Attendance</a>
+
+        <a href="#">Contact</a>
+
+        <!-- MOBILE LOGIN BUTTON -->
+
+        <!-- <a href="{{ url_for('login') }}" class="login-btn mobile-login">
+            Login
+        </a> -->
+
+    </div>
+
+    <!-- DESKTOP LOGIN BUTTON -->
+
+    <a href="{{ url_for('login') }}" class="login-btn desktop-login">
+        Login
+    </a>
+
+</nav>
+
+<!-- HERO -->
+
+<div class="hero">
+
+    <div class="left">
+
+        <h1>OUR STUDENT PORTAL</h1>
+
+        <b>
+
+        <p>
+            Technovas provides Learn, practice, and grow with world-class computer training (Class I–XII), professional courses,
+            and modern IT services including software, hosting, and mobile app development — all in one platform.
+        </p>
+
+        <p>
+            We also offer Software Development, Hosting Services,
+            and Mobile App Development.
+        </p>
+
+        </b>
+
+        <div class="cta">
+
+            <a href="{{ url_for('studentlogin') }}">
+
+                <button>
+                    Student Login
+                </button>
+
+            </a>
+
+        </div>
+
+        <p>
+            Get 20% admission discount 2026
+        </p>
+
+    </div>
+
+</div>
+
+<!-- MOBILE MENU SCRIPT -->
+
+<script>
+
+const menuBtn = document.getElementById("menuBtn");
+
+const navLinks = document.getElementById("navLinks");
+
+menuBtn.addEventListener("click", () => {
+
+    navLinks.classList.toggle("active");
+
+});
+
+</script>
+
+</body>
+</html>

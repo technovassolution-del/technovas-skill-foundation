@@ -35,9 +35,9 @@ def home():
 def onlineattendance():
        return render_template('index.html')
 
-@app.route('/studentportal')
-def studentportal():
-       return render_template('student_portal.html')
+@app.route('/studenthome')
+def studenthome():
+       return render_template('student_home.html')
 
 @app.route('/studentlogin')
 def studentlogin():
@@ -48,8 +48,10 @@ def studentlogin():
 def admin_dashboard():
        return render_template('admin_dashboard.html')
 
-
-
+@app.route('/logout')
+def logout():
+    session.clear()   # removes all session data
+    return render_template('default.html')
 
 # ---------------- LOGIN ----------------
 
@@ -58,7 +60,6 @@ def login():
     wsdl = "https://technovas.in/WebService.asmx?WSDL"
     client = Client(wsdl)
     error = None
-
     
     if request.method == 'POST':
 
@@ -68,7 +69,7 @@ def login():
         if result.Status == "Success":
             session['user'] = {
                     'name': result.Name,
-                    'phone': phone
+                    'UserId': result.Id
                 }
             return redirect(url_for('admin_dashboard'))
 

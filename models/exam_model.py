@@ -239,8 +239,6 @@ def submit_attempt(attempt_id):
 def assign_exams_to_student(student_id):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-
-
     cursor.execute("SELECT id FROM exams")
     exams = cursor.fetchall()
 
