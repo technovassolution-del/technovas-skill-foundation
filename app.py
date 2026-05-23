@@ -55,11 +55,8 @@ def admin_dashboard():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    wsdl = "http://localhost:50202/WebService.asmx?WSDL"
+    wsdl = "https://technovas.in/WebService.asmx?WSDL"
     client = Client(wsdl)
-   
-    result = client.service.GetUser('8334886382','8777487388')
- 
     error = None
 
     
