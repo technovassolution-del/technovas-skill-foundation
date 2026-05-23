@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Result Processing</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#111827;
+    color:white;
+    min-height:100vh;
+    padding:30px;
+    overflow-x:hidden;
+}
+
+/* ================= TITLE ================= */
+
+h2{
+    margin-bottom:25px;
+    text-align:center;
+    font-size:32px;
+    color:#06b6d4;
+    line-height:1.4;
+}
+
+/* ================= TABLE CONTAINER ================= */
+
+.table-container{
+
+    width:100%;
+
+    overflow-x:auto;
+
+    border-radius:18px;
+
+    background:#1f2937;
+
+    box-shadow:0 10px 25px rgba(0,0,0,0.25);
+
+    border:1px solid #374151;
+}
+
+/* CUSTOM SCROLLBAR */
+
+.table-container::-webkit-scrollbar{
+    height:8px;
+}
+
+.table-container::-webkit-scrollbar-track{
+    background:#111827;
+}
+
+.table-container::-webkit-scrollbar-thumb{
+    background:#06b6d4;
+    border-radius:10px;
+}
+
+/* ================= TABLE ================= */
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:950px;
+    background:#1f2937;
+}
+
+/* HEADER */
+
+th{
+    background:#0f172a;
+    color:#06b6d4;
+
+    padding:16px;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    border-bottom:1px solid #374151;
+
+    white-space:nowrap;
+}
+
+/* BODY */
+
+td{
+    padding:15px;
+    text-align:center;
+    border-bottom:1px solid #374151;
+    font-size:14px;
+    color:#f3f4f6;
+}
+
+/* HOVER */
+
+tr:hover{
+    background:#273549;
+    transition:0.3s;
+}
+
+/* STATUS */
+
+.pass{
+    color:#22c55e;
+    font-weight:bold;
+}
+
+.fail{
+    color:#ef4444;
+    font-weight:bold;
+}
+
+.published{
+    color:#22c55e;
+    font-weight:bold;
+}
+
+/* BUTTON */
+
+.publish-btn{
+    background:#06b6d4;
+    color:white;
+
+    text-decoration:none;
+
+    padding:8px 14px;
+
+    border-radius:8px;
+
+    transition:0.3s;
+
+    display:inline-block;
+
+    font-size:14px;
+
+    font-weight:500;
+}
+
+.publish-btn:hover{
+    background:#0891b2;
+    transform:scale(1.05);
+}
+
+/* EMPTY */
+
+.empty{
+    text-align:center;
+    padding:40px;
+    color:orange;
+    font-size:18px;
+}
+
+/* ================= TABLET ================= */
+
+@media(max-width:900px){
+
+    body{
+        padding:20px;
+    }
+
+    h2{
+        font-size:28px;
+    }
+
+    th{
+        padding:14px;
+        font-size:14px;
+    }
+
+    td{
+        padding:14px;
+        font-size:13px;
+    }
+
+    .publish-btn{
+        padding:7px 12px;
+        font-size:13px;
+    }
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:600px){
+
+    body{
+        padding:15px;
+    }
+
+    h2{
+        font-size:24px;
+        margin-bottom:20px;
+    }
+
+    .table-container{
+        border-radius:14px;
+    }
+
+    table{
+        min-width:850px;
+    }
+
+    th{
+        padding:12px;
+        font-size:13px;
+    }
+
+    td{
+        padding:12px;
+        font-size:12px;
+    }
+
+    .publish-btn{
+        padding:6px 10px;
+        font-size:12px;
+        border-radius:6px;
+    }
+
+    .empty{
+        font-size:15px;
+        padding:30px;
+    }
+}
+
+/* ================= SMALL MOBILE ================= */
+
+@media(max-width:400px){
+
+    h2{
+        font-size:20px;
+    }
+
+    th{
+        font-size:12px;
+    }
+
+    td{
+        font-size:11px;
+    }
+
+    .publish-btn{
+        font-size:11px;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>📊 Result Processing Dashboard</h2>
+
+<div class="table-container">
+
+<table>
+
+    <tr>
+
+        <th>Attempt ID</th>
+
+        <th>Student ID</th>
+
+        <th>Exam</th>
+
+        <th>Marks</th>
+
+        <th>Percentage</th>
+
+        <th>Status</th>
+
+        <th>Started</th>
+
+        <th>Submitted</th>
+
+        <th>Publish</th>
+
+    </tr>
+
+    {% if results %}
+
+        {% for r in results %}
+
+        <tr>
+
+            <td>{{ r.attempt_id }}</td>
+
+            <td>{{ r.student_id }}</td>
+
+            <td>{{ r.exam_title }}</td>
+
+            <td>{{ r.total_marks }}</td>
+
+            <td>
+
+                {% if r.percentage is not none %}
+
+                    {{ "%.2f"|format(r.percentage) }}%
+
+                {% else %}
+
+                    0.00%
+
+                {% endif %}
+
+            </td>
+
+            <td>
+
+                {% if r.result_status == 'PASS' %}
+
+                    <span class="pass">
+                        ✅ PASS
+                    </span>
+
+                {% else %}
+
+                    <span class="fail">
+                        ❌ FAIL
+                    </span>
+
+                {% endif %}
+
+            </td>
+
+            <td>{{ r.started_at }}</td>
+
+            <td>{{ r.submitted_at }}</td>
+
+            <td>
+
+                {% if r.published == 1 %}
+
+                    <span class="published">
+                        ✅ Published
+                    </span>
+
+                {% else %}
+
+                    <a
+                        class="publish-btn"
+                        href="{{ url_for('exam.publish_result_route', attempt_id=r.attempt_id) }}"
+                    >
+                        Publish
+                    </a>
+
+                {% endif %}
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    {% else %}
+
+        <tr>
+
+            <td colspan="9" class="empty">
+                ⚠️ No Results Found
+            </td>
+
+        </tr>
+
+    {% endif %}
+
+</table>
+
+</div>
+
+</body>
+
+</html>
