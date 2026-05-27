@@ -6,7 +6,7 @@ import face_recognition
 import cv2
 import numpy as np
 import base64
-
+from zeep.helpers import serialize_object
 from zeep import Client
 from config import get_db_connection
 # Import Blueprints
@@ -82,32 +82,54 @@ def login():
         error=error
     )
 
+@app.route('/users')
+def user():
+    wsdl = "https://technovas.in/WebService.asmx?WSDL"
+    client = Client(wsdl)
+    users = client.service.GetAllUsers()
+    all_users = []
 
+    for user in users:
 
-
-
-
-
-
-
-
-
+      all_users.append({
+        "Id": user.Id,
+        "Name": user.Name,
+        "Email": user.Email,
+        "Userrole": user.Userrole,
+        "UserId": user.UserId,
+        "ProgramCode": user.ProgramCode,
+        "ProgramName": user.ProgramName,
+        "Batch_Name": user.Batch_Name
+    })
+    session['all_users'] = all_users
+    return render_template('students.html', users=all_users)
 
 # Register page
 @app.route('/register')
 def register():
-    name = request.args.get('name')
-    enrollmentId = request.args.get('enrollmLentId')
-    return render_template('register.html',name=name,enrollmentId=enrollmentId)
+
+    user = session.get('selected_user')
+
+    return render_template(
+        'register.html',
+        user=user
+    )
+
 
 
 # Save face
 @app.route('/register_face', methods=['POST'])
 def register_face():
     data = request.json
+    userid=data['userid']
     name = data['name']
-    enrollmentId=data['enrollmentId']
+    userrole=data['role']
     image_data = data['image']
+    programCode = data['programCode']
+    programName = data['programName']
+    batchName = data['batchName']
+    enrollmentId=data['enrollmentId']
+
     image_data = image_data.split(",")[1]
     image_bytes = base64.b64decode(image_data)
     np_arr = np.frombuffer(image_bytes, np.uint8)
@@ -119,17 +141,41 @@ def register_face():
     encoding = face_recognition.face_encodings(rgb, faces)[0]
     encoding_str = ",".join(map(str, encoding))
     # Check duplicate enrollment ID
-    check_sql = "SELECT * FROM users WHERE enrollmentId=%s"
-    cursor.execute(check_sql,(enrollmentId,))
+    check_sql = "SELECT * FROM users WHERE userid=%s"
+    cursor.execute(check_sql,(userid,))
     existing_user = cursor.fetchone()
     if existing_user:
-     return jsonify({"status": "EnrollmentId alraedy Exist"})
-    sql = "INSERT INTO users(name, encoding,enrollmentId) VALUES(%s,%s,%s)"
-    cursor.execute(sql, (name,encoding_str,enrollmentId,))
+     return jsonify({"status": "userid alraedy Exist"})
+    sql = "INSERT INTO users(name,encoding,userid,role,enrollmentid,programcode,programname,batchname) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)"
+    cursor.execute(sql,(name,encoding_str,userid,userrole,enrollmentId,programCode,programName,batchName))
     db.commit()
     return jsonify({"status": "success"})
 
      
+@app.route('/select_user/<int:id>')
+def select_user(id):
+    users =session.get('all_users')
+    selected_user = None
+    for user in users:
+
+        if user.get('Id') == id:
+
+            selected_user = {
+                "Id": user.get('Id'),
+                "Name": user.get('Name'),
+                "Email": user.get('Email'),
+                "Userrole": user.get('Userrole'),
+                "UserId": user.get('UserId'),
+                "ProgramCode": user.get('ProgramCode'),
+                "ProgramName": user.get('ProgramName'),
+                "Batch_Name": user.get('Batch_Name')
+            }
+
+            break
+
+    # Store in session
+    session['selected_user'] = selected_user
+    return redirect('/register')
 
 
 # Attendance page
@@ -153,7 +199,7 @@ def mark_attendance():
         return jsonify({"status": "no_face"})
 
     encodings = face_recognition.face_encodings(rgb, faces)
-    cursor.execute("SELECT name,encoding,enrollmentId FROM users")
+    cursor.execute("SELECT name,encoding,userid FROM users")
     students = cursor.fetchall()
     for encoding in encodings:
         best_match_name = None
@@ -162,7 +208,7 @@ def mark_attendance():
 
         for student in students:
             student_name = student[0]
-            student_enrollmentId=student[2]
+            userid=student[2]
             db_encoding = np.array(
                 list(map(float, student[1].split(",")))
             )
@@ -171,25 +217,25 @@ def mark_attendance():
             if distance < best_distance:
                 best_distance = distance
                 best_match_name = student_name
-                best_match_enrollmentId=student_enrollmentId
+                best_match_userid=userid
 
         if best_distance < 0.5:
             cursor.execute("""
                 SELECT * FROM attendance
-                WHERE enrollmentId=%s AND DATE(date_time)=CURDATE()
-            """, (best_match_enrollmentId,))
+                WHERE userid=%s AND DATE(date_time)=CURDATE()
+            """, (best_match_userid,))
             existing = cursor.fetchone()
             print(existing)
             if not existing:
                 
                 cursor.execute(
-                    "INSERT INTO attendance(student_name,enrollmentId) VALUES(%s,%s)",
-                    (best_match_name,best_match_enrollmentId,)
+                    "INSERT INTO attendance(student_name,userid) VALUES(%s,%s)",
+                    (best_match_name,best_match_userid,)
                 )
             else:
                 cursor.execute(
-                    "UPDATE attendance SET out_time=NOW() WHERE enrollmentId=%s",
-                    (best_match_enrollmentId,)
+                    "UPDATE attendance SET out_time=NOW() WHERE userid=%s",
+                    (best_match_userid,)
                 )
 
             db.commit()
@@ -206,11 +252,54 @@ def mark_attendance():
 @app.route('/attendance_view')
 def attendance_view():
     cursor.execute("""
-        SELECT student_name, enrollmentId, date_time, out_time
+        SELECT student_name, userid, date_time, out_time
         FROM attendance
         ORDER BY date_time DESC
     """)
     records = cursor.fetchall()
     return render_template('attendance_view.html', records=records)
+
+
+# Autocomplete API
+# Autocomplete API
+@app.route('/autocomplete')
+def autocomplete():
+    search = request.args.get('q', '')
+    wsdl = "https://technovas.in/WebService.asmx?WSDL"
+    client = Client(wsdl)
+    users = client.service.GetAllUsers()
+    
+    print(users)
+     # Extract suggestion values from API response
+    suggestions = [
+    item["Name"]
+    for item in users
+    if search.lower() in item["Name"].lower()
+]
+    return jsonify(suggestions)
+
+@app.route('/get_user')
+def get_user():
+
+    selected_name = request.args.get('name', '')
+
+    wsdl = "https://technovas.in/WebService.asmx?WSDL"
+    client = Client(wsdl)
+
+    users = serialize_object(
+        client.service.GetAllUsers()
+    )
+
+    # Find selected record
+    user = next(
+        (
+            item for item in users
+            if item["Name"] == selected_name
+        ),
+        None
+    )
+
+    return jsonify(user)
+
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>User Search</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#f4f6f9;
+    padding:40px;
+}
+
+.container{
+    width:100%;
+    margin:auto;
+    background:white;
+    padding:30px;
+    border-radius:12px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.1);
+}
+
+.title{
+    font-size:24px;
+    font-weight:bold;
+    margin-bottom:20px;
+    color:#333;
+}
+
+.search-container{
+    position:relative;
+    margin-bottom:30px;
+}
+
+#search{
+    width:100%;
+    padding:14px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    font-size:16px;
+    outline:none;
+}
+
+#search:focus{
+    border-color:#4a90e2;
+    box-shadow:0 0 5px rgba(74,144,226,0.4);
+}
+
+#suggestions{
+    position:absolute;
+    width:100%;
+    background:white;
+    border:1px solid #ddd;
+    border-top:none;
+    border-radius:0 0 8px 8px;
+    max-height:200px;
+    overflow-y:auto;
+    z-index:100;
+}
+
+.suggestion-item{
+    padding:12px;
+    cursor:pointer;
+    border-bottom:1px solid #eee;
+}
+
+.suggestion-item:hover{
+    background:#f0f7ff;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+thead{
+    background:#4a90e2;
+    color:white;
+}
+
+th, td{
+    padding:14px;
+    text-align:left;
+}
+
+tbody tr{
+    border-bottom:1px solid #ddd;
+}
+
+tbody tr:hover{
+    background:#f8f9fa;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="title">
+User Search
+</div>
+
+<div class="search-container">
+
+<input type="text"
+id="search"
+placeholder="Search user name...">
+
+<div id="suggestions"></div>
+
+</div>
+
+<table id="grid">
+
+<thead>
+<tr>
+<th>ID</th>
+            <th>Name</th>
+            <th>Role</th>
+            <th>User ID</th>
+            <th>Program Code</th>
+            <th>Program Name</th>
+            <th>Batch Name</th>
+            <th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+</tbody>
+
+</table>
+
+</div>
+
+<script>
+
+const search=document.getElementById("search");
+const suggestions=document.getElementById("suggestions");
+const tbody=document.querySelector("#grid tbody");
+
+search.addEventListener("input", async()=>{
+
+let q=search.value;
+
+if(q.length<2){
+    suggestions.innerHTML="";
+    return;
+}
+
+let response=await fetch(`/autocomplete?q=${q}`);
+let names=await response.json();
+
+suggestions.innerHTML="";
+
+names.forEach(name=>{
+
+    let div=document.createElement("div");
+
+    div.className="suggestion-item";
+    div.innerText=name;
+
+    div.onclick=async()=>{
+
+        search.value=name;
+        suggestions.innerHTML="";
+
+        let userResponse=
+        await fetch(`/get_user?name=${name}`);
+
+        let user=
+        await userResponse.json();
+
+        tbody.innerHTML=`
+        <tr>
+            <td>${user.Id}</td>
+            <td>${user.Name}</td>
+            <td>${user.Userrole}</td>
+            <td>${user.UserId}</td>
+            <td>${user.ProgramCode}</td>
+            <td>${user.ProgramName}</td>
+            <td>${user.Batch_Name}</td>
+            <td>
+                <a class="btn" href="/select_user/${user.Id}">
+                    Select
+                </a>
+            </td>
+
+
+        </tr>
+        `;
+    };
+
+    suggestions.appendChild(div);
+
+});
+
+});
+
+</script>
+
+</body>
+</html>

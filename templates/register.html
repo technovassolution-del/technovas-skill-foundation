@@ -1,12 +1,22 @@
 <h2>Register Face</h2>
-<input type="text" id="enrollmentId" placeholder="Enter enrollmentId" value="{{ enrollmentId }}">
-<input type="text" id="name" placeholder="Enter Name" value="{{ name }}">
-<br><br>
+<h2>Selected User</h2>
+
+<p>EnrollmentID : {{ user.Id }}</p>
+<p>Name : {{ user.Name }}</p>
+<p>Email : {{ user.Email }}</p>
+<p>Role : {{ user.Userrole }}</p>
+<p>User ID : {{ user.UserId }}</p>
+<p>Program Code : {{ user.ProgramCode }}</p>
+<p>Program Name : {{ user.ProgramName }}</p>
+<p>Batch Name : {{ user.Batch_Name }}</p>
+
 
 <video id="video" width="400" autoplay></video>
 <br><br>
 
 <button onclick="register()">Register</button>
+<a href="/attendance">Mark Attendance</a>
+
 
 <p id="result"></p>
 
@@ -26,14 +36,27 @@ function register() {
     canvas.getContext('2d').drawImage(video,0,0,400,300);
 
     let image = canvas.toDataURL('image/jpeg');
+    let userId = "{{ user.UserId }}";
+    let UserName = "{{ user.Name }}";
+    let userrole = "{{ user.Userrole }}";
+    let programCode = "{{ user.ProgramCode }}";
+    let programName = "{{ user.ProgramName }}";
+    let batchName = "{{ user.Batch_Name }}";
+    let enrollmentId = "{{ user.ID }}";
 
     fetch('/register_face',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
-            name:document.getElementById('name').value,
-            enrollmentId:document.getElementById('enrollmentId').value,
-            image:image
+            userid:userId,
+            name:UserName,
+            role:userrole,
+            image:image,
+            programCode:programCode,
+            programName:programName,
+            batchName:batchName,
+            enrollmentId:enrollmentId
+
         })
     })
     .then(res=>res.json())
