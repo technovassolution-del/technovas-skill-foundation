@@ -58,8 +58,8 @@ def student_login():
     error = None
     if request.method == 'POST':
 
-        student_id = request.form['name']
-        student_pwd = request.form['student_id']
+        student_id = request.form['UserId']
+        student_pwd = request.form['password']
 
         result = client.service.GetUser(student_id, student_pwd)
         print("Login Result:", result)
