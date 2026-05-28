@@ -132,9 +132,6 @@ def register():
         'register.html',
         user=user
     )
-
-
-
 # Save face
 @app.route('/register_face', methods=['POST'])
 def register_face():
@@ -147,7 +144,6 @@ def register_face():
     programName = data['programName']
     batchName = data['batchName']
     enrollmentId=data['enrollmentId']
-
     image_data = image_data.split(",")[1]
     image_bytes = base64.b64decode(image_data)
     np_arr = np.frombuffer(image_bytes, np.uint8)
