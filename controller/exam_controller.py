@@ -57,10 +57,8 @@ def student_login():
     client = Client(wsdl)
     error = None
     if request.method == 'POST':
-
         student_id = request.form['UserId']
         student_pwd = request.form['password']
-
         result = client.service.GetUser(student_id, student_pwd)
         print("Login Result:", result)
         if result.Status == "Success":
@@ -89,10 +87,6 @@ def student_portal():
     return redirect(url_for('exam.student_login'))
 
 # ----------------------------student_dashboard-------------
-
-
-
-
 @exam_bp.route('/student_dashboard')
 def student_dashboard():
     if session.get('user'):
@@ -100,7 +94,6 @@ def student_dashboard():
       print("Student ID:", student_id)
     else:
         return redirect(url_for('exam.student_login'))
-
     
     # assign exams
     assign_exams_to_student(student_id)
@@ -124,7 +117,7 @@ def student_dashboard():
     cursor.close()
     conn.close()
 
-    # ✅ FILTER: remove expired exams (Python level extra safety)
+    #FILTER: remove expired exams (Python level extra safety)
     active_exams = []
     now = datetime.now()
 
@@ -171,15 +164,10 @@ def exam():
     if request.method == 'POST':
 
         selected = request.form.get('answer')
-
         qid = request.form.get('question_id')
-
         action = request.form.get('action')
-
         conn = get_db_connection()
-
         cursor = conn.cursor()
-
         try:
 
             if qid:

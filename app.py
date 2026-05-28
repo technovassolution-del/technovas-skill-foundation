@@ -1,5 +1,4 @@
 import xml
-
 from flask import Flask, Response, render_template, request, jsonify,redirect,url_for,session
 import mysql.connector
 import face_recognition
@@ -129,7 +128,6 @@ def user():
 def register():
 
     user = session.get('selected_user')
-
     return render_template(
         'register.html',
         user=user
