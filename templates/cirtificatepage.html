@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Certificate | Skill Course</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#eef1f5;
+    padding:10px;
+}
+
+/* MAIN */
+
+.main-container{
+    width:100%;
+    max-width:980px;
+    margin:auto;
+}
+
+/* CARD */
+
+.certificate-card{
+    background:#fff;
+    border-radius:14px;
+    padding:22px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.08);
+}
+
+/* TOP HEADER */
+
+.top-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.page-title{
+    font-size:22px;
+    font-weight:bold;
+    color:#00283a;
+    display:flex;
+    align-items:center;
+}
+
+.page-title i{
+    margin-right:10px;
+    color:#d4a12f;
+}
+
+.dashboard-btn{
+    background:#34425d;
+    color:#fff;
+    text-decoration:none;
+    padding:12px 18px;
+    border-radius:8px;
+    font-weight:bold;
+    font-size:14px;
+}
+
+.dashboard-btn:hover{
+    background:#24324c;
+}
+
+/* INFO GRID */
+
+.info-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+    margin-bottom:24px;
+}
+
+.info-box{
+    border:1px solid #d8dee7;
+    border-radius:8px;
+    padding:14px;
+    background:#f9fbfd;
+    min-height:80px;
+}
+
+.info-box strong{
+    color:#000;
+}
+
+/* CERTIFICATE */
+
+.certificate-wrapper{
+    width:100%;
+    border-radius:12px;
+    overflow:hidden;
+    margin-bottom:22px;
+}
+
+.certificate-wrapper img{
+    width:100%;
+    display:block;
+    border-radius:12px;
+}
+
+/* BUTTONS */
+
+.button-group{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+.action-btn{
+    background:#0d8ee8;
+    color:#fff;
+    text-decoration:none;
+    padding:12px 18px;
+    border-radius:8px;
+    font-weight:bold;
+    font-size:14px;
+    display:inline-flex;
+    align-items:center;
+}
+
+.action-btn i{
+    margin-right:8px;
+}
+
+.action-btn:hover{
+    background:#066fba;
+}
+
+.linkedin-btn{
+    background:#34425d;
+}
+
+.linkedin-btn:hover{
+    background:#24324c;
+}
+
+.about-btn{
+    background:#34425d;
+}
+
+.about-btn:hover{
+    background:#24324c;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:900px){
+
+    .info-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+}
+
+@media(max-width:600px){
+
+    .top-header{
+        flex-direction:column;
+        gap:15px;
+        align-items:flex-start;
+    }
+
+    .info-grid{
+        grid-template-columns:1fr;
+    }
+
+    .button-group{
+        flex-direction:column;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="main-container">
+
+    <div class="certificate-card">
+
+        <!-- HEADER -->
+
+        <div class="top-header">
+
+            <div class="page-title">
+                <i class="fa-solid fa-graduation-cap"></i>
+                Certificate
+            </div>
+
+            <a href="#" class="dashboard-btn">
+                🏠 Dashboard
+            </a>
+
+        </div>
+
+        <!-- INFO -->
+
+        <div class="info-grid">
+
+            <div class="info-box">
+                <strong>Student:</strong>
+                Nilimesh Roy
+            </div>
+
+            <div class="info-box">
+                <strong>Course:</strong>
+                Microsoft Excel with A.I Masterclass
+                (Self Learning)
+            </div>
+
+            <div class="info-box">
+                <strong>Issued:</strong>
+                22 May 2026
+            </div>
+
+            <div class="info-box">
+                <strong>Certificate ID:</strong>
+                SC-A3B0505682
+            </div>
+
+        </div>
+
+        <!-- CERTIFICATE IMAGE -->
+
+        <div class="certificate-wrapper">
+
+            <img src="certificate.png"
+            alt="Certificate">
+
+        </div>
+
+        <!-- BUTTONS -->
+
+        <div class="button-group">
+
+            <a href="#"
+            class="action-btn">
+
+                <i class="fa-solid fa-image"></i>
+                Download Image
+
+            </a>
+
+            <a href="#"
+            class="action-btn linkedin-btn">
+
+                <i class="fa-brands fa-linkedin"></i>
+                Add to LinkedIn
+
+            </a>
+
+            <a href="#"
+            class="action-btn about-btn">
+
+                <i class="fa-solid fa-school"></i>
+                About Skill Course
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

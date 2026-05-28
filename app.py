@@ -53,6 +53,26 @@ def logout():
     session.clear()   # removes all session data
     return render_template('default.html')
 
+
+@app.route("/studentexam_view")
+def studentexam_view():
+    return render_template("studentexam_view.html")
+
+@app.route("/showstudent_result")
+def showstudent_result():
+    return render_template("showstudent_result.html")
+
+@app.route("/studentprofile_view")
+def studentprofile():
+    return render_template("studentprofile_view.html")
+
+@app.route("/cirtificatepage")
+def cirtificatepage():
+    return render_template("cirtificatepage.html")
+
+
+
+
 # ---------------- LOGIN ----------------
 
 @app.route('/login', methods=['GET', 'POST'])

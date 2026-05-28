@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Result History</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+        :root{
+    --dark:#0b2a3d;
+    --blue:#1e90ff;
+    --bg:#f5f7fb;
+    --card:#ffffff;
+    --text:#1f2d3d;
+    --shadow:0 6px 18px rgba(0,0,0,0.06);
+}
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#eef1f5;
+}
+
+/* NAVBAR */
+.navbar{
+    background:var(--dark);
+    padding:14px 30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    color:#fff;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:600;
+}
+
+.nav-links a{
+    color:#fff;
+    text-decoration:none;
+    margin-left:18px;
+    font-size:14px;
+    opacity:0.9;
+}
+
+.nav-links a:hover{
+    opacity:1;
+}
+
+.header h3{
+    font-size:16px;
+}
+
+.menu{
+    font-size:22px;
+}
+
+/* MAIN */
+
+.container{
+    width:100%;
+    max-width:900px;
+    margin:30px auto;
+}
+
+/* BACK BUTTON */
+
+.back-btn{
+    display:inline-block;
+    background:#0d8ee8;
+    color:white;
+    padding:12px 18px;
+    border-radius:6px;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:bold;
+    margin-bottom:18px;
+}
+
+.back-btn:hover{
+    background:#0878c7;
+}
+
+/* PROFILE CARD */
+
+.profile-card{
+    background:white;
+    padding:25px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    margin-bottom:30px;
+}
+
+.avatar{
+    width:75px;
+    height:75px;
+    border-radius:50%;
+    background:#0d8ee8;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:34px;
+    font-weight:bold;
+    margin-right:20px;
+}
+
+.profile-info h2{
+    font-size:30px;
+    margin-bottom:8px;
+    color:#111;
+}
+
+.profile-info p{
+    color:#666;
+    font-size:15px;
+}
+
+/* SECTION TITLE */
+
+.section-title{
+    font-size:28px;
+    font-weight:bold;
+    margin-bottom:15px;
+    color:#111;
+}
+
+.section-title i{
+    color:#0d8ee8;
+    margin-right:10px;
+}
+
+/* TABLE */
+
+.table-container{
+    background:white;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+thead{
+    background:#00283a;
+    color:white;
+}
+
+thead th{
+    padding:18px 14px;
+    text-align:left;
+    font-size:15px;
+}
+
+tbody td{
+    padding:18px 14px;
+    border-bottom:1px solid #eee;
+    font-size:14px;
+    color:#333;
+}
+
+.pass{
+    background:#c8f5d0;
+    color:#008a2e;
+    padding:6px 12px;
+    border-radius:5px;
+    font-weight:bold;
+    font-size:13px;
+}
+
+.result-btn{
+    background:#0d8ee8;
+    color:white;
+    border:none;
+    padding:10px 16px;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.result-btn:hover{
+    background:#066fba;
+}
+
+/* RESULT MODAL */
+
+.modal{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.6);
+    display:none;
+    justify-content:center;
+    align-items:center;
+}
+
+.modal-content{
+    background:white;
+    width:90%;
+    max-width:700px;
+    padding:30px;
+    border-radius:12px;
+    position:relative;
+}
+
+.close-btn{
+    position:absolute;
+    right:20px;
+    top:15px;
+    font-size:24px;
+    cursor:pointer;
+    color:red;
+}
+
+.result-header{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.result-header h2{
+    color:#00283a;
+    margin-bottom:8px;
+}
+
+.result-info{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.info-box{
+    background:#f5f7fa;
+    padding:15px;
+    border-radius:8px;
+}
+
+.info-box h4{
+    margin-bottom:5px;
+    color:#555;
+}
+
+.info-box p{
+    font-size:16px;
+    font-weight:bold;
+    color:#111;
+}
+
+@media(max-width:768px){
+
+    .profile-card{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    .avatar{
+        margin-bottom:15px;
+    }
+
+    .result-info{
+        grid-template-columns:1fr;
+    }
+
+    table{
+        font-size:12px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+    <div class="logo">🎓 Technovas Skill Foundation</div>
+    <div class="nav-links">
+        <a href="{{ url_for('exam.student_portal') }}">Home</a>
+        <a href="{{ url_for('showstudent_result') }}">Result</a>
+        <a href="{{ url_for('studentprofile') }}">profile</a>
+        <a href="#">Logout</a>
+    </div>
+</div>
+
+<!-- MAIN -->
+
+<div class="container">
+
+   <a class="back-btn" href="{{ url_for('studentexam_view') }}">
+  ← Back to Dashboard
+</a>
+
+    <!-- PROFILE -->
+
+    <div class="profile-card">
+
+        <div class="avatar">
+            N
+        </div>
+
+        <div class="profile-info">
+            <h2>Nilimesh Roy</h2>
+            <p>
+                <i class="fa-regular fa-envelope"></i>
+                nilimeshroy77@gmail.com
+            </p>
+        </div>
+
+    </div>
+
+    <!-- RESULT TITLE -->
+
+    <div class="section-title">
+        <i class="fa-solid fa-chart-column"></i>
+        Exam Results History
+    </div>
+
+    <!-- TABLE -->
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Exam Title</th>
+                    <th>Course</th>
+                    <th>Score</th>
+                    <th>Status</th>
+                    <th>Time Taken</th>
+                    <th>Date</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                
+
+                <tr>
+                    <td>1</td>
+
+                    <td>
+                        Microsoft Excel with AI Masterclass (Self Learning) - Final Exam
+                    </td>
+
+                    <td>
+                        Microsoft Excel with AI Masterclass (Self Learning)
+                    </td>
+
+                    <td>87%</td>
+
+                    <td>
+                        <span class="pass">Pass</span>
+                    </td>
+
+                    <td>16m 39s</td>
+
+                    <td>22 May 2026</td>
+
+                    <td>
+                        <button class="result-btn" onclick="openResult()">
+                            View Result
+                        </button>
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<!-- RESULT POPUP -->
+
+<div class="modal" id="resultModal">
+
+    <div class="modal-content">
+
+        <span class="close-btn" onclick="closeResult()">
+            &times;
+        </span>
+
+        <div class="result-header">
+            <h2>Student Exam Result</h2>
+            <p>Published by Admin</p>
+        </div>
+
+        <div class="result-info">
+
+            <div class="info-box">
+                <h4>Student Name</h4>
+                <p>Nilimesh Roy</p>
+            </div>
+
+            <div class="info-box">
+                <h4>Course</h4>
+                <p>Advanced Excel</p>
+            </div>
+
+            <div class="info-box">
+                <h4>Exam Score</h4>
+                <p>87%</p>
+            </div>
+
+            <div class="info-box">
+                <h4>Status</h4>
+                <p style="color:green;">PASS</p>
+            </div>
+
+            <div class="info-box">
+                <h4>Total Questions</h4>
+                <p>50</p>
+            </div>
+
+            <div class="info-box">
+                <h4>Correct Answer</h4>
+                <p>44</p>
+            </div>
+
+            <div class="info-box">
+                <h4>Wrong Answer</h4>
+                <p>6</p>
+            </div>
+
+            <div class="info-box">
+                <h4>Exam Date</h4>
+                <p>22 May 2026</p>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function openResult(){
+    document.getElementById("resultModal").style.display = "flex";
+}
+
+function closeResult(){
+    document.getElementById("resultModal").style.display = "none";
+}
+
+window.onclick = function(event){
+    let modal = document.getElementById("resultModal");
+
+    if(event.target == modal){
+        modal.style.display = "none";
+    }
+}
+
+</script>
+
+</body>
+</html>

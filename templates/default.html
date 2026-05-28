@@ -1,9 +1,16 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Technovas Skill Learning</title>
+
+<title>Technovas Skill Foundation</title>
+
+<link rel="shortcut icon"
+href="{{ url_for('static', filename='images/favicon.png') }}">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
@@ -17,523 +24,538 @@
 }
 
 body{
-    background:#f5f7fa;
+    background:#08142c;
+    overflow-x:hidden;
+}
+
+/* ================= MAIN SECTION ================= */
+
+.main{
+
+    width:100%;
+
+    min-height:100vh;
+
+    background:
+    linear-gradient(
+        rgba(4,17,43,0.88),
+        rgba(4,17,43,0.88)
+    ),
+    url('{{ url_for("static", filename="images/hero-bg.png") }}');
+
+    background-size:cover;
+
+    background-position:center;
+
+    padding:20px 8%;
 }
 
 /* ================= NAVBAR ================= */
 
+/* NAVBAR */
 .navbar{
     width:100%;
-    background:rgba(255,255,255,0.08);
-    backdrop-filter:blur(12px);
-    -webkit-backdrop-filter:blur(12px);
+    height:70px;
+    background: linear-gradient(90deg,#071a3a,#0b2a5a);
     display:flex;
-    justify-content:space-between;
     align-items:center;
-    padding:18px 8%;
-    position:fixed;
+    justify-content:space-between;
+    padding:0 40px;
+    position:sticky;
     top:0;
-    left:0;
     z-index:1000;
-    border-bottom:1px solid rgba(255,255,255,0.1);
 }
 
 /* LOGO */
-
 .logo{
-    font-size:28px;
-    font-weight:700;
-    color:#22c55e;
-}
-
-.logo span{
-    color:#ffffff;
-}
-
-/* LOGO CONTAINER */
-
-.logo-container{
     display:flex;
     align-items:center;
+    text-decoration:none;
+    color:white;
     gap:12px;
 }
 
-/* LOGO IMAGE */
-
-.logo-img{
-    width:70px;
-    height:57px;
-    object-fit:contain;
-    border-radius:10px;
-    background:white;
-    padding:4px;
-    box-shadow:0 4px 12px rgba(0,0,0,0.2);
+.logo img{
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    /* object-fit:cover; */
+    border:2px solid #fff;
 }
 
-/* LOGO TEXT */
-
-.logo-text{
-    font-size:28px;
-    font-weight:700;
-    color:#22c55e;
+.logo-text h3{
+    font-size:16px;
+    margin-bottom:2px;
+    color:#fff;
 }
 
 .logo-text span{
-    color:#ffffff;
+    font-size:11px;
+    color:#cfd8ff;
 }
 
-/* NAV LINKS */
-
-.nav-links{
+/* MENU */
+.menu{
     display:flex;
-    gap:28px;
+    list-style:none;
+    gap:25px;
+}
+
+.menu li a{
+    text-decoration:none;
+    color:#fff;
+    font-size:15px;
+    padding:8px 14px;
+    border-radius:6px;
+    transition:0.3s;
+}
+
+.menu li a:hover,
+.menu li a.active{
+    background:#ffffff20;
+}
+
+/* HAMBURGER */
+.menu-btn{
+    display:none;
+}
+
+.menu-icon{
+    display:none;
+    cursor:pointer;
+}
+
+.menu-icon span,
+.menu-icon span::before,
+.menu-icon span::after{
+    display:block;
+    background:#fff;
+    height:3px;
+    width:25px;
+    position:relative;
+    transition:0.3s;
+}
+
+.menu-icon span::before,
+.menu-icon span::after{
+    content:"";
+    position:absolute;
+    left:0;
+}
+
+.menu-icon span::before{
+    top:-8px;
+}
+
+.menu-icon span::after{
+    top:8px;
+}
+/* ================= HOME CONTENT ================= */
+
+.home-content{
+
+    width:100%;
+
+    min-height:80vh;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:60px;
+
+    margin-top:40px;
+}
+
+/* ================= LEFT TEXT ================= */
+
+.home-text{
+
+    flex:1;
+}
+
+.home-text h3{
+
+    color:#38bdf8;
+
+    letter-spacing:2px;
+
+    font-size:18px;
+
+    margin-bottom:10px;
+}
+
+.home-text h1{
+
+    color:white;
+
+    font-size:65px;
+
+    line-height:1.2;
+
+    margin:20px 0;
+}
+
+.home-text p{
+
+    color:#d1d5db;
+
+    font-size:17px;
+
+    line-height:1.9;
+
+    max-width:650px;
+}
+
+/* ================= BUTTON ================= */
+
+.main-login{
+
+    display:inline-block;
+
+    margin-top:35px;
+
+    padding:15px 35px;
+
+    background:#0ea5e9;
+
+    color:white;
+
+    text-decoration:none;
+
+    border-radius:10px;
+
+    font-size:17px;
+
+    font-weight:600;
+
+    transition:0.3s;
+}
+
+.main-login:hover{
+
+    background:#0284c7;
+
+    transform:translateY(-3px);
+}
+
+/* ================= RIGHT IMAGE ================= */
+
+.home-img{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
     align-items:center;
 }
 
-.nav-links a{
-    text-decoration:none;
-    color:#ffffff;
-    font-size:15px;
-    font-weight:500;
-    transition:0.3s;
-    position:relative;
-}
+.home-img img{
 
-/* HOVER EFFECT */
-
-.nav-links a::after{
-    content:'';
-    position:absolute;
-    left:0;
-    bottom:-5px;
-    width:0%;
-    height:2px;
-    background:#22c55e;
-    transition:0.3s;
-}
-
-.nav-links a:hover::after{
     width:100%;
+
+    max-width:320px;
 }
 
-.nav-links a:hover{
-    color:#22c55e;
+/* ================= MARQUEE ================= */
+
+marquee{
+
+    margin-top:18px;
 }
 
-/* LOGIN BUTTON */
+marquee a{
 
-.login-btn{
-    background:linear-gradient(135deg,#22c55e,#16a34a);
-    color:#fff;
-    padding:10px 24px;
-    border-radius:10px;
     text-decoration:none;
-    font-weight:600;
-    transition:0.3s;
-    box-shadow:0 0 15px rgba(34,197,94,0.4);
 }
 
-.login-btn:hover{
-    transform:translateY(-2px);
-    box-shadow:0 0 25px rgba(34,197,94,0.7);
+/* ================= FOOTER ================= */
+
+footer{
+
+    background:#020817;
+
+    padding:20px;
+
+    text-align:center;
 }
 
-/* MOBILE 3 DOT BUTTON */
+footer p{
+
+    color:#cbd5e1;
+
+    font-size:15px;
+}
+
+footer a{
+
+    color:#38bdf8;
+
+    text-decoration:none;
+}
+
+/* ================= MOBILE MENU ================= */
 
 .menu-btn{
     display:none;
-    font-size:30px;
-    color:white;
-    cursor:pointer;
-    background:none;
-    border:none;
 }
 
-/* ================= HERO SECTION ================= */
-
-.hero{
-    width:100%;
-    height:100vh;
-    background:
-    linear-gradient(rgba(15,23,42,0.75), rgba(15,23,42,0.75)),
-    url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1470&auto=format&fit=crop');
-    background-size:cover;
-    background-position:center;
-    display:flex;
-    position: relative;
-    align-items:center;
-    color:white;
-    padding:20px;
+.menu-icon{
+    display:none;
 }
 
-.hero-content{
-    max-width:850px;
-    margin:0px 0px 0px 120px;
-}
+/* ================= TABLET ================= */
 
-.hero h1{
-    font-size:54px;
-    margin-bottom:20px;
-    background: linear-gradient(270deg, #139252, #13c451, #8b5cf6, #00c6ff);
-    background-size:600% 600%;
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-    animation:gradientMove 6s ease infinite;
-}
+@media(max-width:992px){
 
-@keyframes gradientMove {
-    0%{background-position:0% 50%;}
-    50%{background-position:100% 50%;}
-    100%{background-position:0% 50%;}
-}
-
-.hero h1 span{
-    color:#22c55e;
-}
-
-.hero p{
-    font-size:18px;
-    color:#d1d5db;
-    margin-bottom:40px;
-}
-
-/* ================= SEARCH BOX ================= */
-
-.search-box{
-    width:100%;
-    display:flex;
-    background:#fff;
-    border-radius:12px;
-    overflow:hidden;
-    margin-bottom:35px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.2);
-}
-
-.search-box input{
-    flex:1;
-    padding:20px;
-    border:none;
-    outline:none;
-    font-size:16px;
-}
-
-.search-box button{
-    width:80px;
-    border:none;
-    background:#22c55e;
-    color:#fff;
-    font-size:22px;
-    cursor:pointer;
-    transition:0.3s;
-}
-
-.search-box button:hover{
-    background:#16a34a;
-}
-
-/* ================= STATS ================= */
-
-.stats{
-    display:flex;
-    gap:40px;
-    flex-wrap:wrap;
-    margin-top:20px;
-}
-
-.stat-item{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    font-size:15px;
-    color:#f3f4f6;
-}
-
-.stat-item i{
-    color:#22c55e;
-}
-
-/* ================= FEATURES ================= */
-
-.features{
-    background:#24924d;
-    padding:80px 8%;
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:30px;
-    background-size:cover;
-    background-position:center;
-}
-
-.feature-card{
-    background:rgba(255,255,255,0.15);
-    backdrop-filter:blur(8px);
-    border-radius:20px;
-    padding:40px 30px;
-    text-align:center;
-    color:#fff;
-    transition:0.4s;
-}
-
-.feature-card:hover{
-    transform:translateY(-10px);
-    background:rgba(255,255,255,0.22);
-}
-
-.feature-icon{
-    width:90px;
-    height:90px;
-    border-radius:50%;
-    background:#fff;
-    color:#22c55e;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-size:40px;
-    margin:auto;
-    margin-bottom:25px;
-}
-
-.feature-card h3{
-    margin-bottom:15px;
-    font-size:24px;
-}
-
-.feature-card p{
-    font-size:15px;
-    line-height:1.7;
-}
-
-/* ================= RESPONSIVE ================= */
-
-@media(max-width:900px){
-
-    .hero h1{
-        font-size:40px;
-    }
-
-    .search-box{
+    .home-content{
         flex-direction:column;
-    }
-
-    .search-box button{
-        width:100%;
-        padding:18px;
-    }
-
-}
-
-/* MOBILE */
-
-@media(max-width:768px){
-
-    .navbar{
-        padding:15px 5%;
-    }
-
-    .menu-btn{
-        display:block;
-    }
-
-    .nav-links{
-        position:absolute;
-        top:90px;
-        right:5%;
-        width:260px;
-        background:rgba(15,23,42,0.95);
-        backdrop-filter:blur(12px);
-        border-radius:18px;
-        padding:20px;
-        flex-direction:column;
-        align-items:flex-start;
-        gap:20px;
-        display:none;
-        box-shadow:0 10px 30px rgba(0,0,0,0.4);
-    }
-
-    .nav-links.active{
-        display:flex;
-    }
-
-    .login-btn{
-        display:none;
-    }
-
-    .logo-text{
-        font-size:20px;
-    }
-
-    .logo-img{
-        width:55px;
-        height:45px;
-    }
-
-    .hero{
-        padding:20px;
         text-align:center;
-        justify-content:center;
+        padding-top:40px;
     }
 
-    .hero-content{
-        margin:0;
+    .home-text h1{
+        font-size:52px;
     }
 
-    .hero h1{
-        font-size:32px;
+    .home-text p{
+        margin:auto;
     }
 
-    .hero p{
+    .home-img{
+        margin-top:30px;
+    }
+
+    .home-text h3{
         font-size:15px;
     }
 
-    .stats{
-        justify-content:center;
-        gap:15px;
+    .home-text p{
+        font-size:15px;
     }
 
+    .main-login{
+        width:100%;
+        text-align:center;
+    }
+
+    marquee a{
+        font-size:14px !important;
+    }
 }
+
+/* ================= MOBILE ================= */
+
+@media(max-width:768px){
+
+    .menu{
+        position:absolute;
+        top:70px;
+        left:0;
+        width:100%;
+        background:#071a3a;
+        flex-direction:column;
+        gap:0;
+        display:none;
+    }
+
+    .menu li{
+        text-align:center;
+        padding:15px 0;
+        border-top:1px solid #ffffff20;
+    }
+
+    .menu-icon{
+        display:block;
+    }
+
+    .menu-btn:checked ~ .menu{
+        display:flex;
+    }
+
+    .home-text h1{
+        font-size:42px;
+    }
+
+    .home-text h3{
+        font-size:15px;
+    }
+
+    .home-text p{
+        font-size:15px;
+    }
+
+    .main-login{
+        width:100%;
+        text-align:center;
+    }
+
+    marquee a{
+        font-size:14px !important;
+    }
+}
+
+/* ================= SMALL MOBILE ================= */
 
 @media(max-width:480px){
 
-    .hero h1{
-        font-size:28px;
+    .logo img{
+        width:50px;   /* ❗ আগে 190px ছিল ভুল ছিল */
+        height:50px;
     }
 
-    .search-box input{
-        padding:16px;
+    .home-text h1{
+        font-size:34px;
+    }
+
+    .home-text p{
         font-size:14px;
+        line-height:1.7;
     }
 
+    .home-img img{
+        max-width:320px;
+    }
+
+    footer p{
+        font-size:13px;
+    }
 }
 
 </style>
+
 </head>
 
 <body>
 
-<!-- ================= NAVBAR ================= -->
+<!-- MAIN SECTION -->
 
-<nav class="navbar">
+<section class="main">
 
-   <div class="logo-container">
+    <!-- NAVBAR -->
 
-    <img src="{{ url_for('static', filename='images/technovas_logo.png') }}" alt="Logo" class="logo-img">
+    <nav class="navbar">
+    
+    <a href="#" class="logo">
+        <img src="{{ url_for('static', filename='images/logo.jpeg') }}" alt="logo">
+        <div class="logo-text">
+            <h3>Technovas SOLUTION</h3>
+            <span>A unit of Technovas Skill Foundation</span>
+        </div>
+    </a>
 
-    <div class="logo-text">
-        Technovas <span>Skill Foundation</span>
-    </div>
+    <input type="checkbox" id="menu-btn" class="menu-btn">
 
-</div>
+    <label for="menu-btn" class="menu-icon">
+        <span></span>
+    </label>
 
-    <!-- MOBILE 3 DOT BUTTON -->
-    <button class="menu-btn" onclick="toggleMenu()">⋮</button>
-
-    <div class="nav-links" id="mobileMenu">
-        <a href="#">Home</a>
-        <a href="#">Courses</a>
-        <a href="/studenthome">Student Portal</a>
-        <a href="/onlineattendance">Attendance</a>
-        <a href="#">Contact</a>
-        
-    </div>
-
-    <a href="/login" class="login-btn">Login</a>
+    <ul class="menu">
+        <li><a href="#">Our Student</a></li>
+        <li><a href="{{ url_for('onlineattendance') }}">Attendance</a></li>
+        <li><a href="/login" class="active">Login</a></li>
+    </ul>
 
 </nav>
 
-<!-- ================= HERO ================= -->
+    <!-- HOME CONTENT -->
 
-<section class="hero">
+    <div class="home-content">
 
-    <div class="hero-content">
+        <!-- TEXT -->
 
-        <h1>
-            Getting Started With
+        <div class="home-text">
+
+            <h3>
+                Welcome To TECHNOVAS SKILL FOUNDATION
+            </h3>
+
+            <!-- <h3>
+                A Unit Of TECHNOVAS SKILL FOUNDATION
+            </h3> -->
+
+            <h1>
+                Learning Portal
+            </h1>
+
+            <p>
+                TECHNOVAS SOLUTION is an autonomous educational
+                institution dedicated to empowering students through
+                advanced technology education, practical training,
+                and innovative learning experiences.
+            </p>
+
+            <a href="{{ url_for('studentlogin') }}"
+               class="main-login">
+
+                Student Login
+
+            </a>
+
+        </div>
+
+        <!-- IMAGE -->
+
+        <div class="home-img">
+
+            <img src="{{ url_for('static', filename='images/hero.png') }}">
+
+            <marquee
+                width="100%"
+                direction="left"
+                onmouseover="this.stop();"
+                onmouseout="this.start();">
+
+                <a href="#" style="color:wheat;font-size:20px;">
+
+                    Registered and recognized under Government of India initiatives including MCA, MSME, ISO 9001:2015, and NITI Aayog.
+
+                </a>
+
+            </marquee>
+
+            <marquee
+                width="100%"
+                direction="right"
+                onmouseover="this.stop();"
+                onmouseout="this.start();">
+
+                <a href="#" style="color:white;font-size:15px;">
+
+                    Government Registered | ISO Certified | Industry-Oriented Learning
+
+                </a>
+
+            </marquee>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- FOOTER -->
+
+<footer>
+
+    <p>
+
+        Copyright © 2026 |
+        Developed By
+
+        <a href="#">
             Technovas Skill Foundation
-        </h1>
+        </a>
 
-        <p>
-           Welcome to Technovas Skill Foundation — to help students build real-world skills in coding, AI, computer basics, exams, and professional development.
+    </p>
 
-         At Technovas, we believe learning should be practical, interactive, and future-ready, not just theory.
-        </p>
-
-        <div class="search-box">
-
-            <input type="text" placeholder="What do you want to learn today?">
-
-            <button>🔍</button>
-
-        </div>
-
-        <div class="stats">
-
-            <div class="stat-item">
-                ✅ 50+ Students
-            </div>
-
-            <div class="stat-item">
-                ✅ 30+ Courses
-            </div>
-
-            <div class="stat-item">
-                ✅ Learn Anytime Anywhere
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-<!-- ================= FEATURES ================= -->
-
-<section class="features">
-
-    <div class="feature-card">
-
-        <div class="feature-icon">🏆</div>
-
-        <h3>Certified Courses</h3>
-
-        <p>
-            Get professional certificates after completing your learning journey.
-        </p>
-
-    </div>
-
-    <div class="feature-card">
-
-        <div class="feature-icon">💻</div>
-
-        <h3>Online Learning</h3>
-
-        <p>
-            Access live classes, recorded lectures, and smart learning tools.
-        </p>
-
-    </div>
-
-    <div class="feature-card">
-
-        <div class="feature-icon">🤖</div>
-
-        <h3>AI Smart Exams</h3>
-
-        <p>
-            Advanced AI-powered online examination and anti-cheating system.
-        </p>
-
-    </div>
-
-</section>
-
-<script>
-
-function toggleMenu(){
-    document.getElementById("mobileMenu").classList.toggle("active");
-}
-
-</script>
+</footer>
 
 </body>
 </html>

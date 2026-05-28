@@ -1,14 +1,21 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Technovas Skill Learning - Student Dashboard</title>
+<title>Skill Course Dashboard</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
+:root{
+    --dark:#0b2a3d;
+    --blue:#1e90ff;
+    --bg:#f5f7fb;
+    --card:#ffffff;
+    --text:#1f2d3d;
+    --shadow:0 6px 18px rgba(0,0,0,0.06);
+}
 
 *{
     margin:0;
@@ -18,528 +25,321 @@
 }
 
 body{
-    background:#eef2ff;
-    display:flex;
-    min-height:100vh;
-    overflow-x:hidden;
+    background:var(--bg);
+    color:var(--text);
 }
 
-
-/* ================= SIDEBAR ================= */
-
-.sidebar{
-    width:270px;
-    background:linear-gradient(180deg,#111827,#1e293b);
-    color:white;
-    padding:25px 20px;
-    position:fixed;
-    height:100vh;
-    left:0;
-    top:0;
-    box-shadow:5px 0 20px rgba(0,0,0,0.1);
+/* NAVBAR */
+.navbar{
+    background:var(--dark);
+    padding:14px 30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    color:#fff;
 }
 
 .logo{
-    font-size:28px;
-    font-weight:700;
-    margin-bottom:40px;
-    color:#22c55e;
-}
-
-.logo span{
-    color:white;
-}
-
-.menu{
     display:flex;
-    flex-direction:column;
-    gap:14px;
+    align-items:center;
+    gap:10px;
+    font-weight:600;
 }
 
-.menu a{
+.nav-links a{
+    color:#fff;
     text-decoration:none;
-    color:#d1d5db;
-    padding:14px 18px;
+    margin-left:18px;
+    font-size:14px;
+    opacity:0.9;
+}
+
+.nav-links a:hover{
+    opacity:1;
+}
+
+/* MAIN WRAPPER */
+.container{
+    max-width:1100px;
+    margin:25px auto;
+    padding:0 15px;
+}
+
+/* PROFILE CARD */
+.profile-card{
+    background:var(--card);
+    padding:18px 20px;
     border-radius:14px;
-    transition:0.3s;
-    font-size:15px;
-    display:flex;
-    align-items:center;
-    gap:12px;
-    font-weight:500;
-}
-
-.menu a:hover,
-.menu a.active{
-    background:#22c55e;
-    color:white;
-    transform:translateX(5px);
-}
-
-/* ================= MAIN ================= */
-
-.main{
-    margin-left:270px;
-    width:100%;
-    padding:30px;
-}
-
-/* ================= TOPBAR ================= */
-
-.topbar{
-    background:white;
-    padding:18px 25px;
-    border-radius:20px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    box-shadow:0 10px 25px rgba(0,0,0,0.06);
-    margin-bottom:30px;
-}
-
-.topbar-left h2{
-    color:#111827;
-    margin-bottom:5px;
-}
-
-.topbar-left p{
-    color:#6b7280;
-    font-size:14px;
-}
-
-.profile{
+    box-shadow:var(--shadow);
     display:flex;
     align-items:center;
     gap:15px;
 }
 
-.profile img{
-    width:50px;
-    height:50px;
+.avatar{
+    width:55px;
+    height:55px;
     border-radius:50%;
-    border:3px solid #22c55e;
-}
-
-.profile-info h4{
-    color:#111827;
-}
-
-.profile-info p{
-    color:#6b7280;
-    font-size:13px;
-}
-
-/* ================= CARDS ================= */
-
-.cards{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:20px;
-    margin-bottom:30px;
-}
-
-.card{
-    background:white;
-    padding:25px;
-    border-radius:20px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.05);
-    transition:0.3s;
-    position:relative;
-    overflow:hidden;
-}
-
-.card:hover{
-    transform:translateY(-8px);
-}
-
-.card::before{
-    content:'';
-    position:absolute;
-    width:120px;
-    height:120px;
-    background:#22c55e20;
-    border-radius:50%;
-    top:-40px;
-    right:-40px;
-}
-
-.card-icon{
-    font-size:35px;
-    margin-bottom:15px;
-}
-
-.card h3{
-    color:#6b7280;
-    margin-bottom:10px;
-    font-size:16px;
-}
-
-.card p{
-    font-size:32px;
-    font-weight:700;
-    color:#111827;
-}
-
-/* ================= CONTENT ================= */
-
-.content{
-    display:grid;
-    grid-template-columns:2fr 1fr;
-    gap:25px;
-}
-
-/* ================= BOX ================= */
-
-.box{
-    background:white;
-    border-radius:20px;
-    padding:25px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.05);
-}
-
-.box h3{
-    margin-bottom:25px;
-    color:#111827;
-}
-
-/* ================= COURSES ================= */
-
-.course{
-    background:#f9fafb;
-    border-radius:16px;
-    padding:18px;
-    margin-bottom:18px;
+    background:linear-gradient(135deg,#1e90ff,#00c6ff);
     display:flex;
-    justify-content:space-between;
     align-items:center;
-    transition:0.3s;
-    border-left:5px solid #22c55e;
-}
-
-.course:hover{
-    transform:scale(1.02);
-    background:#ecfdf5;
-}
-
-.course h4{
-    margin-bottom:6px;
-    color:#111827;
-}
-
-.course p{
-    color:#6b7280;
-    font-size:14px;
-}
-
-.status{
-    background:#22c55e;
-    color:white;
-    padding:8px 15px;
-    border-radius:30px;
-    font-size:13px;
-}
-
-/* ================= ACTIVITIES ================= */
-
-.activity{
-    display:flex;
-    gap:15px;
-    padding:16px;
-    background:#f9fafb;
-    border-radius:15px;
-    margin-bottom:15px;
-    transition:0.3s;
-}
-
-.activity:hover{
-    background:#ecfdf5;
-    transform:translateX(5px);
-}
-
-.activity-icon{
-    width:45px;
-    height:45px;
-    background:#22c55e;
-    color:white;
-    display:flex;
     justify-content:center;
-    align-items:center;
-    border-radius:12px;
+    color:#fff;
+    font-size:20px;
+    font-weight:600;
+}
+
+.profile-info h3{
     font-size:18px;
 }
 
-.activity p{
-    color:#374151;
-    font-size:14px;
+.profile-info p{
+    font-size:13px;
+    opacity:0.7;
 }
 
-.activity small{
-    color:#9ca3af;
-}
-
-/* ================= BUTTON ================= */
-
-.quick-btn{
-    margin-top:20px;
-    width:100%;
-    padding:14px;
-    border:none;
-    background:#22c55e;
-    color:white;
+/* BANNER */
+.banner{
+    margin-top:15px;
+    background:var(--card);
+    padding:14px 18px;
     border-radius:14px;
+    box-shadow:var(--shadow);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.banner button{
+    background:var(--blue);
+    border:none;
+    color:#fff;
+    padding:9px 14px;
+    border-radius:8px;
     cursor:pointer;
-    font-size:15px;
+}
+
+/* STATS */
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin-top:15px;
+}
+
+.stat-box{
+    background:var(--card);
+    padding:18px;
+    text-align:center;
+    border-radius:14px;
+    box-shadow:var(--shadow);
+}
+
+.stat-box h2{
+    color:var(--blue);
+    font-size:22px;
+}
+
+.stat-box p{
+    font-size:13px;
+    margin-top:4px;
+    opacity:0.7;
+}
+
+/* COURSE */
+.section-title{
+    margin-top:20px;
     font-weight:600;
-    transition:0.3s;
+    font-size:16px;
+    display:flex;
+    align-items:center;
+    gap:8px;
 }
 
-.quick-btn:hover{
-    background:#16a34a;
+.course-card{
+    margin-top:10px;
+    background:var(--card);
+    padding:18px;
+    border-radius:14px;
+    box-shadow:var(--shadow);
 }
 
-/* ================= MOBILE ================= */
+.course-card h4{
+    font-size:15px;
+}
 
-.menu-toggle{
+.course-card p{
+    font-size:13px;
+    margin-top:4px;
+    opacity:0.7;
+}
+
+.course-card button{
+    margin-top:10px;
+    background:var(--blue);
+    border:none;
+    color:#fff;
+    padding:9px 14px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+/* EXAM PANEL */
+.exam-panel{
     display:none;
+    margin-top:10px;
+    background:var(--card);
+    padding:18px;
+    border-radius:14px;
+    box-shadow:var(--shadow);
 }
 
+/* CERTIFICATE */
+.cert{
+    margin-top:10px;
+    background:var(--card);
+    padding:18px;
+    border-radius:14px;
+    box-shadow:var(--shadow);
+}
+
+.cert small{
+    opacity:0.7;
+}
+
+/* RESPONSIVE */
 @media(max-width:900px){
-
-    .sidebar{
-        left:-100%;
-        transition:0.4s;
-        z-index:999;
+    .stats{
+        grid-template-columns:repeat(2,1fr);
     }
-
-    .sidebar.active{
-        left:0;
-    }
-
-    .main{
-        margin-left:0;
-        padding:20px;
-    }
-
-    .content{
-        grid-template-columns:1fr;
-    }
-
-    .menu-toggle{
-        display:block;
-        font-size:28px;
-        cursor:pointer;
-        color:#111827;
-    }
-
 }
 
+@media(max-width:500px){
+    .stats{
+        grid-template-columns:repeat(1,1fr);
+    }
+
+    .navbar{
+        flex-direction:column;
+        gap:10px;
+    }
+}
 </style>
 </head>
+
 <body>
 
-<!-- ================= SIDEBAR ================= -->
-
-<div class="sidebar" id="sidebar">
-
-    <div class="logo">
-        Our <span>Dashboard</span>
+<!-- NAV -->
+<div class="navbar">
+    <div class="logo">🎓 Technovas Skill Foundation</div>
+    <div class="nav-links">
+        <a href="#">Home</a>
+        <a href="{{ url_for('showstudent_result') }}">Result</a>
+        <a href="{{ url_for('studentprofile') }}">profile</a>
+        <a href="#">Logout</a>
     </div>
-
-    <div class="menu">
-        <a href="#" class="active">🏠 Dashboard</a>
-        <a href="#">📚 My Courses</a>
-        <a href="{{ url_for('exam.student_dashboard') }}">📝 Exams</a>
-        <a href="#">📄 Results</a>
-        <a href="#">🎓 Certificates</a>
-        <a href="#">📅 Schedule</a>
-        <a href="#">👤 Profile</a>
-        <a href="#">⚙ Settings</a>
-        <a href="/logout">🚪 Logout</a>
-    </div>
-
-
 </div>
 
-<!-- ================= MAIN ================= -->
+<div class="container">
 
-<div class="main">
-
-    <!-- TOPBAR -->
-
-    <div class="topbar">
-
-        <div class="topbar-left">
-            <div class="menu-toggle" onclick="toggleMenu()">☰</div>
-
-            <h2>Welcome Back 👋</h2>
-            <p>Technovas Skill Foundation Student Dashboard</p>
+    <!-- PROFILE -->
+    <div class="profile-card">
+        <div class="avatar" id="avatar">N</div>
+        <div class="profile-info">
+            <h3 id="name">Nilimesh Roy</h3>
+            <p id="email">nilimeshroy77@gmail.com</p>
         </div>
-
-        <div class="profile">
-            <img src="#" alt="">
-
-            <div class="profile-info">
-                <h4>{{session.user.name }}</h4>
-                <p>Student of Technovas </p>
-            </div>
-        </div>
-
     </div>
 
-    <!-- ================= CARDS ================= -->
+  
 
-    <div class="cards">
-
-        <div class="card">
-            <div class="card-icon">📚</div>
-            <h3>Enrolled Courses</h3>
-            <p>0</p>
+    <!-- STATS -->
+    <div class="stats">
+        <div class="stat-box">
+            <h2 id="total">1</h2>
+            <p>Total Exams</p>
         </div>
 
-        <div class="card">
-            <div class="card-icon">📝</div>
-            <h3>Completed Exams</h3>
-            <p>0</p>
+        <div class="stat-box">
+            <h2 id="attempted">1</h2>
+            <p>Attempted</p>
         </div>
 
-        <div class="card">
-            <div class="card-icon">🏆</div>
-            <h3>Certificates</h3>
-            <p>0</p>
+        <div class="stat-box">
+            <h2 id="passed">1</h2>
+            <p>Passed</p>
         </div>
 
-        <div class="card">
-            <div class="card-icon">⏳</div>
-            <h3>Pending Tasks</h3>
-            <p>0</p>
+        <div class="stat-box">
+            <h2 id="cert">1</h2>
+            <p>Certificates</p>
         </div>
-
     </div>
 
-    <!-- ================= CONTENT ================= -->
+    <!-- COURSE -->
+    <div class="section-title">📚 My Individual Courses</div>
 
-    <div class="content">
+    <div class="course-card">
+        <h4>Microsoft Excel with A.I Masterclass (Self Learning)</h4>
+        <p>Total Exams: 1</p>
+        <button onclick="window.location.href='/studentexam_view'">
+    View Exams →
+</button>
+    </div>
 
-        <!-- LEFT SECTION -->
+   
 
-        <div class="box">
+    <!-- CERTIFICATE -->
+    <div class="section-title">🏅 My Certificates</div>
 
-            <h3>My Learning Courses</h3>
-
-            <div class="course">
-
-                <div>
-                    <h4>Python Programming</h4>
-                    <p>Next Live Class : Tomorrow 6 PM</p>
-                </div>
-
-                <span class="status">Active</span>
-
-            </div>
-
-            <div class="course">
-
-                <div>
-                    <h4>Web Development</h4>
-                    <p>Assignment Deadline : Friday</p>
-                </div>
-
-                <span class="status">Ongoing</span>
-
-            </div>
-
-            <div class="course">
-
-                <div>
-                    <h4>Artificial Intelligence</h4>
-                    <p>AI Practical Session : Sunday</p>
-                </div>
-
-                <span class="status">Live</span>
-
-            </div>
-
-            <div class="course">
-
-                <div>
-                    <h4>Data Science Basics</h4>
-                    <p>Quiz Available Now</p>
-                </div>
-
-                <span class="status">New</span>
-
-            </div>
-
-        </div>
-
-        <!-- RIGHT SECTION -->
-
-        <div class="box">
-
-            <h3>Recent Activities</h3>
-
-            <div class="activity">
-
-                <div class="activity-icon">✅</div>
-
-                <div>
-                    <p>Exam submitted successfully</p>
-                    <small>2 Hours Ago</small>
-                </div>
-
-            </div>
-
-            <div class="activity">
-
-                <div class="activity-icon">📚</div>
-
-                <div>
-                    <p>New course enrolled</p>
-                    <small>Yesterday</small>
-                </div>
-
-            </div>
-
-            <div class="activity">
-
-                <div class="activity-icon">🏆</div>
-
-                <div>
-                    <p>Certificate downloaded</p>
-                    <small>2 Days Ago</small>
-                </div>
-
-            </div>
-
-            <div class="activity">
-
-                <div class="activity-icon">📝</div>
-
-                <div>
-                    <p>Assignment uploaded</p>
-                    <small>3 Days Ago</small>
-                </div>
-
-            </div>
-
-            <button class="quick-btn">
-                Start Learning
-            </button>
-
-        </div>
-
+    <div class="cert">
+        <b>Microsoft Excel with A.I Masterclass</b><br>
+        <small>Issued to Nilimesh Roy • 22 May 2026</small><br>
+        <button onclick="window.location.href='/cirtificatepage'"
+style="
+margin-top:10px;
+background:#1e90ff;
+border:none;
+color:#fff;
+padding:8px 12px;
+border-radius:8px;
+cursor:pointer;
+">
+    View
+</button>
     </div>
 
 </div>
-
-<!-- ================= JAVASCRIPT ================= -->
 
 <script>
+// dynamic user data (future backend replace)
+const user = {
+    name:"Nilimesh Roy",
+    email:"nilimeshroy77@gmail.com",
+    total:1,
+    attempted:1,
+    passed:1,
+    cert:1
+};
 
-function toggleMenu(){
-    document.getElementById("sidebar").classList.toggle("active");
+document.getElementById("name").innerText = user.name;
+document.getElementById("email").innerText = user.email;
+document.getElementById("avatar").innerText = user.name[0];
+
+document.getElementById("total").innerText = user.total;
+document.getElementById("attempted").innerText = user.attempted;
+document.getElementById("passed").innerText = user.passed;
+document.getElementById("cert").innerText = user.cert;
+
+function openExam(){
+    document.getElementById("examPanel").style.display="block";
 }
 
+function startExam(){
+    alert("Exam Started!");
+}
 </script>
 
 </body>
