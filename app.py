@@ -126,7 +126,6 @@ def user():
 # Register page
 @app.route('/register')
 def register():
-
     user = session.get('selected_user')
     return render_template(
         'register.html',
