@@ -29,6 +29,9 @@ def exam_list():
 
 @exam_bp.route('/save_exam', methods=['POST'])
 def save_exam():
+    created_by = session.get('user').get('UserId')
+
+    print("Created By:", created_by )
 
     data = (
         request.form['title'],
@@ -42,7 +45,7 @@ def save_exam():
         int(request.form.get('shuffle_options', 0)),
         int(request.form.get('allow_review', 1)),
         int(request.form.get('is_published', 0)),
-        14
+        created_by
     )
     create_exam(data)
     return redirect(url_for('exam.exam_list'))

@@ -12,8 +12,6 @@ from config import get_db_connection
 from controller.exam_controller import exam_bp
 from controller.question_controller import question_bp   
 from controller.user_controller import user_bp
-
-
 app = Flask(__name__)
 app.secret_key = "secret123"
 # Register Blueprints
@@ -28,11 +26,17 @@ cursor = db.cursor()
 
 @app.route('/')
 def home():
+       session.clear()
        return render_template('default.html')
 
 @app.route('/onlineattendance')
 def onlineattendance():
+       
        return render_template('index.html')
+@app.route('/emp_onlineattendance')
+def emp_onlineattendance():
+       
+       return render_template('emp_onlineattendance.html')
 
 @app.route('/studenthome')
 def studenthome():
@@ -71,7 +75,6 @@ def cirtificatepage():
 
 
 
-
 # ---------------- LOGIN ----------------
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -81,14 +84,16 @@ def login():
     error = None
     
     if request.method == 'POST':
-
         phone = request.form['phone']
         password = request.form['password']
-        result = client.service.GetUser(phone, password)
+        result = client.service.GetUser(phone,password)
+        print(result)
+              
         if result.Status == "Success":
             session['user'] = {
                     'name': result.Name,
-                    'UserId': result.Id
+                    'UserId': result.UserId,
+                    'UserType': result.Userrole
                 }
             return redirect(url_for('admin_dashboard'))
 
@@ -106,6 +111,7 @@ def user():
     wsdl = "https://technovas.in/WebService.asmx?WSDL"
     client = Client(wsdl)
     users = client.service.GetAllUsers()
+        
     all_users = []
 
     for user in users:
@@ -122,6 +128,32 @@ def user():
     })
     session['all_users'] = all_users
     return render_template('students.html', users=all_users)
+
+
+
+@app.route('/employee')
+def employee():
+    wsdl = "https://technovas.in/WebService.asmx?WSDL"
+    client = Client(wsdl)
+    users = client.service.GetEmployee()
+        
+    all_users = []
+
+    for user in users:
+
+      all_users.append({
+        "Id": user.Id,
+        "Name": user.Name,
+        "Email": user.Email,
+        "Userrole": user.Userrole,
+        "UserId": user.UserId
+        
+    })
+    session['all_users'] = all_users
+    return render_template('employee.html', users=all_users)
+
+
+
 
 # Register page
 @app.route('/register')
@@ -170,9 +202,7 @@ def select_user(id):
     users =session.get('all_users')
     selected_user = None
     for user in users:
-
         if user.get('Id') == id:
-
             selected_user = {
                 "Id": user.get('Id'),
                 "Name": user.get('Name'),
@@ -182,6 +212,28 @@ def select_user(id):
                 "ProgramCode": user.get('ProgramCode'),
                 "ProgramName": user.get('ProgramName'),
                 "Batch_Name": user.get('Batch_Name')
+            }
+
+            break
+
+    # Store in session
+    session['selected_user'] = selected_user
+    return redirect('/register')
+
+
+@app.route('/select_user_employee/<int:id>')
+def select_user_employee(id):
+    users =session.get('all_users')
+    selected_user = None
+    for user in users:
+        if user.get('Id') == id:
+            selected_user = {
+                "Id": user.get('Id'),
+                "Name": user.get('Name'),
+                "Email": user.get('Email'),
+                "Userrole": user.get('Userrole'),
+                "UserId": user.get('UserId')
+               
             }
 
             break
@@ -281,9 +333,7 @@ def autocomplete():
     wsdl = "https://technovas.in/WebService.asmx?WSDL"
     client = Client(wsdl)
     users = client.service.GetAllUsers()
-    
-    print(users)
-     # Extract suggestion values from API response
+    # Extract suggestion values from API response
     suggestions = [
     item["Name"]
     for item in users
@@ -291,14 +341,29 @@ def autocomplete():
 ]
     return jsonify(suggestions)
 
+
+@app.route('/autocompleteemployee')
+def autocompleteemployee():
+    search = request.args.get('q', '')
+    wsdl = "https://technovas.in/WebService.asmx?WSDL"
+    client = Client(wsdl)
+    users = client.service.GetEmployee()
+    # Extract suggestion values from API response
+    suggestions = [
+    item["Name"]
+    for item in users
+    if search.lower() in item["Name"].lower()
+]   
+    return jsonify(suggestions)
+
+
 @app.route('/get_user')
 def get_user():
 
-    selected_name = request.args.get('name', '')
+    selected_name = request.args.get('name','')
 
     wsdl = "https://technovas.in/WebService.asmx?WSDL"
     client = Client(wsdl)
-
     users = serialize_object(
         client.service.GetAllUsers()
     )
@@ -313,6 +378,33 @@ def get_user():
     )
 
     return jsonify(user)
+
+
+@app.route('/get_employee')
+def get_employee():
+
+    selected_name = request.args.get('name', '')
+
+    wsdl = "https://technovas.in/WebService.asmx?WSDL"
+    client = Client(wsdl)
+
+    users = serialize_object(
+        client.service.GetEmployee()
+    )
+
+    # Find selected record
+    user = next(
+        (
+            item for item in users
+            if item["Name"] == selected_name
+        ),
+        None
+    )
+
+    return jsonify(user)
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
