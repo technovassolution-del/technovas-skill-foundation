@@ -334,7 +334,6 @@ def start_exam(exam_id):
         return redirect(url_for('exam.student_login'))
 
     student_id = student.get('student_id')
-
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
