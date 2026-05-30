@@ -23,15 +23,15 @@ body{
     align-items:center;
     justify-content:center;
     padding:20px;
-    background:linear-gradient(135deg, #5f6676, #1e293b);
+     background:linear-gradient(135deg, #5f6676, #1e293b); 
     color:#e5e7eb;
 }
 
 /* CARD */
 .card{
     width:100%;
-    max-width:480px;
-    background:#111827;
+    max-width:700px;
+    /* background:#111827; */
     padding:30px;
     border-radius:18px;
     box-shadow:0 15px 40px rgba(0,0,0,0.4);
@@ -40,15 +40,16 @@ body{
 /* TITLE */
 h2{
     text-align:center;
-    margin-bottom:20px;
+    margin-bottom:22px;
     font-weight:600;
-    font-size:22px;
+    font-size:24px;
 }
 
 /* LABEL */
 label{
-    font-size:13px;
-    color:#9ca3af;
+    font-size:15px;
+    color:#ee0e0e;
+    font-weight: bold;
 }
 
 /* INPUT */
@@ -82,14 +83,112 @@ input:focus{
     flex:1;
 }
 
+/* STUDENT BOX */
+
+.student-box{
+    margin-top:20px;
+    background:#1f2937;
+    border-radius:14px;
+    padding:18px;
+    border:1px solid #374151;
+}
+
+.student-title{
+    font-size:16px;
+    font-weight:600;
+    margin-bottom:15px;
+    color:#60a5fa;
+}
+
+/* SEARCH */
+
+.search-box{
+    margin-bottom:15px;
+}
+
+.search-box input{
+    margin-bottom:0;
+}
+
+/* STUDENT LIST */
+
+.student-list{
+    max-height:250px;
+    overflow-y:auto;
+    padding-right:5px;
+}
+
+/* STUDENT ITEM */
+
+.student-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:#111827;
+    padding:12px 14px;
+    border-radius:10px;
+    margin-bottom:10px;
+    transition:0.3s;
+}
+
+.student-item:hover{
+    background:#0f172a;
+}
+
+/* LEFT */
+
+.student-left{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+/* AVATAR */
+
+.avatar{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:#2563eb;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+    color:white;
+    font-size:14px;
+}
+
+/* NAME */
+
+.student-name{
+    font-size:14px;
+    font-weight:500;
+}
+
+.student-id{
+    font-size:12px;
+    color:#9ca3af;
+}
+
+/* CHECKBOX */
+
+.checkbox{
+    width:22px;
+    height:22px;
+    accent-color:#2563eb;
+    cursor:pointer;
+}
+
 /* BUTTON GROUP */
+
 .btn-group{
     display:flex;
     gap:12px;
-    margin-top:10px;
+    margin-top:22px;
 }
 
 /* BUTTON */
+
 .btn{
     flex:1;
     padding:12px;
@@ -102,6 +201,7 @@ input:focus{
 }
 
 /* UPDATE */
+
 .update{
     background:linear-gradient(135deg,#3b82f6,#2563eb);
     color:white;
@@ -112,6 +212,7 @@ input:focus{
 }
 
 /* CANCEL */
+
 .cancel{
     background:#374151;
     color:#e5e7eb;
@@ -127,7 +228,6 @@ input:focus{
 
 /* RESPONSIVE */
 
-/* TABLET */
 @media(max-width:600px){
 
     .card{
@@ -140,7 +240,6 @@ input:focus{
 
 }
 
-/* MOBILE */
 @media(max-width:480px){
 
     body{
@@ -172,47 +271,188 @@ input:focus{
 
     <form method="POST">
 
+        <!-- TITLE -->
+
         <label>Title</label>
-        <input type="text" name="title" value="{{ exam.title }}" required>
+
+        <input type="text"
+        name="title"
+        value="{{exam.title }}"
+        required>
+
+        <!-- START -->
 
         <label>Start Time</label>
-        <input type="datetime-local" name="start_at"
-            value="{{ exam.start_at.strftime('%Y-%m-%dT%H:%M') if exam.start_at else '' }}"
-            required>
+
+        <input type="datetime-local"
+        name="start_at"
+        value="{{ exam.start_at.strftime('%Y-%m-%dT%H:%M') if exam.start_at else '' }}"
+        required>
+
+        <!-- END -->
 
         <label>End Time</label>
-        <input type="datetime-local" name="end_at"
-            value="{{ exam.end_at.strftime('%Y-%m-%dT%H:%M') if exam.end_at else '' }}"
-            required>
+
+        <input type="datetime-local"
+        name="end_at"
+        value="{{ exam.end_at.strftime('%Y-%m-%dT%H:%M') if exam.end_at else '' }}"
+        required>
+
+        <!-- ROW -->
 
         <div class="row">
 
             <div>
+
                 <label>Duration (min)</label>
-                <input type="number" name="duration" value="{{ exam.duration_minutes }}" required>
+
+                <input type="number"
+                name="duration"
+                value="{{ exam.duration_minutes }}"
+                required>
+
             </div>
 
             <div>
+
                 <label>Total Marks</label>
-                <input type="number" name="total_marks" value="{{ exam.total_marks }}" required>
+
+                <input type="number"
+                name="total_marks"
+                value="{{ exam.total_marks }}"
+                required>
+
             </div>
 
         </div>
 
+        <!-- PASS -->
+
         <label>Pass Marks</label>
-        <input type="number" name="pass_marks" value="{{ exam.pass_marks }}" required>
+
+        <input type="number"
+        name="pass_marks"
+        value="{{ exam.pass_marks }}"
+        required>
+
+        <!-- STUDENT SELECT -->
+
+        <div class="student-box">
+
+            <div class="student-title">
+                👨‍🎓 Select Students For This Exam
+            </div>
+
+            <!-- SEARCH -->
+
+            <div class="search-box">
+
+                <input type="text"
+                id="searchStudent"
+                placeholder="Search student name...">
+
+            </div>
+
+            <!-- STUDENT LIST -->
+
+            <div class="student-list"
+            id="studentList">
+
+                <!-- STUDENT -->
+
+                {% for student in students %}
+
+<div class="student-item">
+
+    <div class="student-left">
+
+        <div class="avatar">
+            {{ student.name[0] }}
+        </div>
+
+        <div>
+
+            <div class="student-name">
+                {{ student.name }}
+            </div>
+
+            <div class="student-id">
+                ID: {{ student.id }}
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- CHECKBOX -->
+
+    <input type="checkbox"
+    class="checkbox"
+    name="selected_students"
+    value="{{student.id }}"
+    {% if student.id in assigned_students %}
+    checked
+    {% endif %}
+    >
+
+</div>
+
+{% endfor %}
+
+            </div>
+
+        </div>
+
+        <!-- BUTTON -->
 
         <div class="btn-group">
 
-            <button type="submit" class="btn update">Update</button>
+            <button type="submit"
+            class="btn update">
 
-            <a href="/exam_list" class="btn cancel">Cancel</a>
+                Publish Exam
+
+            </button>
+
+            <a href="/exam_list"
+            class="btn cancel">
+
+                Cancel
+
+            </a>
 
         </div>
 
     </form>
 
 </div>
+
+<script>
+
+/* SEARCH FILTER */
+
+document
+.getElementById("searchStudent")
+.addEventListener("keyup", function(){
+
+    let value = this.value.toLowerCase();
+
+    let items = document.querySelectorAll(".student-item");
+
+    items.forEach(function(item){
+
+        let text = item.innerText.toLowerCase();
+
+        item.style.display =
+        text.includes(value)
+        ? "flex"
+        : "none";
+
+    });
+
+});
+
+</script>
 
 </body>
 </html>

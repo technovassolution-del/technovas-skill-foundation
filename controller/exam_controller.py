@@ -709,13 +709,51 @@ def submit_attempt(attempt_id):
 
         conn.close()
 
-# --------------------Edit exam------------------------  
+# -------------------- EDIT EXAM ------------------------
+
 @exam_bp.route('/edit_exam/<int:exam_id>', methods=['GET', 'POST'])
 def edit_exam(exam_id):
+
+    # DATABASE CONNECTION
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
+    # ---------------- EXAM DATA ----------------
+
+    cursor.execute(
+        "SELECT * FROM exams WHERE id=%s",
+        (exam_id,)
+    )
+
+    exam = cursor.fetchone()
+
+    # ---------------- ALL STUDENTS ----------------
+
+    cursor.execute(
+        "SELECT * FROM users"
+    )
+
+    students = cursor.fetchall()
+
+    # ---------------- ASSIGNED STUDENTS ----------------
+
+    cursor.execute("""
+        SELECT student_id
+        FROM student_exams
+        WHERE exam_id=%s
+    """, (exam_id,))
+
+    assigned_data = cursor.fetchall()
+
+    assigned_students = [
+        x['student_id']
+        for x in assigned_data
+    ]
+
+    # ---------------- UPDATE EXAM ----------------
+
     if request.method == 'POST':
+
         title = request.form['title']
         start_at = request.form['start_at']
         end_at = request.form['end_at']
@@ -723,25 +761,96 @@ def edit_exam(exam_id):
         total_marks = request.form['total_marks']
         pass_marks = request.form['pass_marks']
 
+        # CHECKBOX SELECTED STUDENTS
+
+        selected_students = request.form.getlist(
+            'selected_students'
+        )
+
+        # ---------------- UPDATE EXAM TABLE ----------------
+
         cursor.execute("""
-            UPDATE exams 
-            SET title=%s, start_at=%s, end_at=%s,
-                duration_minutes=%s, total_marks=%s, pass_marks=%s
+            UPDATE exams
+            SET title=%s,
+                start_at=%s,
+                end_at=%s,
+                duration_minutes=%s,
+                total_marks=%s,
+                pass_marks=%s
             WHERE id=%s
-        """, (title, start_at, end_at, duration, total_marks, pass_marks, exam_id))
+        """, (
+            title,
+            start_at,
+            end_at,
+            duration,
+            total_marks,
+            pass_marks,
+            exam_id
+        ))
+
+        # ---------------- DELETE OLD STUDENT EXAMS ----------------
+
+        cursor.execute("""
+            DELETE FROM student_exams
+            WHERE exam_id=%s
+        """, (exam_id,))
+
+        # ---------------- INSERT NEW STUDENT EXAMS ----------------
+
+        for student_id in selected_students:
+
+            cursor.execute("""
+                INSERT INTO student_exams
+                (student_id, exam_id)
+                VALUES (%s, %s)
+            """, (
+                student_id,
+                exam_id
+            ))
+
+        # ---------------- SAVE DATABASE ----------------
 
         conn.commit()
-        return redirect(url_for('exam.exam_list'))
 
-    # 🔹 GET request (load existing data)
-    cursor.execute("SELECT * FROM exams WHERE id=%s", (exam_id,))
-    exam = cursor.fetchone()
+        cursor.close()
+        conn.close()
 
-    return render_template('edit_exam.html', exam=exam)  
+        return redirect(
+            url_for('exam.exam_list')
+        )
 
+    # ---------------- RETURN TEMPLATE ----------------
 
+    return render_template(
+        'edit_exam.html',
+        exam=exam,
+        students=students,
+        assigned_students=assigned_students
+    )
+# Now your selected exam will show only for checked students.
 
+@exam_bp.route('/student_exams')
+def student_exams():
 
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    student_id = session['student_id']
+
+    cursor.execute("""
+        SELECT exams.*
+        FROM exams
+        JOIN student_exams
+        ON exams.id = student_exams.exam_id
+        WHERE student_exams.student_id=%s
+    """, (student_id,))
+
+    exams = cursor.fetchall()
+
+    return render_template(
+        'student_exams.html',
+        exams=exams
+    )
 
 
 
