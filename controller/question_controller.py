@@ -1,5 +1,5 @@
 
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, session, url_for
 from models.question_model import create_question, get_all_questions
 from models.exam_model import get_all_exams
 
@@ -16,6 +16,7 @@ def add_question():
 @question_bp.route('/save_question', methods=['POST'])
 def save_question():
     try:
+        created_by = session.get('user').get('UserId')
         exam_id = int(request.form.get("exam_id"))
         marks = request.form.get("marks", 1)
         negative_marks = request.form.get("negative_marks", 0)
@@ -26,7 +27,7 @@ def save_question():
             request.form['difficulty'],
             request.form['topic'],
             request.form['explanation'],
-            1
+            created_by
         )
 
         options = []
