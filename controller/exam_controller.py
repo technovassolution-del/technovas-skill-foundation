@@ -730,7 +730,7 @@ def edit_exam(exam_id):
     # ---------------- ALL STUDENTS ----------------
 
     cursor.execute(
-        "SELECT * FROM users"
+        "SELECT * FROM users where role='STUDENT'"
     )
 
     students = cursor.fetchall()
