@@ -103,22 +103,24 @@ document.getElementById('uploadForm').addEventListener('submit', async function(
 
     document.getElementById('status').innerText = "Uploading...";
 
-    try {
+    //try {
         const response = await fetch('/upload', {
             method: 'POST',
             body: formData
         });
 
-        const data = await response.json();
+        //const data = await response.json();
+        const text = await response.text();
 
         document.getElementById('status').innerText =
-            data.message || "Upload successful";
+            text || "Upload successful";
     }
-    catch(error) {
+    /*catch(error) {
         console.error("Error uploading image:", error);
         document.getElementById('status').innerText = error.message || "Upload failed";
     }
-});
+}*/
+);
 </script>
 
 </body>
