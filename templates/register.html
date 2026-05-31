@@ -36,8 +36,8 @@ function register() {
     let programCode = "{{ user.ProgramCode }}";
     let programName = "{{ user.ProgramName }}";
     let batchName = "{{ user.Batch_Name }}";
-    let enrollmentId = "{{ user.ID }}";
-
+    let enrollmentId = "{{user.Id }}";
+    console.log(userId,UserName,userrole,programCode,programName,batchName,enrollmentId);
     fetch('/register_face',{
         method:'POST',
         headers:{'Content-Type':'application/json'},

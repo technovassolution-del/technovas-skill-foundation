@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Exam Result</title>
+
+    <style>
+
+        body{
+            background:linear-gradient(
+                to right,
+                #4b2c7a,
+                #c94b7a
+            );
+
+            font-family:Arial,sans-serif;
+            color:white;
+            text-align:center;
+            margin:0;
+            padding:0;
+        }
+
+        .card{
+
+            background:#2c3440;
+
+            width:400px;
+
+            margin:100px auto;
+
+            padding:40px;
+
+            border-radius:15px;
+
+            box-shadow:0 0 20px rgba(0,0,0,0.4);
+        }
+
+        h2{
+            margin-bottom:20px;
+        }
+
+        p{
+            font-size:18px;
+            margin-bottom:30px;
+        }
+
+        .home-btn{
+
+            padding:12px 25px;
+
+            border:none;
+
+            border-radius:8px;
+
+            background:#16a34a;
+
+            color:white;
+
+            font-size:16px;
+
+            cursor:pointer;
+
+            transition:0.3s;
+        }
+
+        .home-btn:hover{
+            background:#15803d;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+    <h2>
+        🎉 Congratulations {{ student_name }}!
+    </h2>
+
+    <p>
+        You have successfully submitted this exam.
+    </p>
+
+    <!-- 🔥 CHANGE ROUTE HERE -->
+    <a href="{{ url_for('exam.student_dashboard') }}">
+
+        <button class="home-btn" type="button">
+
+            🏠 Go To Home
+
+        </button>
+
+    </a>
+
+</div>
+
+<script>
+
+    // 🔥 DISABLE BACK BUTTON
+    history.pushState(
+        null,
+        null,
+        location.href
+    );
+
+    window.onpopstate = function(){
+
+        location.href =
+        "{{ url_for('exam.student_dashboard') }}";
+    };
+
+</script>
+
+</body>
+</html>

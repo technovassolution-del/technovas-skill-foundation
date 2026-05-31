@@ -55,7 +55,6 @@ def save_exam():
 
 @exam_bp.route('/student-login', methods=['GET', 'POST'])
 def student_login():
-
     wsdl = "https://technovas.in/WebService.asmx?WSDL"
     client = Client(wsdl)
     error = None
@@ -67,7 +66,7 @@ def student_login():
         if result.Status == "Success":
             session['user'] = {
                     'name': result.Name,
-                    'UserId': result.Id
+                    'StudentId': result.UserId
                 }
 
             return redirect(url_for('exam.student_portal'))
@@ -93,16 +92,20 @@ def student_portal():
 @exam_bp.route('/student_dashboard')
 def student_dashboard():
     if session.get('user'):
-      student_id = session['user']['UserId']
+      student_id = session['user']['StudentId']
       print("Student ID:", student_id)
     else:
         return redirect(url_for('exam.student_login'))
     
     # assign exams
-    assign_exams_to_student(student_id)
+    #assign_exams_to_student(student_id)
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
+        
+    
+   
+    
     cursor.execute("""
         SELECT e.*,
         CASE 
@@ -111,8 +114,8 @@ def student_dashboard():
             ELSE 'EXPIRED'
         END AS state
         FROM exams e
-        JOIN student_exams se ON e.id = se.exam_id
-        WHERE se.student_id = %s
+        JOIN student_exams se ON e.id = se.exam_id Join users u1 on se.student_id=u1.enrollmentid
+        WHERE u1.userid = %s
     """, (student_id,))
 
     exams = cursor.fetchall()
@@ -329,18 +332,20 @@ def exam():
 @exam_bp.route('/start_exam/<int:exam_id>')
 def start_exam(exam_id):
 
-    student = session.get('student')
-    if not student:
+    if session.get('user'):
+      student_id = session['user']['StudentId']
+      print("Student ID:", student_id)
+    else:
         return redirect(url_for('exam.student_login'))
 
-    student_id = student.get('student_id')
+    #student_id = student.get('student_id')
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("""
         SELECT e.* FROM exams e
-        JOIN student_exams se ON e.id = se.exam_id
-        WHERE e.id = %s AND se.student_id = %s
+        JOIN student_exams se ON e.id = se.exam_id Join users u1 on se.student_id=u1.enrollmentid
+        WHERE e.id = %s AND u1.userid = %s
     """, (exam_id, student_id))
 
     exam = cursor.fetchone()
@@ -379,7 +384,7 @@ def start_exam(exam_id):
 
             <br><br>
 
-            <a href="/student_dashboard">
+            <a href="/student-portal">
                 <button style='
                     padding:12px 25px;
                     background:#2563eb;
@@ -436,8 +441,7 @@ def start_exam(exam_id):
     session['exam_id'] = exam_id
     session['answers'] = {}
     session['end_time'] = end_time.strftime('%Y-%m-%d %H:%M:%S')
-    print("✅ Exam Started")
-    print("Attempt ID:", attempt_id)
+   
     return redirect(url_for('exam.exam'))
 
 
@@ -555,7 +559,7 @@ def result_processing():
 
         results = cursor.fetchall()
 
-        print(results)
+       
 
     except Exception as e:
 

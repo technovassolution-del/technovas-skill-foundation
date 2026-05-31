@@ -23,7 +23,6 @@ db=get_db_connection()
 cursor = db.cursor()
 
 # Home page
-
 @app.route('/')
 def home():
        session.clear()
@@ -45,7 +44,6 @@ def studenthome():
 @app.route('/studentlogin')
 def studentlogin():
        return render_template('student_login.html')
-
 
 @app.route('/admin_dashboard')
 def admin_dashboard():
@@ -111,7 +109,6 @@ def user():
     wsdl = "https://technovas.in/WebService.asmx?WSDL"
     client = Client(wsdl)
     users = client.service.GetAllUsers()
-        
     all_users = []
 
     for user in users:
@@ -175,6 +172,7 @@ def register_face():
     programName = data['programName']
     batchName = data['batchName']
     enrollmentId=data['enrollmentId']
+    
     image_data = image_data.split(",")[1]
     image_bytes = base64.b64decode(image_data)
     np_arr = np.frombuffer(image_bytes, np.uint8)

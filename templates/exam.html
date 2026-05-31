@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Online Exam</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#0f172a,#1e3a8a,#581c87);
+    color:white;
+}
+
+/* LAYOUT */
+.main{
+    display:flex;
+}
+
+/* LEFT EXAM */
+.container{
+    width:70%;
+    padding:40px;
+}
+
+/* RIGHT PANEL */
+.palette{
+    width:30%;
+    height:100vh;
+    background:#6189b0;
+    color:#1e293b;
+    padding:25px;
+    overflow-y:auto;
+}
+
+/* TIMER */
+.timer-box{
+    background:#020617;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:20px;
+    border:2px solid #facc15;
+}
+
+#timer{
+    font-size:1.8em;
+    color:#facc15;
+}
+
+/* QUESTION */
+h3{
+    margin-bottom:15px;
+}
+
+.option{
+    display:block;
+    background:#334155;
+    padding:15px;
+    margin:10px 0;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+input[type="radio"]{
+    margin-right:15px;
+}
+
+/* BUTTONS */
+.buttons{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+}
+
+button{
+    flex:1;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    color:white;
+    cursor:pointer;
+}
+
+.prev{
+    background:#475569;
+}
+
+.next{
+    background:#2563eb;
+}
+
+.review-btn{
+    background:#f59e0b;
+}
+
+.submit{
+    background:#16a34a;
+}
+
+/* PALETTE */
+.palette h3{
+    margin-bottom:15px;
+}
+
+/* LEGEND */
+.legend div{
+    margin:8px 0;
+}
+
+/* GRID */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:10px;
+    margin-top:15px;
+    color: #16a34a;
+}
+
+.qbox{
+    padding:10px;
+    text-align:center;
+    border-radius:8px;
+    background:#e2e8f0;
+    color:black;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+/* ATTEMPTED */
+.qbox.attempted{
+    background:#2563eb;
+    color:white;
+}
+
+/* REVIEW */
+.qbox.review{
+    background:#f59e0b;
+    color:white;
+}
+
+/* CURRENT */
+.qbox.current{
+    border:3px solid black;
+}
+
+/* SUBMIT */
+.submit-btn{
+    margin-top:20px;
+    width:100%;
+    padding:15px;
+    background:#16a34a;
+    color:white;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="main">
+
+    <!-- LEFT -->
+    <div class="container">
+
+        <div class="timer-box">
+            ⏳ Time Left:
+            <span id="timer">Loading...</span>
+        </div>
+
+        <h3>
+            Question {{ index+1 }} / {{ total }}
+        </h3>
+
+        <form id="examForm" method="POST">
+
+            <p>{{ question.question_text }}</p>
+
+            {% for opt in question.options %}
+            <label class="option">
+
+                <input
+                    type="radio"
+                    name="answer"
+                    value="{{ opt.id }}"
+                    {% if saved == opt.id|string %}checked{% endif %}
+                >
+
+                {{ opt.text }}
+
+            </label>
+            {% endfor %}
+
+            <input
+                type="hidden"
+                name="question_id"
+                value="{{ question.id }}"
+            >
+
+            <div class="buttons">
+
+                {% if index > 0 %}
+                <button
+                    type="submit"
+                    name="action"
+                    value="prev"
+                    class="prev"
+                >
+                    ⬅️ Previous
+                </button>
+                {% endif %}
+
+                <button
+                    type="submit"
+                    name="action"
+                    value="review"
+                    class="review-btn"
+                >
+                    ⭐ Mark & Review
+                </button>
+
+                {% if index+1 == total %}
+
+                <button
+                    type="submit"
+                    name="action"
+                    value="submit"
+                    class="submit"
+                >
+                    Submit
+                </button>
+
+                {% else %}
+
+                <button
+                    type="submit"
+                    name="action"
+                    value="next"
+                    class="next"
+                >
+                    Next ➡️
+                </button>
+
+                {% endif %}
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- RIGHT -->
+    <div class="palette">
+
+        <h3>📋 Question Palette</h3>
+
+        <div style="display:flex; gap:10px; margin-bottom:10px;color: #020617;">
+
+            <button id="gridView">
+                🔲 Grid View
+            </button>
+
+            <button id="listView">
+                📋 List View
+            </button>
+
+        </div>
+
+        <div class="legend">
+
+            <div>
+                🟧 Marked for Review:
+                <b id="countReview">0</b>
+            </div>
+
+            <div>
+                🟦 Attempted:
+                <b id="countAttempted">0</b>
+            </div>
+
+            <div>
+                ⬜ Unattempted:
+                <b id="countUnattempted">0</b>
+            </div>
+
+        </div>
+
+        <div id="qList" class="grid"></div>
+
+        <button
+            class="submit-btn"
+            onclick="submitExam()"
+        >
+            🚀 Submit Test
+        </button>
+
+    </div>
+
+</div>
+
+<!-- DATA -->
+<script>
+
+window.examData = {{ {
+    "total": total,
+    "questionIds": questionIds,
+    "answersData": answersData,
+    "endTime": end_time,
+    "attemptId": session['attempt_id']
+} | tojson | safe }};
+
+</script>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    console.log("✅ JS Loaded");
+
+    if(!window.examData){
+        console.log("❌ examData missing");
+        return;
+    }
+
+    let d = window.examData;
+
+    let total = d.total || 0;
+
+    let ids = d.questionIds || [];
+
+    // ================= UNIQUE EXAM KEY =================
+
+    let storageKey =
+        "exam_" + d.attemptId;
+
+    // ================= RESET NEW EXAM =================
+
+    if(
+        sessionStorage.getItem("current_exam")
+        !== storageKey
+    ){
+
+        sessionStorage.clear();
+
+        sessionStorage.setItem(
+            "current_exam",
+            storageKey
+        );
+    }
+
+    // ================= LOAD STORAGE =================
+
+    let answers = JSON.parse(
+        sessionStorage.getItem(
+            storageKey + "_answers"
+        ) || "{}"
+    );
+
+    let review = JSON.parse(
+        sessionStorage.getItem(
+            storageKey + "_review"
+        ) || "{}"
+    );
+
+    // ================= LOAD DB DATA =================
+
+    if(d.answersData){
+
+        d.answersData.forEach(a => {
+
+            let qid = a.question_id;
+
+            if(a.answered == 1){
+
+                answers[qid] = true;
+            }
+
+            if(a.marked_review == 1){
+
+                review[qid] = true;
+            }
+        });
+    }
+
+    // ================= SAVE =================
+
+    function saveState(){
+
+        sessionStorage.setItem(
+            storageKey + "_answers",
+            JSON.stringify(answers)
+        );
+
+        sessionStorage.setItem(
+            storageKey + "_review",
+            JSON.stringify(review)
+        );
+    }
+
+    // ================= TIMER =================
+
+    const endTime = new Date(
+        "{{ end_time }}".replace(' ','T')
+    ).getTime();
+
+    const timer = setInterval(function(){
+
+        const now = new Date().getTime();
+        const distance = endTime - now;
+        if(distance <= 0){
+            clearInterval(timer);
+            document.getElementById(
+                "timer"
+            ).innerHTML = "Time Over";
+
+            submitExam();
+
+            return;
+        }
+
+        const hours = Math.floor(
+            distance / (1000 * 60 * 60)
+        );
+
+        const minutes = Math.floor(
+            (distance % (1000 * 60 * 60))
+            / (1000 * 60)
+        );
+
+        const seconds = Math.floor(
+            (distance % (1000 * 60))
+            / 1000
+        );
+
+        document.getElementById(
+            "timer"
+        ).innerHTML =
+
+            hours + "h " +
+            minutes + "m " +
+            seconds + "s";
+
+    },1000);
+
+    // ================= COUNTS =================
+
+    function updateCounts(){
+
+        let attempted =
+            Object.keys(answers).length;
+
+        let reviewCount =
+            Object.keys(review).length;
+
+        let unattempted =
+            total - attempted;
+
+        document.getElementById(
+            "countAttempted"
+        ).innerText = attempted;
+
+        document.getElementById(
+            "countReview"
+        ).innerText = reviewCount;
+
+        document.getElementById(
+            "countUnattempted"
+        ).innerText = unattempted;
+    }
+
+    // ================= RENDER =================
+
+    function render(){
+
+        let list =
+            document.getElementById("qList");
+
+        list.innerHTML = "";
+
+        for(let i=0;i<total;i++){
+
+            let qid = ids[i];
+
+            let div =
+                document.createElement("div");
+
+            div.className = "qbox";
+
+            div.innerText = i + 1;
+
+            // REVIEW
+            if(review[qid]){
+
+                div.classList.add("review");
+            }
+
+            // ATTEMPTED
+            else if(answers[qid]){
+
+                div.classList.add("attempted");
+            }
+
+            // CURRENT
+            let currentIndex = {{ index }};
+
+            if(i === currentIndex){
+
+                div.classList.add("current");
+            }
+
+            // OPEN QUESTION
+            div.onclick = ()=>{
+
+                location.href = "?q=" + i;
+            };
+
+            list.appendChild(div);
+        }
+
+        updateCounts();
+
+        saveState();
+    }
+
+    // ================= ANSWER SELECT =================
+
+    document.querySelectorAll(
+        "input[name='answer']"
+    ).forEach(radio => {
+
+        radio.addEventListener(
+            "change",
+            function(){
+
+                let qid =
+                    document.querySelector(
+                        "input[name='question_id']"
+                    ).value;
+
+                answers[qid] = true;
+
+                delete review[qid];
+
+                saveState();
+
+                render();
+            }
+        );
+     });
+
+    // ================= REVIEW =================
+
+    let reviewBtn =
+        document.querySelector(".review-btn");
+
+    if(reviewBtn){
+
+        reviewBtn.addEventListener(
+            "click",
+            function(){
+
+                let qid =
+                    document.querySelector(
+                        "input[name='question_id']"
+                    ).value;
+
+                review[qid] = true;
+
+                delete answers[qid];
+
+                saveState();
+
+                render();
+            }
+        );
+    }
+
+    // ================= VIEW =================
+
+    let gridBtn =
+        document.getElementById("gridView");
+
+    let listBtn =
+        document.getElementById("listView");
+
+    gridBtn.addEventListener(
+        "click",
+        function(){
+
+            let qList =
+                document.getElementById("qList");
+
+            qList.classList.remove("list-mode");
+
+            qList.classList.add("grid");
+        }
+    );
+
+    listBtn.addEventListener(
+        "click",
+        function(){
+
+            let qList =
+                document.getElementById("qList");
+
+            qList.classList.remove("grid");
+
+            qList.classList.add("list-mode");
+        }
+    );
+
+    // ================= FIRST LOAD =================
+
+    render();
+
+ });
+
+// ================= SUBMIT =================
+
+function submitExam(){
+
+    let ok = confirm(
+        "Are you sure you want to submit?"
+    );
+
+    if(!ok){
+        return;
+    }
+
+    sessionStorage.clear();
+
+    let form =
+        document.getElementById("examForm");
+
+    let input =
+        document.createElement("input");
+
+    input.type = "hidden";
+
+    input.name = "action";
+
+    input.value = "submit";
+
+    form.appendChild(input);
+
+    form.submit();
+}
+
+</script>
+
+</body>
+</html>
