@@ -1,3 +1,4 @@
+import os
 import xml
 from flask import Flask, Response, render_template, request, jsonify,redirect,url_for,session
 import mysql.connector
@@ -21,6 +22,8 @@ app.register_blueprint(question_bp)
 app.register_blueprint(user_bp) 
 db=get_db_connection()
 cursor = db.cursor()
+
+
 
 # Home page
 @app.route('/')
@@ -402,6 +405,26 @@ def get_employee():
     return jsonify(user)
 
 
+
+#Upload Offline Page Scan
+UPLOAD_FOLDER = "uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+@app.route("/scansheet")
+def scansheet():
+    return render_template("scanservice.html")
+
+@app.route("/upload", methods=["POST"])
+def upload():
+    file = request.files["image"]
+
+    filepath = os.path.join(UPLOAD_FOLDER, file.filename)
+    file.save(filepath)
+
+    return jsonify({
+        "message": "Image uploaded successfully",
+        "file": file.filename
+    })
 
 
 if __name__ == '__main__':
