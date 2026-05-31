@@ -115,6 +115,7 @@ document.getElementById('uploadForm').addEventListener('submit', async function(
             data.message || "Upload successful";
     }
     catch(error) {
+        console.error("Error uploading image:", error);
         document.getElementById('status').innerText =
             "Upload failed";
     }
