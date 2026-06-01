@@ -78,11 +78,11 @@ def student_login():
 
 @exam_bp.route('/student-portal')
 def student_portal():
-    print("shimul"+ str(session['user']))
-    # CHECK LOGIN (FIXED)
-    
-    student_id = session['user']['StudentId']
-    print("Student ID:", student_id)
+    if session.get('user'):
+      student_id = session['user']['StudentId']
+      print("User ID:", student_id)
+    else:
+        return redirect(url_for('exam.student_login'))
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
       # Get enrollment id for the student
