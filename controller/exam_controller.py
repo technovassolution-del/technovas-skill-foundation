@@ -80,32 +80,115 @@ def student_login():
 def student_portal():
     print("shimul"+ str(session['user']))
     # CHECK LOGIN (FIXED)
-    if session.get('user'):
-         return render_template(
-        'student_portal.html',
-         student_name=session['user']['name']
-    )
+    
+    student_id = session['user']['StudentId']
+    print("Student ID:", student_id)
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+      # Get enrollment id for the student
+
+     # Student Info
+    cursor.execute("""
+        SELECT *
+        FROM users
+        WHERE userid=%s and is_active=%s
+    """, (student_id,1))
+
+    student = cursor.fetchone()
+    print("Student Info:", student)
+    enrollmentid=student['enrollmentid']
         
-    return redirect(url_for('exam.student_login'))
+     # Total Assigned Exams
+    cursor.execute("""
+        SELECT COUNT(*) AS total_exam
+        FROM student_exams
+        WHERE student_id=%s
+    """, (enrollmentid,))
+
+    total_exam = cursor.fetchone()['total_exam']
+
+    # Attempted Exams
+    cursor.execute("""
+        SELECT COUNT(*) AS attempted
+        FROM attempts
+        WHERE student_id=%s
+        AND status='SUBMITTED'
+    """, (enrollmentid,))
+
+    attempted = cursor.fetchone()['attempted']
+
+    # Passed Exams
+    cursor.execute("""
+        SELECT COUNT(*) AS passed
+        FROM results r
+        INNER JOIN attempts a
+            ON r.attempt_id = a.id
+        WHERE a.student_id=%s
+        AND r.result_status='PASS'
+    """, (enrollmentid,))
+
+    passed = cursor.fetchone()['passed']
+
+    # Certificates
+    certificates = passed
+
+    # Student Assigned Exams + Status
+    cursor.execute("""
+        SELECT
+            e.id,
+            e.title,
+            e.description,
+            e.total_marks,
+            e.pass_marks,
+            e.duration_minutes,
+
+            CASE
+                WHEN a.id IS NULL THEN 0
+                ELSE 1
+            END AS attempted
+
+        FROM exams e
+
+        INNER JOIN student_exams se
+            ON e.id = se.exam_id
+
+        LEFT JOIN attempts a
+            ON e.id = a.exam_id
+            AND a.student_id = %s
+
+        WHERE se.student_id = %s
+
+        ORDER BY e.id DESC
+    """, (enrollmentid, enrollmentid))
+
+    courses = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return render_template(
+        'student_portal.html',
+        student=student,
+        total_exam=total_exam,
+        attempted=attempted,
+        passed=passed,
+        certificates=certificates,
+        courses=courses
+    )
 
 # ----------------------------student_dashboard-------------
 @exam_bp.route('/student_dashboard')
 def student_dashboard():
     if session.get('user'):
       student_id = session['user']['StudentId']
-      print("Student ID:", student_id)
+      print("User ID:", student_id)
     else:
         return redirect(url_for('exam.student_login'))
     
     # assign exams
-    #assign_exams_to_student(student_id)
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
-        
-    
-   
-    
     cursor.execute("""
         SELECT e.*,
         CASE 
@@ -114,8 +197,8 @@ def student_dashboard():
             ELSE 'EXPIRED'
         END AS state
         FROM exams e
-        JOIN student_exams se ON e.id = se.exam_id Join users u1 on se.student_id=u1.enrollmentid
-        WHERE u1.userid = %s
+        JOIN student_exams se ON e.id = se.exam_id
+        WHERE se.student_id = %s
     """, (student_id,))
 
     exams = cursor.fetchall()
@@ -123,7 +206,7 @@ def student_dashboard():
     cursor.close()
     conn.close()
 
-    #FILTER: remove expired exams (Python level extra safety)
+    # ✅ FILTER: remove expired exams (Python level extra safety)
     active_exams = []
     now = datetime.now()
 

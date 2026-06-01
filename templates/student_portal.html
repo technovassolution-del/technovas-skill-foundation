@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Skill Course Dashboard</title>
+<title>student dashboard</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
@@ -209,6 +209,92 @@ body{
     opacity:0.7;
 }
 
+.course-table{
+    width:100%;
+    background:#fff;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 10px 25px rgba(0,0,0,0.08);
+}
+
+.course-header,
+.course-row{
+    display:grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+    align-items:center;
+    padding:18px 20px;
+}
+
+.course-header{
+    background:#1f2937;
+    color:#fff;
+    font-weight:600;
+}
+
+.course-row{
+    border-bottom:1px solid #eee;
+    background:#fff;
+}
+
+.course-row:last-child{
+    border-bottom:none;
+}
+
+.course-row:hover{
+    background:#f8fafc;
+}
+
+.status{
+    padding:6px 12px;
+    border-radius:30px;
+    font-size:13px;
+    font-weight:600;
+}
+
+.pending{
+    background:#fff3cd;
+    color:#856404;
+}
+
+.passed{
+    background:#d4edda;
+    color:#155724;
+}
+
+.failed{
+    background:#f8d7da;
+    color:#721c24;
+}
+
+.start-btn{
+    display:inline-block;
+    padding:10px 18px;
+    background:#2563eb;
+    color:#fff;
+    text-decoration:none;
+    border-radius:8px;
+    font-weight:600;
+    transition:.3s;
+}
+
+.start-btn:hover{
+    background:#1d4ed8;
+}
+
+.view-btn{
+    display:inline-block;
+    padding:10px 18px;
+    background:#16a34a;
+    color:white;
+    text-decoration:none;
+    border-radius:8px;
+    font-weight:600;
+}
+
+.view-btn:hover{
+    opacity:.9;
+}
+
 /* RESPONSIVE */
 @media(max-width:900px){
     .stats{
@@ -245,101 +331,138 @@ body{
 <div class="container">
 
     <!-- PROFILE -->
-    <div class="profile-card">
-        <div class="avatar" id="avatar">N</div>
-        <div class="profile-info">
-            <h3 id="name">Nilimesh Roy</h3>
-            <p id="email">nilimeshroy77@gmail.com</p>
-        </div>
-    </div>
+  <div class="profile-card">
 
+    <div class="avatar">
+    {{student.name}}
+</div>
+
+<div class="profile-info">
+    <h3>Hello,{{ student.name }}👋</h3>
+    <p>{{ student.enrollmentid }}</p>
+    <p>
+            Welcome to your student dashboard
+        </p>
+</div>
+
+</div>
   
 
     <!-- STATS -->
     <div class="stats">
-        <div class="stat-box">
-            <h2 id="total">1</h2>
-            <p>Total Exams</p>
-        </div>
 
-        <div class="stat-box">
-            <h2 id="attempted">1</h2>
-            <p>Attempted</p>
-        </div>
-
-        <div class="stat-box">
-            <h2 id="passed">1</h2>
-            <p>Passed</p>
-        </div>
-
-        <div class="stat-box">
-            <h2 id="cert">1</h2>
-            <p>Certificates</p>
-        </div>
+    <div class="stat-box">
+        <h2>{{ total_exam }}</h2>
+        <p>Total Exams</p>
     </div>
 
-    <!-- COURSE -->
-    <div class="section-title">📚 My Individual Courses</div>
-
-    <div class="course-card">
-        <h4>Microsoft Excel with A.I Masterclass (Self Learning)</h4>
-        <p>Total Exams: 1</p>
-        <button onclick="window.location.href='/studentexam_view'">
-    View Exams →
-</button>
+    <div class="stat-box">
+        <h2>{{ attempted }}</h2>
+        <p>Attempted</p>
     </div>
 
-   
+    <div class="stat-box">
+        <h2>{{ passed }}</h2>
+        <p>Passed</p>
+    </div>
 
-    <!-- CERTIFICATE -->
-    <div class="section-title">🏅 My Certificates</div>
-
-    <div class="cert">
-        <b>Microsoft Excel with A.I Masterclass</b><br>
-        <small>Issued to Nilimesh Roy • 22 May 2026</small><br>
-        <button onclick="window.location.href='/cirtificatepage'"
-style="
-margin-top:10px;
-background:#1e90ff;
-border:none;
-color:#fff;
-padding:8px 12px;
-border-radius:8px;
-cursor:pointer;
-">
-    View
-</button>
+    <div class="stat-box">
+        <h2>{{ certificates }}</h2>
+        <p>Certificates</p>
     </div>
 
 </div>
 
-<script>
-// dynamic user data (future backend replace)
-const user = {
-    name:"Nilimesh Roy",
-    email:"nilimeshroy77@gmail.com",
-    total:1,
-    attempted:1,
-    passed:1,
-    cert:1
-};
+<div class="section-title">
+    📚 My Individual Courses
+</div>
 
-document.getElementById("name").innerText = user.name;
-document.getElementById("email").innerText = user.email;
-document.getElementById("avatar").innerText = user.name[0];
-document.getElementById("total").innerText = user.total;
-document.getElementById("attempted").innerText = user.attempted;
-document.getElementById("passed").innerText = user.passed;
-document.getElementById("cert").innerText = user.cert;
+{% if courses %}
 
-function openExam(){
-    document.getElementById("examPanel").style.display="block";
-}
+<div class="course-table">
 
-function startExam(){
-    alert("Exam Started!");
-}
-</script>
+    <div class="course-header">
+        <div>Course Name</div>
+        <div>Total Marks</div>
+        <div>Pass Marks</div>
+        <div>Status</div>
+        <div>Action</div>
+    </div>
+
+    {% for course in courses %}
+
+    <div class="course-row">
+
+        <div>{{ course.title }}</div>
+
+        <div>{{ course.total_marks }}</div>
+
+        <div>{{ course.pass_marks }}</div>
+
+        <div>
+            {% if course.attempted %}
+                <span class="status passed">Completed</span>
+            {% else %}
+                <span class="status pending">Not Started</span>
+            {% endif %}
+        </div>
+
+        <div>
+
+            {% if course.attempted %}
+
+            <a href="{{ url_for('exam.student_dashboard', exam_id=course.id) }}"
+               class="view-btn">
+                View Exam
+            </a>
+
+            {% else %}
+
+            <a href="{{ url_for('exam.student_dashboard', exam_id=course.id) }}"
+               class="start-btn">
+                Start Exam
+            </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% else %}
+
+<div class="course-card">
+    <h4>No Exams Assigned Yet</h4>
+    <p>Please contact administrator.</p>
+</div>
+
+{% endif %}
+    <!-- CERTIFICATE -->
+   {% if certificates > 0 %}
+
+<div class="cert">
+
+    <b>{{ student.name }}</b><br>
+
+    <small>
+        Certificate Available
+    </small><br>
+
+    <button
+    onclick="window.location.href='/cirtificatepage'">
+
+        View
+
+    </button>
+
+</div>
+
+{% endif %}
+
 
 </body>
 </html>

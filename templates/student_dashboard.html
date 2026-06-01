@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -207,7 +208,7 @@ button:disabled{
     <h1>Dashboard</h1>
 
     <p>
-        Welcome {{ session.user.name }}
+        Welcome Nilimesh Roy
     </p>
 
 </div>
@@ -217,66 +218,11 @@ button:disabled{
 
     <div class="grid">
 
-    {% for exam in exams %}
-
-    <div class="card">
-
-        <!-- STATUS -->
-        {% if exam.state == 'LIVE' %}
-            <span class="badge live">LIVE</span>
-
-        {% elif exam.state == 'UPCOMING' %}
-            <span class="badge upcoming">UPCOMING</span>
-
-        {% else %}
-            <span class="badge expired">EXPIRED</span>
-
-        {% endif %}
-
-        <!-- TITLE -->
-        <h3>{{ exam.title }}</h3>
-
-        <!-- DESC -->
-        <p>{{ exam.description }}</p>
-
-        <!-- TIME -->
-        <div class="time">
-            ⏰ {{ exam.start_at }} <br>
-            🛑 {{ exam.end_at }}
-        </div>
-
-        <!-- ACTION -->
-        {% if exam.state == 'LIVE' %}
-
-            <a href="{{ url_for('exam.start_exam', exam_id=exam.id) }}">
-
-                <button>
-                    Start Exam
-                </button>
-
-            </a>
-
-        {% elif exam.state == 'UPCOMING' %}
-
-            <button disabled>
-                Not Started
-            </button>
-
-        {% else %}
-
-            <button disabled>
-                Expired
-            </button>
-
-        {% endif %}
-
-    </div>
-
-    {% else %}
+    
 
     <p>No exams assigned</p>
 
-    {% endfor %}
+    
 
     </div>
 
