@@ -95,7 +95,7 @@ def student_portal():
     """, (student_id,1))
 
     student = cursor.fetchone()
-    print("Student Info:", student)
+    
     enrollmentid=student['enrollmentid']
         
      # Total Assigned Exams
