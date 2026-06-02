@@ -97,6 +97,7 @@ def student_portal():
     student = cursor.fetchone()
     
     enrollmentid=student['enrollmentid']
+    #session['student_id'] = enrollmentid;
         
      # Total Assigned Exams
     cursor.execute("""
@@ -189,6 +190,17 @@ def student_dashboard():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
+    # Student Info
+    cursor.execute("""
+        SELECT *
+        FROM users
+        WHERE userid=%s and is_active=%s
+    """, (student_id,1))
+
+    student = cursor.fetchone()
+    
+    enrollmentid=student['enrollmentid']
+
     cursor.execute("""
         SELECT e.*,
         CASE 
@@ -199,7 +211,7 @@ def student_dashboard():
         FROM exams e
         JOIN student_exams se ON e.id = se.exam_id
         WHERE se.student_id = %s
-    """, (student_id,))
+    """, (enrollmentid,))
 
     exams = cursor.fetchall()
 
@@ -209,10 +221,10 @@ def student_dashboard():
     # ✅ FILTER: remove expired exams (Python level extra safety)
     active_exams = []
     now = datetime.now()
-
     for exam in exams:
         if exam['state'] != 'EXPIRED':
             active_exams.append(exam)
+            print("Exam:", exam['title'], "State:", exam['state'])
 
     return render_template('student_dashboard.html', exams=active_exams)
 
