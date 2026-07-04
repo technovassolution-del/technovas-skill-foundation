@@ -57,7 +57,6 @@ def logout():
     session.clear()   # removes all session data
     return render_template('default.html')
 
-
 @app.route("/studentexam_view")
 def studentexam_view():
     return render_template("studentexam_view.html")
