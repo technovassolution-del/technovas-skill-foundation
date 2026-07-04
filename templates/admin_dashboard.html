@@ -176,35 +176,41 @@ body::before{
 
     <div class="cards">
 
-        <a href="{{ url_for('exam.create_exam_page')}}" class="card">
+        <a href="{{ url_for('exam.create_exam_page') }}" class="card">
             <h3>Exam Create</h3>
             <p>Create and manage exams</p>
         </a>
 
-        <a href="{{ url_for('user.user_creation') }}" class="card">
+        <a href="{{ url_for('user.register') }}" class="card">
             <h3>User Registration</h3>
             <p>Create and manage your identity</p>
         </a>
 
-        <a href="{{url_for('question.add_question')}}" class="card">
+        <a href="{{ url_for('question.add_question') }}" class="card">
             <h3>Question Bank</h3>
             <p>Store and manage questions</p>
         </a>
 
-        <a href="{{ url_for('exam.exam_list') }}" class="card">
+        <a href="{{ url_for('exam.exam_list_page') }}" class="card">
             <h3>Exam List</h3>
             <p>Show & manage all exam list</p>
         </a>
 
         <a href="{{ url_for('exam.result_processing') }}" class="card">
-            <h3>Result Processing</h3>
+            <h3>Online Result Processing</h3>
             <p>Calculate and publish results</p>
         </a>
 
-        <a href="/emp_onlineattendance" class="card">
-            <h3>Online Attendance</h3>
-            <p>Manage online attendance</p>
-        </a>
+  
+<a href="{{ url_for('exam.all_offline_results') }}" class="card">
+
+    <h3>📄 All Offline Student Details</h3>
+
+    <p>
+        View & Manage Offline Exam Results
+    </p>
+
+</a>
 
     </div>
 

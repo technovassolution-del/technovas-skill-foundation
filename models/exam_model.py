@@ -2,78 +2,154 @@
 from config import get_db_connection
 from datetime import datetime
 
+
+# ------------changed-------------------
+
+
+
+
 def create_exam(data):
+
     conn = get_db_connection()
     cursor = conn.cursor()
 
     try:
-        # 🔹 convert datetime format
-        start_at = datetime.fromisoformat(data[2])
-        end_at = datetime.fromisoformat(data[3])
 
-        # 🔹 replace in tuple
+        # Convert datetime safely
+        start_at = (
+            datetime.fromisoformat(data[2])
+            if data[2] else None
+        )
+
+        end_at = (
+            datetime.fromisoformat(data[3])
+            if data[3] else None
+        )
+
         new_data = (
-            data[0],  # title
-            data[1],  # description
+            data[0],   # title
+            data[1],   # description
             start_at,
             end_at,
-            data[4],  # duration
-            data[5],  # total_marks
-            data[6],  # pass_marks
-            data[7],
-            data[8],
-            data[9],
-            data[10],
-            data[11]
+            data[4],   # duration_minutes
+            data[5],   # total_marks
+            data[6],   # pass_marks
+            data[7],   # shuffle_questions
+            data[8],   # shuffle_options
+            data[9],   # allow_review
+            data[10],  # is_published
+            data[11],  # exam_type
+            data[12]   # created_by
         )
+
 
         query = """
         INSERT INTO exams
-        (title, description, start_at, end_at, duration_minutes,
-         total_marks, pass_marks, shuffle_questions, shuffle_options,
-         allow_review, is_published, created_by)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        (
+            title,
+            description,
+            start_at,
+            end_at,
+            duration_minutes,
+            total_marks,
+            pass_marks,
+            shuffle_questions,
+            shuffle_options,
+            allow_review,
+            is_published,
+            exam_type,
+            created_by
+        )
+        VALUES
+        (
+            %s, %s, %s, %s,
+            %s, %s, %s,
+            %s, %s, %s,
+            %s, %s, %s
+        )
         """
-        print(query)
+
+
         cursor.execute(query, new_data)
+
+
+        # Get newly created exam ID
+        exam_id = cursor.lastrowid
+
+
         conn.commit()
 
+
+        print("✅ Exam Created Successfully")
+        print("Exam ID:", exam_id)
+        print("Exam Type:", data[11])
+
+
+        return exam_id
+
+
     except Exception as e:
+
         conn.rollback()
-        print("ERROR:", e)
+
+        print("❌ CREATE EXAM ERROR:", e)
+
+        return None
+
 
     finally:
+
         cursor.close()
         conn.close()
 
+# ==============================
+# GET ALL EXAMS
+# ==============================
 
 def get_all_exams():
+
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
     try:
-        cursor.execute("SELECT * FROM exams ORDER BY id DESC")
+
+        cursor.execute("""
+            SELECT
+                id,
+                title,
+                description,
+                start_at,
+                end_at,
+                duration_minutes,
+                total_marks,
+                pass_marks,
+                shuffle_questions,
+                shuffle_options,
+                allow_review,
+                is_published,
+                exam_type,
+                created_by,
+                created_at
+            FROM exams
+            ORDER BY id DESC
+        """)
+
         exams = cursor.fetchall()
+
         return exams
 
+
     except Exception as e:
-        print("ERROR:", e)
+
+        print("❌ GET ALL EXAMS ERROR:", e)
+
         return []
 
+
     finally:
+
         cursor.close()
         conn.close()
-
-
-
-# 🔹 Get all exams
-def get_all_exams():
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM exams WHERE is_published=1 ORDER BY id DESC")
-    exams = cursor.fetchall()
-    conn.close()
-    return exams
 
 
 
@@ -239,6 +315,8 @@ def submit_attempt(attempt_id):
 def assign_exams_to_student(student_id):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
+
+
     cursor.execute("SELECT id FROM exams")
     exams = cursor.fetchall()
 
@@ -261,3 +339,27 @@ def assign_exams_to_student(student_id):
     cursor.close()
     conn.close()
 
+
+    # ==============================
+# GET SINGLE EXAM BY ID
+# ==============================
+
+def get_exam_by_id(exam_id):
+
+    conn = get_db_connection()
+
+    cursor = conn.cursor(
+        dictionary=True
+    )
+
+    cursor.execute(
+        "SELECT * FROM exams WHERE id = %s",
+        (exam_id,)
+    )
+
+    exam = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    return exam

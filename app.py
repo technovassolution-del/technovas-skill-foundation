@@ -74,6 +74,20 @@ def studentprofile():
 def cirtificatepage():
     return render_template("cirtificatepage.html")
 
+# ------------------ofline exam--------------------
+
+
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+
+app.config['QUESTION_UPLOAD_FOLDER'] = os.path.join(
+    BASE_DIR,
+    'static/offline_exam_files/questions'
+)
+
+app.config['ANSWER_UPLOAD_FOLDER'] = os.path.join(
+    BASE_DIR,
+    'static/offline_exam_files/answer_sheets'
+)
 
 
 # ---------------- LOGIN ----------------

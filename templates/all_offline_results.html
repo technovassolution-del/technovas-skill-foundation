@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+
+<title>
+Offline Result Publish Panel
+</title>
+
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+
+body{
+    background: linear-gradient(135deg,#0f172a,#1e3a8a);
+    min-height:100vh;
+    padding:30px;
+}
+
+
+.container{
+    width:95%;
+    margin:auto;
+    background:rgba(255,255,255,0.12);
+    backdrop-filter: blur(12px);
+    border-radius:20px;
+    padding:30px;
+    box-shadow:0 10px 35px rgba(0,0,0,.3);
+}
+
+
+.title{
+    color:white;
+    text-align:center;
+    font-size:30px;
+    margin-bottom:25px;
+}
+
+
+.table-box{
+    overflow-x:auto;
+}
+
+
+table{
+    width:100%;
+    background:white;
+    border-radius:15px;
+    border-collapse:collapse;
+    overflow:hidden;
+}
+
+
+thead{
+    background:linear-gradient(90deg,#2563eb,#7c3aed);
+    color:white;
+}
+
+
+th{
+    padding:14px;
+    font-size:14px;
+}
+
+
+td{
+    padding:12px;
+    text-align:center;
+    border-bottom:1px solid #ddd;
+}
+
+
+tr:hover{
+    background:#f8fafc;
+}
+
+
+input[type=number]{
+    width:70px;
+    padding:7px;
+    border:1px solid #ccc;
+    border-radius:7px;
+    text-align:center;
+}
+
+
+.total-box{
+    background:#e0f2fe;
+    color:#0369a1;
+    font-weight:bold;
+    padding:8px;
+    border-radius:7px;
+}
+
+
+.grade-box{
+    background:#ede9fe;
+    color:#6d28d9;
+    font-weight:bold;
+    padding:8px;
+    border-radius:7px;
+}
+
+
+.status-pass{
+    background:#dcfce7;
+    color:#15803d;
+    font-weight:bold;
+    padding:8px 10px;
+    border-radius:20px;
+}
+
+
+.status-fail{
+    background:#fee2e2;
+    color:#b91c1c;
+    font-weight:bold;
+    padding:8px 10px;
+    border-radius:20px;
+}
+
+
+.view-btn{
+    background:#2563eb;
+    color:white;
+    padding:8px 12px;
+    text-decoration:none;
+    border-radius:8px;
+}
+
+
+.file-input{
+    width:150px;
+}
+
+
+.save-btn{
+    background:#16a34a;
+    color:white;
+    border:none;
+    padding:10px 15px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+
+.save-btn:hover{
+    background:#15803d;
+}
+
+
+.published-btn{
+
+    background: #28a745;
+
+    color: white;
+
+    border: none;
+
+    padding: 10px 16px;
+
+    border-radius: 5px;
+
+    cursor: not-allowed;
+
+    font-weight: bold;
+
+    opacity: 0.8;
+
+}
+
+
+@media(max-width:900px){
+
+    body{
+        padding:10px;
+    }
+
+    .container{
+        width:100%;
+        padding:15px;
+    }
+
+    th,td{
+        font-size:12px;
+        padding:8px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+<h2 class="title">
+📄 Offline Result Publish Panel
+</h2>
+
+
+<div class="table-box">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>ID</th>
+<th>Student</th>
+<th>Exam</th>
+
+<th>Theory</th>
+
+<th>Practical</th>
+
+<th>Total</th>
+
+<th>Grade</th>
+
+<th>Status</th>
+
+<th>Question</th>
+
+<th>Answer Scan</th>
+
+<th>Save</th>
+<th>Publish</th>
+
+</tr>
+
+</thead>
+
+
+<tbody>
+
+
+{% for r in results %}
+
+
+<tr>
+
+<form method="POST"
+action="{{ url_for('exam.save_offline_result') }}"
+enctype="multipart/form-data">
+
+
+<input type="hidden"
+name="student_id"
+value="{{ r.student_id }}">
+
+
+<input type="hidden"
+name="exam_id"
+value="{{ r.exam_id }}">
+
+<input type="hidden"
+class="exam_total"
+value="{{ r.total_marks }}">
+
+
+<input type="hidden"
+class="pass_marks"
+value="{{ r.pass_marks }}">
+
+
+<td>{{ r.student_id }}</td>
+
+
+<td>{{ r.name }}</td>
+
+
+<td>{{ r.title }}</td>
+
+
+<td>
+
+<input 
+type="number"
+name="theory_marks"
+class="theory"
+min="0"
+value="{{ r.theory_marks or '' }}"
+required>
+
+</td>
+
+
+<td>
+
+<input 
+type="number"
+name="practical_marks"
+class="practical"
+min="0"
+value="{{ r.practical_marks or '' }}"
+required>
+
+</td>
+
+
+<td>
+
+<div class="total-box total">
+{{ r.saved_total or 0 }}
+</div>
+
+<input type="hidden"
+name="total_marks"
+class="total_input"
+value="{{ r.saved_total or '' }}">
+</td>
+</td>
+
+
+<!-- Grade -->
+
+<td>
+
+<div class="grade-box grade">
+{{ r.grade or "-" }}
+</div>
+
+
+<input 
+type="hidden"
+name="grade"
+class="grade_input"
+value="{{ r.grade or '' }}">
+
+</td>
+
+
+<!-- Status -->
+
+
+<td>
+
+<div class="status 
+{% if r.status == 'PASS' %}
+status-pass
+{% else %}
+status-fail
+{% endif %}">
+{{ r.status or "Pending" }}
+</div>
+
+
+<input 
+type="hidden"
+name="status"
+class="status_input"
+value="{{ r.status or '' }}">
+
+
+<!-- Question Paper -->
+
+
+<td>
+
+{% if r.question_files %}
+
+    {% for file in r.question_files %}
+
+        <a href="{{ url_for('static', filename=file) }}"
+           target="_blank"
+           class="view-btn">
+
+            📄 View {{ loop.index }}
+
+        </a>
+
+        <br><br>
+
+    {% endfor %}
+
+{% else %}
+
+    <span class="no-file">
+        No Question
+    </span>
+
+{% endif %}
+
+</td>
+
+
+<!-- Answer Sheet Upload -->
+
+
+<td>
+
+
+<input
+type="file"
+name="answer_sheet"
+class="file-input"
+accept=".pdf,.jpg,.jpeg,.png"
+required>
+
+
+</td>
+
+
+<!-- Save -->
+
+
+<td>
+
+
+<!-- Save -->
+<button
+type="submit"
+name="action"
+value="save"
+class="save-btn">
+
+💾 Save
+
+</button>
+</td>
+
+<td>
+
+{% if r.published == 1 %}
+
+<button 
+type="button"
+class="published-btn"
+disabled>
+
+🟢 Published
+
+</button>
+
+{% else %}
+
+<button 
+type="submit"
+name="action"
+value="publish"
+class="publish-btn">
+
+🚀 Publish
+
+</button>
+
+{% endif %}
+
+</td>
+
+
+
+
+</form>
+
+
+</tr>
+
+
+{% endfor %}
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+</div>
+
+
+
+<script>
+
+
+/*
+==================================
+Automatic Result Calculation
+==================================
+*/
+
+
+document
+.querySelectorAll("tr")
+.forEach(function(row){
+
+
+let theory = row.querySelector(".theory");
+
+let practical = row.querySelector(".practical");
+
+
+if(theory && practical){
+
+
+function calculate(){
+
+    let theoryMark =
+    parseInt(theory.value) || 0;
+
+
+    let practicalMark =
+    parseInt(practical.value) || 0;
+
+
+    let total =
+    theoryMark + practicalMark;
+
+
+    // Exam Total Marks
+    let examTotal =
+    parseInt(
+        row.querySelector(".exam_total").value
+    ) || 0;
+
+
+    // বেশি মার্ক দিলে Stop
+    if(total > examTotal){
+
+        alert(
+            "Total Marks cannot exceed Exam Total (" 
+            + examTotal + ")"
+        );
+
+        row.querySelector(".total").innerHTML = 0;
+        row.querySelector(".total_input").value = "";
+
+        return;
+    }
+
+
+    // Show Total
+    row.querySelector(".total").innerHTML = total;
+    row.querySelector(".total_input").value = total;
+
+
+    // Percentage Calculation
+    let percentage = 
+    (total / examTotal) * 100;
+
+
+    // Grade Calculation
+    let grade = "F";
+
+
+    if(percentage >= 90){
+        grade = "A+";
+    }
+
+    else if(percentage >= 80){
+        grade = "A";
+    }
+
+    else if(percentage >= 70){
+        grade = "B+";
+    }
+
+    else if(percentage >= 60){
+        grade = "B";
+    }
+
+    else if(percentage >= 50){
+        grade = "C";
+    }
+
+    else if(percentage >= 40){
+        grade = "D";
+    }
+
+
+    row.querySelector(".grade").innerHTML = grade;
+
+    row.querySelector(".grade_input").value = grade;
+
+
+    // Pass Fail Check
+    let passMarks =
+    parseInt(
+        row.querySelector(".pass_marks").value
+    ) || 0;
+
+
+    let status =
+    (total >= passMarks)
+    ? "PASS"
+    : "FAIL";
+
+
+    let statusBox =
+    row.querySelector(".status");
+
+
+    statusBox.innerHTML = status;
+
+
+    statusBox.className =
+    "status " +
+    (
+        status === "PASS"
+        ? "status-pass"
+        : "status-fail"
+    );
+
+
+    row.querySelector(".status_input").value = status;
+
+}
+
+
+// Input Change
+
+
+theory.addEventListener(
+"input",
+calculate
+);
+
+
+practical.addEventListener(
+"input",
+calculate
+);
+
+
+}
+
+
+});
+
+
+</script>
+
+
+</body>
+
+
+</html>

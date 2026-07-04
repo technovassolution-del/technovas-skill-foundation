@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -8,7 +9,10 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+
 <style>
+
+/* RESET */
 
 *{
     margin:0;
@@ -17,298 +21,782 @@
     font-family:'Poppins',sans-serif;
 }
 
+
+/* BODY */
+
 body{
     background:#f1f5f9;
     padding:20px;
 }
 
-/* MAIN WRAPPER */
+
+/* CONTAINER */
+
 .container{
     width:100%;
     max-width:1200px;
     margin:auto;
 }
 
-/* FLEX LAYOUT */
+
+/* ROW */
+
 .row{
     display:flex;
     gap:20px;
     align-items:flex-start;
 }
 
+
 /* BOX */
+
 .box{
+
     flex:1;
+
     background:#ffffff;
+
     padding:25px;
+
     border-radius:16px;
+
     box-shadow:0 4px 20px rgba(0,0,0,0.08);
-    width:100%;
+
 }
 
-/* HEADINGS */
+
+/* TITLE */
+
 h3{
+
     margin-bottom:20px;
+
     color:#0f172a;
+
     font-size:24px;
+
     font-weight:600;
+
 }
+
 
 /* LABEL */
+
 label{
+
     display:block;
+
     margin-bottom:8px;
+
     color:#334155;
+
     font-size:14px;
+
     font-weight:500;
+
 }
 
-/* INPUT */
+
+/* INPUTS */
+
 input,
 textarea,
 select{
+
     width:100%;
+
     padding:12px 14px;
+
     margin-bottom:15px;
+
     border:1px solid #cbd5e1;
+
     border-radius:10px;
+
     outline:none;
+
     font-size:15px;
+
+    background:#ffffff;
+
     transition:0.3s;
-    background:#fff;
+
 }
+
+
+/* FOCUS */
 
 input:focus,
 textarea:focus,
 select:focus{
+
     border-color:#2563eb;
+
     box-shadow:0 0 0 3px rgba(37,99,235,0.15);
+
 }
+
 
 /* TEXTAREA */
+
 textarea{
+
     min-height:120px;
+
     resize:vertical;
+
 }
 
-/* OPTION */
-.option{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    margin-bottom:15px;
-    background:#f8fafc;
-    padding:12px;
+
+/* FILE UPLOAD */
+
+.file-box{
+
+    padding:20px;
+
+    border:2px dashed #94a3b8;
+
     border-radius:12px;
-    border:1px solid #e2e8f0;
+
+    margin-bottom:15px;
+
+    background:#f8fafc;
+
 }
+
+
+/* OPTION BOX */
+
+.option{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    margin-bottom:15px;
+
+    padding:12px;
+
+    border-radius:12px;
+
+    background:#f8fafc;
+
+    border:1px solid #e2e8f0;
+
+}
+
 
 .option input[type="text"]{
-    margin-bottom:0;
+
     flex:1;
+
+    margin:0;
+
 }
+
 
 .option input[type="radio"]{
+
     width:auto;
+
     margin:0;
+
     transform:scale(1.2);
-    cursor:pointer;
+
 }
 
-.option label{
-    margin:0;
-    white-space:nowrap;
-    cursor:pointer;
-}
 
 /* BUTTON */
+
 button{
+
     width:100%;
+
     padding:15px;
+
     margin-top:25px;
-    background:#2563eb;
-    color:white;
+
     border:none;
+
     border-radius:12px;
-    cursor:pointer;
+
+    background:#2563eb;
+
+    color:white;
+
     font-size:16px;
+
     font-weight:600;
+
+    cursor:pointer;
+
     transition:0.3s;
-    box-shadow:0 4px 15px rgba(37,99,235,0.25);
+
 }
+
 
 button:hover{
+
     background:#1d4ed8;
-    transform:translateY(-2px);
+
 }
 
+
+/* HIDE ELEMENT */
+
+.hidden{
+
+    display:none;
+
+}
+
+
 /* TABLET */
+
 @media(max-width:992px){
 
     .row{
-        flex-direction:column;
-    }
 
-    .box{
-        width:100%;
+        flex-direction:column;
+
     }
 
 }
 
+
 /* MOBILE */
+
 @media(max-width:600px){
 
     body{
+
         padding:15px;
+
     }
+
 
     .box{
+
         padding:18px;
-        border-radius:14px;
+
     }
 
-    h3{
-        font-size:20px;
-    }
-
-    input,
-    textarea,
-    select{
-        font-size:14px;
-        padding:11px 12px;
-    }
 
     .option{
+
         flex-direction:column;
+
         align-items:flex-start;
-    }
 
-    .option input[type="text"]{
-        width:100%;
-    }
-
-    button{
-        font-size:15px;
-        padding:14px;
-    }
-
-}
-
-/* EXTRA SMALL MOBILE */
-@media(max-width:400px){
-
-    h3{
-        font-size:18px;
-    }
-
-    .box{
-        padding:15px;
-    }
-
-    input,
-    textarea,
-    select{
-        font-size:13px;
     }
 
 }
 
 </style>
+
 </head>
+
 
 <body>
 
+
 <div class="container">
 
-<form method="POST" action="{{ url_for('question.save_question') }}">
+
+<form 
+method="POST"
+action="{{ url_for('question.save_question') }}"
+enctype="multipart/form-data">
+
 
 <div class="row">
 
+
 <!-- LEFT BOX -->
+
+
 <div class="box">
 
-<h3>Question</h3>
 
-<label>Select Exam</label>
+<h3>Question Details</h3>
 
-<select name="exam_id" required>
-    <option value="">-- Select Exam --</option>
 
-    {% for exam in exams %}
-        <option value="{{ exam.id }}">{{ exam.title }}</option>
-    {% endfor %}
+<label>
+Select Exam
+</label>
+
+
+<select id="examSelect" name="exam_id" required>
+
+<option value="">
+    -- Select Exam --
+</option>
+
+{% for exam in exams %}
+
+<option 
+    value="{{ exam.id }}"
+    data-type="{{ exam.exam_type }}"
+    {% if selected_exam_id|string == exam.id|string %}
+        selected
+    {% endif %}
+>
+    {{ exam.title }}
+</option>
+
+{% endfor %}
 
 </select>
 
-<textarea name="question_text" placeholder="Enter Question" required></textarea>
 
-<select name="question_type">
-    <option value="MCQ_SINGLE">MCQ Single</option>
+<!-- ONLINE QUESTION TEXT -->
+
+<div id="questionTextBox">
+
+<label>
+Question
+</label>
+
+<textarea
+    id="questionText"
+    name="question_text"
+    placeholder="Enter Question">
+</textarea>
+
+</div>
+
+
+<!-- OFFLINE FILE UPLOAD -->
+
+<div 
+    id="fileUploadBox"
+    class="file-box hidden">
+
+<label>
+Upload Question PDF / Image
+</label>
+
+<input
+    type="file"
+    id="questionFile"
+    name="question_file"
+    accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+
+</div>
+
+
+<!-- COMMON FOR BOTH ONLINE & OFFLINE -->
+
+<label>
+Question Type
+</label>
+
+<select 
+    id="questionType"
+    name="question_type">
+
+<option value="MCQ_SINGLE">
+MCQ Single
+</option>
+
+<option value="SUBJECTIVE">
+Subjective
+</option>
+
 </select>
 
-<select name="difficulty">
-    <option value="EASY">EASY</option>
-    <option value="MEDIUM">MEDIUM</option>
-    <option value="HARD">HARD</option>
+
+<label>
+Difficulty
+</label>
+
+<select 
+    name="difficulty">
+
+<option value="EASY">
+EASY
+</option>
+
+<option value="MEDIUM">
+MEDIUM
+</option>
+
+<option value="HARD">
+HARD
+</option>
+
 </select>
 
-<input type="text" name="topic" placeholder="Topic">
 
-<textarea name="explanation" placeholder="Explanation"></textarea>
+<label>
+Topic
+</label>
 
-<input type="number" name="marks" value="1" placeholder="Marks">
+<input
+    type="text"
+    name="topic"
+    placeholder="Enter Topic">
 
-<input type="number" name="negative_marks" value="0" placeholder="Negative Marks">
+
+<label>
+Explanation
+</label>
+
+<textarea
+    name="explanation"
+    placeholder="Enter Explanation">
+</textarea>
+
+
+<!-- ONLINE ONLY MARKS SECTION -->
+
+<div id="marksSection">
+
+
+<label>
+Marks
+</label>
+
+<input
+    type="number"
+    name="marks"
+    value="1"
+    placeholder="Marks">
+
+
+<label>
+Negative Marks
+</label>
+
+<input
+    type="number"
+    name="negative_marks"
+    value="0"
+    placeholder="Negative Marks">
+
 
 </div>
 
-<!-- RIGHT BOX -->
-<div class="box">
 
-<h3>Options</h3>
+</div>
+
+
+<!-- RIGHT BOX : ONLY ONLINE MCQ OPTIONS -->
+
+
+<div 
+    class="box"
+    id="optionsBox">
+
+
+<h3>
+MCQ Options
+</h3>
+
+
+<!-- OPTION 1 -->
 
 <div class="option">
-    <input type="text" name="option1" placeholder="Option 1" required>
 
-    <input type="radio" id="correct1" name="correct" value="1" required>
+<input
+    type="text"
+    name="option1"
+    placeholder="Option 1">
 
-    <label for="correct1">Correct</label>
+
+<input
+    type="radio"
+    name="correct"
+    id="correct1"
+    value="1">
+
+
+<label for="correct1">
+Correct
+</label>
+
 </div>
+
+
+<!-- OPTION 2 -->
 
 <div class="option">
-    <input type="text" name="option2" placeholder="Option 2" required>
 
-    <input type="radio" id="correct2" name="correct" value="2">
+<input
+    type="text"
+    name="option2"
+    placeholder="Option 2">
 
-    <label for="correct2">Correct</label>
+
+<input
+    type="radio"
+    name="correct"
+    id="correct2"
+    value="2">
+
+
+<label for="correct2">
+Correct
+</label>
+
 </div>
+
+
+<!-- OPTION 3 -->
 
 <div class="option">
-    <input type="text" name="option3" placeholder="Option 3" required>
 
-    <input type="radio" id="correct3" name="correct" value="3">
+<input
+    type="text"
+    name="option3"
+    placeholder="Option 3">
 
-    <label for="correct3">Correct</label>
+
+<input
+    type="radio"
+    name="correct"
+    id="correct3"
+    value="3">
+
+
+<label for="correct3">
+Correct
+</label>
+
 </div>
+
+
+<!-- OPTION 4 -->
 
 <div class="option">
-    <input type="text" name="option4" placeholder="Option 4" required>
 
-    <input type="radio" id="correct4" name="correct" value="4">
+<input
+    type="text"
+    name="option4"
+    placeholder="Option 4">
 
-    <label for="correct4">Correct</label>
+
+<input
+    type="radio"
+    name="correct"
+    id="correct4"
+    value="4">
+
+
+<label for="correct4">
+Correct
+</label>
+
 </div>
 
-</div>
 
 </div>
 
-<!-- BUTTON -->
-<button type="submit">Save Question</button>
+
+</div>
+
+
+<!-- SUBMIT BUTTON -->
+
+
+<button type="submit">
+
+Save Question
+
+</button>
 
 </form>
 
 </div>
 
+
+
+<script>
+
+// ===============================
+// Get Elements
+// ===============================
+
+const examSelect = document.getElementById("examSelect");
+const questionBox = document.getElementById("questionTextBox");
+const fileBox = document.getElementById("fileUploadBox");
+const optionsBox = document.getElementById("optionsBox");
+const questionType = document.getElementById("questionType");
+const marksSection = document.getElementById("marksSection");
+const questionText = document.getElementById("questionText");
+const questionFile = document.getElementById("questionFile");
+
+
+// ===============================
+// Change Interface By Exam Type
+// ===============================
+
+function changeExamType() {
+
+    const selected = examSelect.options[examSelect.selectedIndex];
+
+    if (!selected) {
+        return;
+    }
+
+    const examType = selected.getAttribute("data-type");
+
+
+    // ===========================
+    // OFFLINE EXAM
+    // ===========================
+
+    if (examType === "offline") {
+
+        // Hide Question Text
+        questionBox.classList.add("hidden");
+
+        // Show PDF/Image Upload
+        fileBox.classList.remove("hidden");
+
+        // Hide MCQ Options
+        optionsBox.classList.add("hidden");
+
+        // Hide Marks
+        marksSection.classList.add("hidden");
+
+
+        // Validation
+        questionText.removeAttribute("required");
+        questionFile.setAttribute("required", true);
+
+
+        // Remove option required
+        document.querySelectorAll("#optionsBox input[type='text']")
+        .forEach(function(input) {
+            input.removeAttribute("required");
+        });
+
+    }
+
+
+    // ===========================
+    // ONLINE EXAM
+    // ===========================
+
+    else {
+
+        // Show Question Text
+        questionBox.classList.remove("hidden");
+
+        // Hide File Upload
+        fileBox.classList.add("hidden");
+
+        // Show Marks
+        marksSection.classList.remove("hidden");
+
+
+        // Validation
+        questionText.setAttribute("required", true);
+        questionFile.removeAttribute("required");
+
+
+        // Check MCQ or Subjective
+        changeQuestionType();
+
+    }
+
+}
+
+
+
+// ===============================
+// Change By Question Type
+// ===============================
+
+function changeQuestionType() {
+
+
+    const selected = examSelect.options[examSelect.selectedIndex];
+
+    const examType = selected.getAttribute("data-type");
+
+
+    // Offline Exam always hides options
+    if (examType === "offline") {
+
+        optionsBox.classList.add("hidden");
+
+        return;
+
+    }
+
+
+    // Online Subjective
+    if (questionType.value === "SUBJECTIVE") {
+
+
+        // Hide Options
+        optionsBox.classList.add("hidden");
+
+
+        // Remove Required
+        document.querySelectorAll("#optionsBox input[type='text']")
+        .forEach(function(input) {
+            input.removeAttribute("required");
+        });
+
+
+    }
+
+
+    // Online MCQ
+    else {
+
+
+        // Show Options
+        optionsBox.classList.remove("hidden");
+
+
+        // Add Required
+        document.querySelectorAll("#optionsBox input[type='text']")
+        .forEach(function(input) {
+            input.setAttribute("required", true);
+        });
+
+
+    }
+
+}
+
+
+// ===============================
+// Event Listeners
+// ===============================
+
+examSelect.addEventListener(
+    "change",
+    changeExamType
+);
+
+
+questionType.addEventListener(
+    "change",
+    changeQuestionType
+);
+
+
+// ===============================
+// Default Page Load
+// ===============================
+
+window.onload = function () {
+
+    changeExamType();
+
+};
+
+
+</script>
+
+
 </body>
+
 </html>
