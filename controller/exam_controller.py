@@ -991,8 +991,6 @@ def result():
 
 
 
-
-
 # ----------------------student result---------------------
 
 @exam_bp.route('/showstudent_result')
