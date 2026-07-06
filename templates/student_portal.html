@@ -1,729 +1,879 @@
-  <!DOCTYPE html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Skill Course Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Course Dashboard</title>
 
-<style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-:root{
-    --primary:#2563eb;
-    --success:#16a34a;
-    --warning:#f59e0b;
-    --danger:#dc2626;
-    --dark:#111827;
-    --card:#ffffff;
-    --bg:#f4f7fc;
-    --shadow:0 12px 30px rgba(0,0,0,.08);
-}
+    <style>
+        :root{
+            --primary:#2563eb;
+            --primary-dark:#1d4ed8;
+            --success:#16a34a;
+            --warning:#f59e0b;
+            --danger:#dc2626;
+            --dark:#111827;
+            --text:#1f2937;
+            --muted:#6b7280;
+            --card:#ffffff;
+            --bg:#f4f7fc;
+            --border:#e5e7eb;
+            --shadow:0 12px 30px rgba(0,0,0,.08);
+            --radius:18px;
+        }
 
-body{
-    background:var(--bg);
-    font-family:'Poppins',sans-serif;
-}
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
 
-/* ======================
-   PROFILE
-====================== */
-.container{
-    max-width: 1200px;   
-    margin: 0 auto;      
-    padding: 20px;
-    width: 100%;
-}
+        body{
+            background:var(--bg);
+            font-family:'Poppins',sans-serif;
+            color:var(--text);
+            line-height:1.5;
+        }
 
-.profile-card{
-    background:white;
-    padding:25px;
-    border-radius:10px;
-    display:flex;
-    align-items:center;
-    box-shadow:0 2px 8px rgba(0,0,0,0.08);
-    margin-bottom:30px;
-}
+        a{
+            text-decoration:none;
+        }
 
-.avatar{
-    width:70px;
-    height:70px;
-    border-radius:50%;
-    background:linear-gradient(135deg,#2563eb,#06b6d4);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:#fff;
-    font-size:28px;
-    font-weight:700;
-}
+        .container{
+            width:100%;
+            max-width:1200px;
+            margin:0 auto;
+            padding:20px;
+        }
 
-.profile-info h3{
-    margin:0;
-    font-size:28px;
-}
+        /* ======================
+           PROFILE
+        ====================== */
+        .profile-card{
+            background:var(--card);
+            padding:24px;
+            border-radius:var(--radius);
+            display:flex;
+            align-items:center;
+            gap:18px;
+            box-shadow:var(--shadow);
+            margin-bottom:28px;
+            flex-wrap:wrap;
+        }
 
-.profile-info p{
-    margin:4px 0;
-    color:#6b7280;
-}
+        .avatar{
+            width:72px;
+            height:72px;
+            min-width:72px;
+            border-radius:50%;
+            background:linear-gradient(135deg,#2563eb,#06b6d4);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#fff;
+            font-size:28px;
+            font-weight:700;
+        }
 
-/* ======================
-   STATS
-====================== */
+        .profile-info{
+            flex:1;
+            min-width:220px;
+        }
 
-.stats{
-    display:grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap:20px;
-    margin:25px 0;
-}
+        .profile-info h3{
+            margin:0 0 6px;
+            font-size:28px;
+            font-weight:700;
+            color:var(--dark);
+            word-break:break-word;
+        }
 
-.stat-box{
-    background:#fff;
-    border-radius:20px;
-    padding:25px;
-    text-align:center;
-    box-shadow:var(--shadow);
-    transition:.3s;
-    
-}
+        .profile-info p{
+            margin:4px 0;
+            color:var(--muted);
+            font-size:14px;
+            word-break:break-word;
+        }
 
-.stat-box:hover{
-    transform:translateY(-5px);
-}
+        /* ======================
+           STATS
+        ====================== */
+        .stats{
+            display:grid;
+            grid-template-columns:repeat(5, 1fr);
+            gap:18px;
+            margin:24px 0 30px;
+        }
 
-.stat-box h2{
-    margin:0;
-    color:var(--primary);
-    font-size:20px;
-}
+        .stat-box{
+            background:var(--card);
+            border-radius:20px;
+            padding:22px 18px;
+            text-align:center;
+            box-shadow:var(--shadow);
+            transition:.3s;
+            min-height:120px;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+        }
 
-.stat-box p{
-    margin-top:10px;
-    color:#6b7280;
-}
+        .stat-box:hover{
+            transform:translateY(-4px);
+        }
 
-/* ======================
-   SECTION TITLE
-====================== */
+        .stat-box h2{
+            margin:0;
+            color:var(--primary);
+            font-size:28px;
+            font-weight:700;
+            line-height:1;
+        }
 
-.section-title{
-    font-size:22px;
-    font-weight:700;
-    margin:25px 0 15px;
-    color:#111827;
-}
+        .stat-box p{
+            margin-top:10px;
+            color:var(--muted);
+            font-size:14px;
+            font-weight:500;
+        }
 
-/* ======================
-   EXAM MENU
-====================== */
+        /* ======================
+           SECTION TITLE
+        ====================== */
+        .section-title{
+            font-size:22px;
+            font-weight:700;
+            margin:25px 0 15px;
+            color:var(--dark);
+        }
 
-.exam-menu{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-    gap:20px;
-}
+        /* ======================
+           EXAM MENU
+        ====================== */
+        .exam-menu{
+            display:grid;
+            grid-template-columns:repeat(2, minmax(0, 1fr));
+            gap:20px;
+            margin-bottom:10px;
+        }
 
-.exam-card{
-    background:#fff;
-    border-radius:20px;
-    padding:30px;
-    text-align:center;
-    cursor:pointer;
-    box-shadow:var(--shadow);
-    transition:.3s;
-}
+        .exam-card{
+            background:var(--card);
+            border-radius:20px;
+            padding:28px 24px;
+            text-align:center;
+            cursor:pointer;
+            box-shadow:var(--shadow);
+            transition:.3s;
+            border:1px solid transparent;
+        }
 
-.exam-card:hover{
-    transform:translateY(-5px);
-}
+        .exam-card:hover{
+            transform:translateY(-4px);
+            border-color:#dbeafe;
+        }
 
-.exam-card h3{
-    margin-bottom:8px;
-}
+        .exam-card h3{
+            margin-bottom:8px;
+            color:var(--dark);
+            font-size:20px;
+        }
 
-.exam-card p{
-    color:#6b7280;
-}
+        .exam-card p{
+            color:var(--muted);
+            font-size:14px;
+        }
 
-/* ======================
-   TABLE COMMON
-====================== */
+        /* ======================
+           TABLE WRAPPERS
+        ====================== */
+        .online-table,
+        .offline-table{
+            width:100%;
+            background:#fff;
+            border-radius:20px;
+            overflow:hidden;
+            box-shadow:var(--shadow);
+            margin-top:12px;
+        }
 
-.online-table,
-.offline-table{
-    width:100%;
-    background:#fff;
-    border-radius:20px;
-    overflow:hidden;
-    box-shadow:var(--shadow);
-}
+        /* ======================
+           ONLINE TABLE
+        ====================== */
+        .online-header,
+        .online-row{
+            display:grid;
+            grid-template-columns:2fr 1fr 1fr 1fr 1.2fr;
+            align-items:center;
+            gap:15px;
+            padding:18px 20px;
+            text-align:center;
+        }
 
-/* ======================
-   ONLINE TABLE
-====================== */
+        .online-header{
+            background:#111827;
+            color:#fff;
+            font-weight:600;
+            font-size:14px;
+        }
 
-.online-header,
-.online-row{
-    display:grid;
-    grid-template-columns:2fr 1fr 1fr 1fr 1fr;
-    align-items:center;
-    text-align:center;
-    padding:20px;
-    gap:15px;
-}
+        .online-row{
+            border-bottom:1px solid #eee;
+            background:#fff;
+        }
 
-.online-header{
-    background:#111827;
-    color:#fff;
-    font-weight:600;
-}
+        .online-row:last-child{
+            border-bottom:none;
+        }
 
-.online-row{
-    border-bottom:1px solid #eee;
-}
+        .online-row:hover{
+            background:#f8fafc;
+        }
 
-.online-row:hover{
-    background:#f8fafc;
-}
+        /* ======================
+           OFFLINE TABLE
+        ====================== */
+        .offline-header,
+        .offline-row{
+            display:grid;
+            grid-template-columns:2fr 1.4fr 2fr;
+            align-items:center;
+            text-align:center;
+            gap:15px;
+            padding:18px 20px;
+        }
 
-/* ======================
-   OFFLINE TABLE
-====================== */
+        .offline-header{
+            background:#111827;
+            color:#fff;
+            font-weight:600;
+            font-size:14px;
+        }
 
-.offline-header,
-.offline-row{
-    display:grid;
-    grid-template-columns:2fr 1.5fr 2fr;
-    align-items:center;
-    text-align:center;
-    gap:15px;
-    padding:20px;
-}
+        .offline-row{
+            border-bottom:1px solid #eee;
+            background:#fff;
+        }
 
-.offline-header{
-    background:#111827;
-    color:#fff;
-    font-weight:600;
-}
+        .offline-row:last-child{
+            border-bottom:none;
+        }
 
-.offline-row{
-    border-bottom:1px solid #eee;
-}
+        .offline-row:hover{
+            background:#f8fafc;
+        }
 
-.offline-row:hover{
-    background:#f8fafc;
-}
+        .exam-name{
+            font-weight:500;
+            word-break:break-word;
+        }
 
-/* ======================
-   STATUS
-====================== */
+        /* ======================
+           STATUS
+        ====================== */
+        .status{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            padding:8px 14px;
+            border-radius:999px;
+            font-size:13px;
+            font-weight:600;
+            min-width:110px;
+        }
 
-.status{
-    padding:8px 16px;
-    border-radius:999px;
-    font-size:13px;
-    font-weight:600;
-}
+        .pending{
+            background:#fff3cd;
+            color:#856404;
+        }
 
-.pending{
-    background:#fff3cd;
-    color:#856404;
-}
+        .passed{
+            background:#d4edda;
+            color:#155724;
+        }
 
-.passed{
-    background:#d4edda;
-    color:#155724;
-}
+        .failed{
+            background:#f8d7da;
+            color:#721c24;
+        }
 
-.failed{
-    background:#f8d7da;
-    color:#721c24;
-}
+        /* ======================
+           BUTTONS
+        ====================== */
+        .start-btn,
+        .view-btn,
+        .action-btn,
+        .download-btn,
+        .result-btn{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            text-decoration:none;
+            color:#fff;
+            padding:11px 18px;
+            border-radius:10px;
+            font-size:14px;
+            font-weight:600;
+            transition:.3s;
+            border:none;
+            min-height:42px;
+            white-space:nowrap;
+        }
 
-/* ======================
-   BUTTONS
-====================== */
+        .start-btn,
+        .view-btn{
+            background:var(--primary);
+        }
 
-.start-btn,
-.view-btn,
-.action-btn{
-    display:inline-block;
-    text-decoration:none;
-    color:#fff;
-    padding:11px 18px;
-    border-radius:10px;
-    font-size:14px;
-    font-weight:600;
-    transition:.3s;
-}
+        .download-btn{
+            background:var(--success);
+        }
 
-.start-btn{
-    background:#2563eb;
-}
+        .result-btn{
+            background:var(--warning);
+        }
 
-.view-btn{
-    background:#2563eb;
-}
+        .start-btn:hover,
+        .view-btn:hover,
+        .action-btn:hover,
+        .download-btn:hover,
+        .result-btn:hover{
+            transform:translateY(-2px);
+        }
 
-.download-btn{
-    background:#16a34a;
-}
+        /* ======================
+           ACTION GROUP
+        ====================== */
+        .action-group{
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            gap:10px;
+            flex-wrap:wrap;
+        }
 
-.result-btn{
-    background:#f59e0b;
-}
+        /* ======================
+           EMPTY CARD
+        ====================== */
+        .course-card{
+            background:#fff;
+            border-radius:20px;
+            padding:30px;
+            text-align:center;
+            box-shadow:var(--shadow);
+            margin-top:12px;
+        }
 
-.start-btn:hover,
-.view-btn:hover,
-.action-btn:hover{
-    transform:translateY(-2px);
-}
+        .course-card h4{
+            margin-bottom:8px;
+            color:var(--dark);
+        }
 
-/* ======================
-   ACTION GROUP
-====================== */
+        .course-card p{
+            color:var(--muted);
+            font-size:14px;
+        }
 
-.action-group{
-    display:flex;
-    justify-content:center;
-    gap:10px;
-    flex-wrap:wrap;
-}
+        .no-file{
+            color:var(--danger);
+            font-weight:600;
+            font-size:14px;
+        }
 
-/* ======================
-   EMPTY CARD
-====================== */
+        /* ======================
+           TABLET
+        ====================== */
+        @media (max-width: 1024px){
+            .stats{
+                grid-template-columns:repeat(3, 1fr);
+            }
 
-.course-card{
-    background:#fff;
-    border-radius:20px;
-    padding:30px;
-    text-align:center;
-    box-shadow:var(--shadow);
-}
+            .online-header,
+            .online-row{
+                grid-template-columns:1.7fr 1fr 1fr 1fr 1.2fr;
+                font-size:14px;
+            }
 
-.no-file{
-    color:#dc2626;
-    font-weight:600;
-}
+            .offline-header,
+            .offline-row{
+                grid-template-columns:1.7fr 1.2fr 1.8fr;
+            }
+        }
 
-/* ======================
-   MOBILE
-====================== */
+        /* ======================
+           MOBILE
+        ====================== */
+        @media (max-width: 768px){
 
-@media(max-width:768px){
+            .container{
+                padding:16px;
+            }
 
-    .profile-card{
-        flex-direction:column;
-        text-align:center;
-    }
+            .profile-card{
+                flex-direction:column;
+                text-align:center;
+                padding:20px;
+            }
 
-    .online-header,
-    .offline-header{
-        display:none;
-    }
+            .profile-info h3{
+                font-size:22px;
+            }
 
-    .online-row,
-    .offline-row{
-        grid-template-columns:1fr;
-        gap:12px;
-        text-align:center;
-    }
+            .profile-info p{
+                font-size:13px;
+            }
 
-    .section-title{
-        font-size:18px;
-    }
-}
+            .stats{
+                grid-template-columns:repeat(2, 1fr);
+                gap:14px;
+            }
 
-</style>
+            .stat-box{
+                padding:18px 14px;
+                min-height:105px;
+                border-radius:16px;
+            }
 
+            .stat-box h2{
+                font-size:24px;
+            }
 
+            .stat-box p{
+                font-size:13px;
+            }
+
+            .section-title{
+                font-size:18px;
+                margin:20px 0 12px;
+            }
+
+            .exam-menu{
+                grid-template-columns:1fr;
+                gap:14px;
+            }
+
+            .exam-card{
+                padding:22px 18px;
+                border-radius:16px;
+            }
+
+            .exam-card h3{
+                font-size:18px;
+            }
+
+            /* Hide table headers */
+            .online-header,
+            .offline-header{
+                display:none;
+            }
+
+            /* Online mobile card */
+            .online-table,
+            .offline-table{
+                background:transparent;
+                box-shadow:none;
+                border-radius:0;
+                overflow:visible;
+            }
+
+            .online-row,
+            .offline-row{
+                display:block;
+                background:#fff;
+                border-radius:18px;
+                box-shadow:var(--shadow);
+                margin-bottom:16px;
+                padding:18px;
+                text-align:left;
+                border:none;
+            }
+
+            .online-row > div,
+            .offline-row > div{
+                margin-bottom:12px;
+            }
+
+            .online-row > div:last-child,
+            .offline-row > div:last-child{
+                margin-bottom:0;
+            }
+
+            .online-row > div:nth-child(1)::before{
+                content:"Course Name";
+                display:block;
+                font-size:12px;
+                font-weight:600;
+                color:var(--muted);
+                margin-bottom:4px;
+            }
+
+            .online-row > div:nth-child(2)::before{
+                content:"Total Marks";
+                display:block;
+                font-size:12px;
+                font-weight:600;
+                color:var(--muted);
+                margin-bottom:4px;
+            }
+
+            .online-row > div:nth-child(3)::before{
+                content:"Pass Marks";
+                display:block;
+                font-size:12px;
+                font-weight:600;
+                color:var(--muted);
+                margin-bottom:4px;
+            }
+
+            .online-row > div:nth-child(4)::before{
+                content:"Status";
+                display:block;
+                font-size:12px;
+                font-weight:600;
+                color:var(--muted);
+                margin-bottom:4px;
+            }
+
+            .online-row > div:nth-child(5)::before{
+                content:"Action";
+                display:block;
+                font-size:12px;
+                font-weight:600;
+                color:var(--muted);
+                margin-bottom:8px;
+            }
+
+            .offline-row > div:nth-child(1)::before{
+                content:"Exam Name";
+                display:block;
+                font-size:12px;
+                font-weight:600;
+                color:var(--muted);
+                margin-bottom:4px;
+            }
+
+            .offline-row > div:nth-child(2)::before{
+                content:"Question Paper";
+                display:block;
+                font-size:12px;
+                font-weight:600;
+                color:var(--muted);
+                margin-bottom:8px;
+            }
+
+            .offline-row > div:nth-child(3)::before{
+                content:"Actions";
+                display:block;
+                font-size:12px;
+                font-weight:600;
+                color:var(--muted);
+                margin-bottom:8px;
+            }
+
+            .action-group{
+                justify-content:flex-start;
+            }
+
+            .start-btn,
+            .view-btn,
+            .action-btn,
+            .download-btn,
+            .result-btn{
+                width:100%;
+                max-width:100%;
+                text-align:center;
+            }
+
+            .action-group .action-btn,
+            .action-group .download-btn,
+            .action-group .result-btn{
+                flex:1 1 100%;
+            }
+
+            .status{
+                min-width:auto;
+            }
+
+            .course-card{
+                padding:22px 18px;
+                border-radius:16px;
+            }
+        }
+
+        /* ======================
+           EXTRA SMALL MOBILE
+        ====================== */
+        @media (max-width: 480px){
+            .container{
+                padding:12px;
+            }
+
+            .profile-card{
+                padding:16px;
+                gap:14px;
+                border-radius:16px;
+            }
+
+            .avatar{
+                width:62px;
+                height:62px;
+                min-width:62px;
+                font-size:24px;
+            }
+
+            .profile-info h3{
+                font-size:19px;
+            }
+
+            .stats{
+                grid-template-columns:1fr;
+                gap:12px;
+            }
+
+            .stat-box{
+                min-height:95px;
+                padding:16px 14px;
+            }
+
+            .exam-card{
+                padding:18px 14px;
+            }
+
+            .online-row,
+            .offline-row{
+                padding:16px;
+                border-radius:16px;
+            }
+
+            .start-btn,
+            .view-btn,
+            .action-btn,
+            .download-btn,
+            .result-btn{
+                font-size:13px;
+                padding:10px 14px;
+            }
+        }
+    </style>
 </head>
-
 <body>
 
-<!-- NAVBAR -->
- <body>
+    {% include 'header.html' %}
 
-{% include 'header.html' %}
+    <div class="container">
 
+        <!-- PROFILE -->
+        <div class="profile-card">
+            <div class="avatar">
+                {{ student.name[0] if student is defined and student else 'S' }}
+            </div>
 
+            <div class="profile-info">
+                <h3>
+                    Hello, {{ student.name if student is defined and student else 'Student' }} 👋
+                </h3>
 
+                <p>
+                    {{ student.student_id if student is defined and student else '' }}
+                </p>
 
-
-
-<div class="container">
-
-    <!-- PROFILE -->
-     <div class="profile-card">
-  <div class="avatar">
-    {{ student.name[0] if student is defined and student else 'S' }}
-</div>
-
-<div class="profile-info">
-    <h3>
-        Hello, {{ student.name if student is defined and student else 'Student' }} 👋
-    </h3>
-
-    <p>
-        {{ student.user_id if student is defined and student else '' }}
-    </p>
-
-    <p>Welcome to your student dashboard</p>
-</div>
-</div>
-  
-
-    <div class="stats">
-
-    <div class="stat-box online-box">
-        <h2>{{ total_online }}</h2>
-        <p>🖥️ Online Exams</p>
-    </div>
-
-    <div class="stat-box offline-box">
-        <h2>{{ total_offline }}</h2>
-        <p>📄 Offline Exams</p>
-    </div>
-
-    <div class="stat-box pass-box">
-        <h2>{{ online_passed }}</h2>
-        <p>✅ Online Passed</p>
-    </div>
-
-    <div class="stat-box pass-box">
-        <h2>{{ offline_passed }}</h2>
-        <p>🏆 Offline Passed</p>
-    </div>
-
-    <div class="stat-box cert-box">
-        <h2>{{ certificates }}</h2>
-        <p>🎓 Certificates</p>
-    </div>
-
-</div>
-
-<!-- EXAMINATION MENU -->
-
-<div class="section-title">
-    📝 Examination
-</div>
-
-
-<div class="exam-menu">
-
-    <!-- Online Exam Card -->
-
-    <div class="exam-card" onclick="showOnline()">
-
-        <h3>🖥️ Online Exam</h3>
-
-        <p>
-            Start your online examinations
-        </p>
-
-    </div>
-
-
-    <!-- Offline Exam Card -->
-
-    <div class="exam-card" onclick="showOffline()">
-
-        <h3>📄 Offline Exam</h3>
-
-        <p>
-            View your offline exam results
-        </p>
-
-    </div>
-
-</div>
-
-
-
-<!-- ONLINE EXAM SECTION -->
-
-<div id="onlineSection" style="display:none;">
-
-
-<div class="section-title">
-    📚 My Individual Online Exam List
-</div>
-
-
-{% if courses %}
-
-
-<div class="online-table">
-
-    <div class="online-header">
-
-        <div>Course Name</div>
-        <div>Total Marks</div>
-        <div>Pass Marks</div>
-        <div>Status</div>
-        <div>Action</div>
-
-    </div>
-
-
-    {% for course in courses %}
-
-
-    <div class="online-row">
-
-
-        <div>
-            {{ course.title }}
+                <p>Welcome to your student dashboard</p>
+            </div>
         </div>
 
+        <!-- STATS -->
+        <div class="stats">
+            <div class="stat-box online-box">
+                <h2>{{ total_online }}</h2>
+                <p>🖥️ Online Exams</p>
+            </div>
 
-        <div>
-            {{ course.total_marks }}
+            <div class="stat-box offline-box">
+                <h2>{{ total_offline }}</h2>
+                <p>📄 Offline Exams</p>
+            </div>
+
+            <div class="stat-box pass-box">
+                <h2>{{ online_passed }}</h2>
+                <p>✅ Online Passed</p>
+            </div>
+
+            <div class="stat-box pass-box">
+                <h2>{{ offline_passed }}</h2>
+                <p>🏆 Offline Passed</p>
+            </div>
+
+            <div class="stat-box cert-box">
+                <h2>{{ certificates }}</h2>
+                <p>🎓 Certificates</p>
+            </div>
         </div>
 
-
-        <div>
-            {{ course.pass_marks }}
+        <!-- EXAMINATION MENU -->
+        <div class="section-title">
+            📝 Examination
         </div>
 
+        <div class="exam-menu">
+            <!-- Online Exam Card -->
+            <div class="exam-card" onclick="showOnline()">
+                <h3>🖥️ Online Exam</h3>
+                <p>Start your online examinations</p>
+            </div>
 
-        <div>
+            <!-- Offline Exam Card -->
+            <div class="exam-card" onclick="showOffline()">
+                <h3>📄 Offline Exam</h3>
+                <p>View your offline exam results</p>
+            </div>
+        </div>
 
-            {% if course.attempted %}
+        <!-- ONLINE EXAM SECTION -->
+        <div id="onlineSection" style="display:none;">
+            <div class="section-title">
+                📚 My Individual Online Exam List
+            </div>
 
-                <span class="status passed">
-                    Completed
-                </span>
+            {% if courses %}
+            <div class="online-table">
+
+                <div class="online-header">
+                    <div>Course Name</div>
+                    <div>Total Marks</div>
+                    <div>Pass Marks</div>
+                    <div>Status</div>
+                    <div>Action</div>
+                </div>
+
+                {% for course in courses %}
+                <div class="online-row">
+
+                    <div>
+                        {{ course.title }}
+                    </div>
+
+                    <div>
+                        {{ course.total_marks }}
+                    </div>
+
+                    <div>
+                        {{ course.pass_marks }}
+                    </div>
+
+                    <div>
+                        {% if course.attempted %}
+                            <span class="status passed">Completed</span>
+                        {% else %}
+                            <span class="status pending">Not Started</span>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        {% if course.attempted %}
+                            <a href="{{ url_for('exam.showstudent_result', exam_id=course.id) }}" class="view-btn">
+                                View Result
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('exam.start_exam', exam_id=course.id) }}" class="start-btn">
+                                Start Exam
+                            </a>
+                        {% endif %}
+                    </div>
+
+                </div>
+                {% endfor %}
+            </div>
 
             {% else %}
-
-                <span class="status pending">
-                    Not Started
-                </span>
-
+            <div class="course-card">
+                <h4>No Exams Assigned Yet</h4>
+                <p>Please contact administrator.</p>
+            </div>
             {% endif %}
-
         </div>
 
+        <!-- OFFLINE EXAM SECTION -->
+        <div id="offlineSection" style="display:none;">
+            <div class="section-title">
+                📄 Offline Exams
+            </div>
 
-        <div>
+            {% if offline_courses %}
+            <div class="offline-table">
 
+                <div class="offline-header">
+                    <div>Exam Name</div>
+                    <div>Question Paper</div>
+                    <div>Actions</div>
+                </div>
 
-            {% if course.attempted %}
+                {% for course in offline_courses %}
+                <div class="offline-row">
 
+                    <div class="exam-name">
+                        {{ course.title }}
+                    </div>
 
-            <a href="{{ url_for('exam.showstudent_result', exam_id=course.id) }}"
-               class="view-btn">
+                    <div>
+                        {% if course.pdf_file %}
+                            <a
+                                href="{{ url_for('static', filename='offline_exam_files/questions/' + course.pdf_file) }}"
+                                target="_blank"
+                                class="action-btn view-btn">
+                                📄 View Question
+                            </a>
+                        {% else %}
+                            <span class="no-file">No Question File</span>
+                        {% endif %}
+                    </div>
 
-                View Result
+                    <div class="action-group">
+                        {% if course.pdf_file %}
+                            <a
+                                href="{{ url_for('static', filename='offline_exam_files/questions/' + course.pdf_file) }}"
+                                download
+                                class="action-btn download-btn">
+                                ⬇ Download
+                            </a>
+                        {% endif %}
 
-            </a>
+                        <a
+                            href="{{ url_for('exam.showstudent_result') }}"
+                            class="action-btn result-btn">
+                            📊 Result
+                        </a>
+                    </div>
 
+                </div>
+                {% endfor %}
+            </div>
 
             {% else %}
-
-
-            <a href="{{ url_for('exam.start_exam', exam_id=course.id) }}"
-   class="start-btn">
-
-    Start Exam
-
-</a>
-
-
+            <div class="course-card">
+                <h4>No Offline Exam Assigned</h4>
+                <p>Please contact administrator.</p>
+            </div>
             {% endif %}
-
-
         </div>
 
-
     </div>
 
-
-    {% endfor %}
-
-
-</div>
-
-
-
-{% else %}
-
-
-<div class="course-card">
-
-    <h4>No Exams Assigned Yet</h4>
-
-    <p>Please contact administrator.</p>
-
-</div>
-
-
-{% endif %}
-
-
-</div>
-
-
-<!-- OFFLINE EXAM SECTION -->
-
-<div id="offlineSection" style="display:none;">
-
-    <div class="section-title">
-        📄 Offline Exams
-    </div>
-
-    {% if offline_courses %}
-
-    <div class="offline-table">
-
-        <div class="offline-header">
-            <div>Exam Name</div>
-            <div>Question Paper</div>
-            <div>Actions</div>
-        </div>
-
-        {% for course in offline_courses %}
-
-        <div class="offline-row">
-
-            <div class="exam-name">
-                {{ course.title }}
-            </div>
-
-            <div>
-
-                {% if course.pdf_file %}
-
-                <a
-                href="{{url_for(
-                    'static',
-                    filename=course.pdf_file
-                ) }}"
-                target="_blank"
-                class="action-btn view-btn">
-
-                    📄 View Question
-                </a>
-
-                {% else %}
-
-                <span class="no-file">
-                    No Question File
-                </span>
-
-                {% endif %}
-
-            </div>
-
-            <div class="action-group">
-
-                {% if course.pdf_file %}
-
-                <a
-                href="{{ url_for(
-                    'static',
-                    filename=course.pdf_file
-                ) }}"
-                download
-                class="action-btn download-btn">
-
-                    ⬇ Download
-
-                </a>
-
-                {% endif %}
-
-                <a
-                href="{{ url_for('exam.showstudent_result') }}"
-                class="action-btn result-btn">
-
-                    📊 Result
-
-                </a>
-
-            </div>
-
-        </div>
-
-        {% endfor %}
-
-    </div>
-
-    {% else %}
-
-    <div class="course-card">
-
-        <h4>No Offline Exam Assigned</h4>
-
-        <p>Please contact administrator.</p>
-
-    </div>
-
-    {% endif %}
-
-</div>
-
-
-    <!-- CERTIFICATE -->
-   <!-- {% if certificates > 0 %}
-
-<div class="cert">
-
-    <b>{{ student.name }}</b><br>
-
-    <small>
-        Certificate Available
-    </small><br>
-
-    <button
-    onclick="window.location.href='/cirtificatepage'">
-
-        View
-
-    </button>
-
-</div>
-
-{% endif %} -->
-
-<script>
-
-
-function showOnline()
-{
-
-    document.getElementById("onlineSection").style.display = "block";
-
-    document.getElementById("offlineSection").style.display = "none";
-
-}
-
-
-
-function showOffline()
-{
-
-    document.getElementById("offlineSection").style.display = "block";
-
-    document.getElementById("onlineSection").style.display = "none";
-
-}
-
-
-</script>
-
-
+    <script>
+        function showOnline() {
+            document.getElementById("onlineSection").style.display = "block";
+            document.getElementById("offlineSection").style.display = "none";
+        }
+
+        function showOffline() {
+            document.getElementById("offlineSection").style.display = "block";
+            document.getElementById("onlineSection").style.display = "none";
+        }
+    </script>
 
 </body>
 </html>
 
-
-
-
-
-
-
-  

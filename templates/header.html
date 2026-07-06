@@ -56,16 +56,12 @@ body{
     gap:12px;
 }
 
-.logo-img{
-
-    width:42px;
-    height:42px;
-
-    border-radius:50%;
-
-    background:#fff;
-
-    object-fit:cover;
+.logo img {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    /* object-fit: cover; */
+    border: 2px solid #140000;
 }
 
 .logo h2{
@@ -275,8 +271,8 @@ body{
 
     <div class="logo">
 
-        <img
-        src="{{ url_for('static', filename='images/logo.png') }}"
+    
+       <img src="{{ url_for('static', filename='images/logo.png') }}" 
         alt="Logo"
         class="logo-img">
 
@@ -295,8 +291,7 @@ body{
     <div class="nav-links" id="navLinks">
 
         <a
-        href="{{ url_for('exam.student_portal') }}"
-        class="active">
+        href="{{ url_for('exam.student_portal') }}">
 
             Home
 
@@ -314,6 +309,7 @@ body{
             Profile
 
         </a>
+
         <a
         href="/logout"
         class="logout">

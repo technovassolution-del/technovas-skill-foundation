@@ -75,23 +75,26 @@ body{
     gap:12px;
 }
 
-.logo img{
-    width:50px;
-    height:50px;
-    border-radius:50%;
-    /* object-fit:cover; */
-    border:2px solid #fff;
+.logo img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    /* object-fit: cover; */
+    border: 2px solid #140000;
 }
 
 .logo-text h3{
-    font-size:16px;
+    font-size:20px;
     margin-bottom:2px;
     color:#fff;
+    letter-spacing:.5px;
 }
 
 .logo-text span{
-    font-size:11px;
-    color:#cfd8ff;
+    font-size:14px;
+    color:#f11f08;
+     letter-spacing:.3px;
+     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 /* MENU */
@@ -443,10 +446,10 @@ footer a{
     <nav class="navbar">
     
     <a href="#" class="logo">
-        <img src="{{ url_for('static', filename='images/logo.jpeg') }}" alt="logo">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo">
         <div class="logo-text">
             <h3>TECHNOVAS SOLUTION</h3>
-            <span>A unit of Technovas Skill Foundation</span>
+            <span>A UNIT OF TECHNOVAS SKILL FOUNDATION</span>
         </div>
     </a>
 
@@ -457,8 +460,8 @@ footer a{
     </label>
 
     <ul class="menu">
-        <li><a href="#">Our Student</a></li>
-        <li><a href="{{ url_for('onlineattendance') }}">Attendance</a></li>
+        <li><a href="#">Student Corner</a></li>
+        <li><a href="#">Attendance</a></li>
         <li><a href="/login" class="active">Login</a></li>
     </ul>
 
@@ -471,6 +474,7 @@ footer a{
         <!-- TEXT -->
 
         <div class="home-text">
+
             <h3>
                 WELCOME TO TECHNOVAS SKILL FOUNDATION
             </h3>
