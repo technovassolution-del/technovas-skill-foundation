@@ -950,7 +950,6 @@ def start_exam(exam_id):
 
 @exam_bp.route('/result')
 def result():
-
     attempt_id = session.get('attempt_id')
     student = session.get('student')
     student_name = student['name'] if student else "Student"
@@ -974,12 +973,10 @@ def result():
             """, (attempt_id,))
 
             conn.commit()
-
             cursor.close()
             conn.close()
 
         except Exception as e:
-
             print("ERROR in submit_attempt:", e)
 
     # 🔥 CLEAR SESSION (AFTER EVERYTHING)
@@ -1524,9 +1521,11 @@ def edit_exam(exam_id):
     assigned_data = cursor.fetchall()
 
     assigned_students = [
-        x['student_id']
+        str(x['student_id'])
         for x in assigned_data
     ]
+
+    print("Assigned Students:", assigned_students)
 
     # ---------------- UPDATE EXAM ----------------
 
