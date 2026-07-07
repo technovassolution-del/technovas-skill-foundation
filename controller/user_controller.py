@@ -3,7 +3,6 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from werkzeug.security import generate_password_hash
 from models.user_model import create_user
 from config import get_db_connection   # 🔥 MUST
-
 user_bp = Blueprint("user", __name__)
 
 @user_bp.route("/register", methods=["GET", "POST"])
