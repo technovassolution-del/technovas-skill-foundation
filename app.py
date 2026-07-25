@@ -57,7 +57,6 @@ def logout():
     session.clear()   # removes all session data
     return render_template('default.html')
 
-
 @app.route("/studentexam_view")
 def studentexam_view():
     return render_template("studentexam_view.html")
@@ -74,6 +73,20 @@ def studentprofile():
 def cirtificatepage():
     return render_template("cirtificatepage.html")
 
+# ------------------ofline exam--------------------
+
+
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+
+app.config['QUESTION_UPLOAD_FOLDER'] = os.path.join(
+    BASE_DIR,
+    'static/offline_exam_files/questions'
+)
+
+app.config['ANSWER_UPLOAD_FOLDER'] = os.path.join(
+    BASE_DIR,
+    'static/offline_exam_files/answer_sheets'
+)
 
 
 # ---------------- LOGIN ----------------
@@ -156,12 +169,14 @@ def employee():
 
 
 # Register page
-@app.route('/register')
+@app.route('/attendance_register')
 def register():
+
     user = session.get('selected_user')
+    print("selected data"+str(user))
     return render_template(
         'register.html',
-        user=user
+         user=user
     )
 # Save face
 @app.route('/register_face', methods=['POST'])
@@ -219,7 +234,7 @@ def select_user(id):
 
     # Store in session
     session['selected_user'] = selected_user
-    return redirect('/register')
+    return redirect('/attendance_register')
 
 
 @app.route('/select_user_employee/<int:id>')

@@ -277,7 +277,7 @@ input:focus{
 
         <input type="text"
         name="title"
-        value="{{exam.title }}"
+        value="{{ exam.title }}"
         required>
 
         <!-- START -->
@@ -362,11 +362,9 @@ input:focus{
 
                 {% for student in students %}
 
-
 <div class="student-item">
- 
-    <div class="student-left">
 
+    <div class="student-left">
         <div class="avatar">
             {{ student.name[0] }}
         </div>
@@ -378,7 +376,7 @@ input:focus{
             </div>
 
             <div class="student-id">
-                ID: {{ student.enrollmentid }}
+                ID: {{ student.userid }}
             </div>
 
         </div>
@@ -390,8 +388,9 @@ input:focus{
     <input type="checkbox"
     class="checkbox"
     name="selected_students"
-    value="{{student.enrollmentid }}"
-    {% if student.enrollmentid in assigned_students %}
+    value="{{ student.userid }}"
+
+    {% if student.userid in assigned_students %}
     checked
     {% endif %}
     >
@@ -415,7 +414,7 @@ input:focus{
 
             </button>
 
-            <a href="/exam_list"
+            <a href="/exam_list_page"
             class="btn cancel">
 
                 Cancel

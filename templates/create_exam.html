@@ -3,13 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Create Exam</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
 <style>
-
 /* RESET */
 *{
     margin:0;
@@ -53,32 +49,25 @@ body{
     display:flex;
     flex-direction:column;
     justify-content:space-between;
-    min-height:100%;
 }
 
-/* TOP BAR */
 .left .top{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    gap:10px;
 }
 
 .left h3{
     font-size:18px;
-    font-weight:600;
 }
 
-/* BACK BUTTON */
 .back{
     text-decoration:none;
     color:white;
     background:rgba(255,255,255,0.2);
     padding:8px 14px;
     border-radius:20px;
-    font-size:13px;
     transition:0.3s;
-    white-space:nowrap;
 }
 
 .back:hover{
@@ -86,11 +75,9 @@ body{
     color:#1e1b4b;
 }
 
-/* LEFT TEXT */
 .left h2{
     font-size:22px;
     line-height:1.4;
-    margin-top:20px;
 }
 
 /* RIGHT PANEL */
@@ -98,18 +85,12 @@ body{
     flex:1;
     padding:35px;
     color:white;
-    overflow-y:auto;
 }
 
-/* TITLE */
-.right h2{
-    margin-bottom:15px;
-    font-size:24px;
-}
-
-/* INPUTS */
+/* INPUT STYLE */
 input,
-textarea{
+textarea,
+select{
     width:100%;
     padding:12px;
     margin:8px 0;
@@ -118,13 +99,11 @@ textarea{
     background:rgba(255,255,255,0.08);
     color:white;
     outline:none;
-    transition:0.3s;
     font-size:14px;
 }
 
-textarea{
-    min-height:90px;
-    resize:vertical;
+select option{
+    color:black;
 }
 
 input::placeholder,
@@ -132,13 +111,11 @@ textarea::placeholder{
     color:#cbd5f5;
 }
 
-input:focus,
-textarea:focus{
-    border-color:#6366f1;
-    box-shadow:0 0 0 3px rgba(99,102,241,0.2);
+textarea{
+    min-height:90px;
+    resize:vertical;
 }
 
-/* ROW */
 .row{
     display:flex;
     gap:10px;
@@ -148,7 +125,7 @@ textarea:focus{
     flex:1;
 }
 
-/* CHECKBOX GRID */
+/* Online Options */
 .checkbox-group{
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -164,12 +141,6 @@ textarea:focus{
     padding:10px;
     border-radius:10px;
     cursor:pointer;
-    transition:0.3s;
-    font-size:13px;
-}
-
-.checkbox-group label:hover{
-    background:rgba(255,255,255,0.15);
 }
 
 .checkbox-group input{
@@ -177,19 +148,19 @@ textarea:focus{
     margin:0;
 }
 
-/* BUTTON */
+/* Button */
 .btn{
     width:100%;
     padding:14px;
-    margin-top:15px;
+    margin-top:20px;
     border:none;
     border-radius:30px;
     background:linear-gradient(135deg,#6366f1,#8b5cf6);
     color:white;
     font-size:15px;
+    font-weight:600;
     cursor:pointer;
     transition:0.3s;
-    font-weight:600;
 }
 
 .btn:hover{
@@ -197,32 +168,17 @@ textarea:focus{
     box-shadow:0 10px 25px rgba(99,102,241,0.5);
 }
 
-/* TABLET */
+/* Responsive */
 @media(max-width:900px){
-
     .wrapper{
         flex-direction:column;
     }
-
-    .left{
-        min-height:220px;
-    }
-
 }
 
-/* MOBILE */
 @media(max-width:600px){
-
-    body{
-        padding:15px;
-    }
 
     .right{
         padding:20px;
-    }
-
-    .left h2{
-        font-size:18px;
     }
 
     .row{
@@ -235,20 +191,6 @@ textarea:focus{
 
 }
 
-/* EXTRA SMALL */
-@media(max-width:400px){
-
-    .right h2{
-        font-size:20px;
-    }
-
-    input,
-    textarea{
-        font-size:13px;
-    }
-
-}
-
 </style>
 </head>
 
@@ -256,50 +198,181 @@ textarea:focus{
 
 <div class="wrapper">
 
-    <!-- LEFT -->
-    <div class="left">
+<!-- LEFT PANEL -->
+<div class="left">
 
-        <div class="top">
-            <h3>Exam Panel</h3>
-            <a href="#" class="back">← Dashboard</a>
-        </div>
+    <div class="top">
+        <h3>Exam Panel</h3>
 
-        <h2>Create powerful exams with ease 🚀</h2>
+        <a href="/admin_dashboard" class="back">
+            ← Dashboard
+        </a>
     </div>
-    <!-- RIGHT -->
-    <div class="right">
 
-        <h2>Create Exam</h2>
-
-       <form method="POST" action="{{url_for('exam.save_exam') }}">
-
-            <input type="text" name="title" placeholder="Exam Title" required>
-
-            <textarea name="description" placeholder="Description"></textarea>
-            <div class="row">
-                <input type="datetime-local" name="start_at" required>
-                <input type="datetime-local" name="end_at" required>
-            </div>
-            <input type="number" name="duration" placeholder="Duration (minutes)" required>
-
-            <div class="row">
-                <input type="number" name="total_marks" placeholder="Total Marks">
-                <input type="number" name="pass_marks" placeholder="Pass Marks">
-            </div>
-
-            <div class="checkbox-group">
-                <label><input type="checkbox" name="shuffle_questions" value="1"> Shuffle Questions</label>
-                <label><input type="checkbox" name="shuffle_options" value="1"> Shuffle Options</label>
-                <label><input type="checkbox" name="allow_review" value="1" checked> Allow Review</label>
-                <label><input type="checkbox" name="is_published" value="1"> Publish</label>
-            </div>
-
-            <button type="submit" class="btn">Create Exam</button>
-
-        </form>
-    </div>
+    <h2>
+        Create powerful exams with ease 🚀
+    </h2>
 
 </div>
+
+
+<!-- RIGHT PANEL -->
+<div class="right">
+
+<h2>Create Exam</h2>
+
+<form method="POST" action="/save_exam">
+
+    <!-- Exam Type -->
+    <div class="row">
+
+        <select id="examType" name="exam_type" required>
+
+            <option value="online" selected>
+                Online Exam
+            </option>
+
+            <option value="offline">
+                Offline Exam
+            </option>
+
+        </select>
+
+    </div>
+
+    <!-- Title -->
+    <input 
+        type="text"
+        name="title"
+        placeholder="Exam Title"
+        required>
+
+    <!-- Description -->
+    <textarea
+        name="description"
+        placeholder="Description">
+    </textarea>
+
+    <!-- Date Time -->
+    <div class="row">
+
+        <input 
+            type="datetime-local"
+            name="start_date"
+            required>
+
+        <input 
+            type="datetime-local"
+            name="end_date"
+            required>
+
+    </div>
+
+    <!-- Duration -->
+    <input 
+        type="number"
+        name="duration"
+        placeholder="Duration (minutes)"
+        required>
+
+    <!-- Marks -->
+    <div class="row">
+
+        <input 
+            type="number"
+            name="total_marks"
+            placeholder="Total Marks"
+            required>
+
+        <input 
+            type="number"
+            name="pass_marks"
+            placeholder="Pass Marks"
+            required>
+
+    </div>
+
+    <!-- ONLINE OPTIONS -->
+    <div class="checkbox-group" id="onlineOptions">
+
+        <label>
+            <input type="checkbox" name="shuffle_questions">
+            Shuffle Questions
+        </label>
+
+        <label>
+            <input type="checkbox" name="shuffle_options">
+            Shuffle Options
+        </label>
+
+        <label>
+            <input type="checkbox" name="allow_review" checked>
+            Allow Review
+        </label>
+
+    </div>
+
+    <!-- 🔥 PUBLISH CONTROL (IMPORTANT FIX) -->
+    <div class="checkbox-group">
+
+        <label>
+            <input type="checkbox" name="publish" value="1" checked>
+            Publish Exam 
+        </label>
+
+    </div>
+
+    <!-- SUBMIT -->
+    <button class="btn" type="submit">
+        Create Exam
+    </button>
+
+</form>
+
+</div>
+
+</div>
+
+
+<script>
+
+// Get Elements
+const examType = document.getElementById("examType");
+const onlineOptions = document.getElementById("onlineOptions");
+
+
+// Change Mode
+function changeExamMode(){
+
+    if(examType.value === "offline"){
+
+        // Hide Online Features
+        onlineOptions.style.display = "none";
+
+    } 
+    else {
+
+        // Show Online Features
+        onlineOptions.style.display = "grid";
+
+    }
+
+}
+
+
+// Run when dropdown changes
+examType.addEventListener(
+    "change",
+    changeExamMode
+);
+
+
+// Default page load
+changeExamMode();
+
+
+</script>
+
 
 </body>
 </html>

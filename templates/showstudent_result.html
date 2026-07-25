@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -261,25 +262,258 @@ tbody td{
     color:#111;
 }
 
-@media(max-width:768px){
+
+
+/* =================================
+   FULL MOBILE RESPONSIVE FIX
+================================= */
+
+/* Container */
+
+.container{
+    width:95%;
+    max-width:1200px;
+    margin:20px auto;
+}
+
+
+/* Table Scroll */
+
+.table-container{
+    width:100%;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+}
+
+table{
+    min-width:700px;
+}
+
+
+/* Modal Responsive */
+
+.modal{
+    padding:15px;
+    overflow-y:auto;
+}
+
+.modal-content{
+    width:100%;
+    max-width:750px;
+    max-height:90vh;
+    overflow-y:auto;
+}
+
+.result-info{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+.info-box{
+    word-break:break-word;
+}
+
+
+/* =================================
+   TABLET
+================================= */
+
+@media (max-width:992px){
+
+    .navbar{
+        padding:12px 20px;
+        flex-wrap:wrap;
+        gap:10px;
+    }
+
+    .nav-links{
+        display:flex;
+        flex-wrap:wrap;
+        gap:10px;
+    }
+
+    .profile-info h2{
+        font-size:24px;
+    }
+
+    .section-title{
+        font-size:24px;
+    }
+}
+
+
+/* =================================
+   MOBILE
+================================= */
+
+@media (max-width:768px){
+
+    .container{
+        width:96%;
+    }
+
+    .navbar{
+        flex-direction:column;
+        text-align:center;
+        gap:12px;
+    }
+
+    .nav-links{
+        justify-content:center;
+    }
+
+    .nav-links a{
+        margin-left:0;
+    }
 
     .profile-card{
         flex-direction:column;
         text-align:center;
+        padding:20px;
     }
 
     .avatar{
+        margin-right:0;
         margin-bottom:15px;
+    }
+
+    .profile-info h2{
+        font-size:22px;
+    }
+
+    .profile-info p{
+        font-size:14px;
+    }
+
+    .section-title{
+        font-size:22px;
+    }
+
+    .back-btn{
+        width:100%;
+        text-align:center;
+    }
+
+    /* Modal */
+
+    .modal-content{
+        padding:20px;
+        border-radius:10px;
+    }
+
+    .result-header h2{
+        font-size:22px;
     }
 
     .result-info{
         grid-template-columns:1fr;
     }
 
-    table{
-        font-size:12px;
+    .info-box{
+        padding:12px;
+    }
+
+    .info-box h4{
+        font-size:13px;
+    }
+
+    .info-box p{
+        font-size:15px;
+    }
+
+    .close-btn{
+        font-size:28px;
     }
 }
+
+
+/* =================================
+   SMALL MOBILE
+================================= */
+
+@media (max-width:480px){
+
+    body{
+        font-size:14px;
+    }
+
+    .container{
+        width:98%;
+    }
+
+    .profile-card{
+        padding:15px;
+    }
+
+    .avatar{
+        width:60px;
+        height:60px;
+        font-size:28px;
+    }
+
+    .profile-info h2{
+        font-size:18px;
+    }
+
+    .section-title{
+        font-size:18px;
+    }
+
+    .result-btn{
+        width:100%;
+        padding:10px;
+        font-size:13px;
+    }
+
+    .modal-content{
+        padding:15px;
+    }
+
+    .result-header h2{
+        font-size:18px;
+    }
+
+    .info-box{
+        padding:10px;
+    }
+
+    .info-box p{
+        font-size:14px;
+    }
+
+    .close-btn{
+        top:10px;
+        right:12px;
+        font-size:24px;
+    }
+}
+
+
+/* =================================
+   EXTRA SMALL DEVICES
+================================= */
+
+@media (max-width:360px){
+
+    .profile-info h2{
+        font-size:16px;
+    }
+
+    .section-title{
+        font-size:16px;
+    }
+
+    .result-btn{
+        font-size:12px;
+        padding:8px;
+    }
+
+    .info-box p{
+        font-size:13px;
+    }
+}
+
 </style>
 </head>
 
@@ -287,174 +521,476 @@ tbody td{
 
 <!-- NAVBAR -->
 
-<div class="navbar">
-    <div class="logo">🎓 Technovas Skill Foundation</div>
-    <div class="nav-links">
-        <a href="{{ url_for('exam.student_portal') }}">Home</a>
-        <a href="{{ url_for('showstudent_result') }}">Result</a>
-        <a href="{{ url_for('studentprofile') }}">profile</a>
-        <a href="#">Logout</a>
-    </div>
-</div>
+{% include 'header.html' %}
+
+
+
+
 
 <!-- MAIN -->
 
 <div class="container">
 
-   <a class="back-btn" href="{{ url_for('studentexam_view') }}">
-  ← Back to Dashboard
+<a class="back-btn"
+   href="{{ url_for('exam.student_portal') }}">
+    ← Back to Dashboard
 </a>
 
-    <!-- PROFILE -->
+<!-- PROFILE -->
+ 
+<div class="container">
 
-    <div class="profile-card">
+    
+     <div class="profile-card">
+  <div class="avatar">
+    {{ student.full_name[0] if student is defined and student else 'S' }}
+</div>
 
-        <div class="avatar">
-            N
-        </div>
+<div class="profile-info">
+    <h3>
+        Hello, {{ student.full_name if student is defined and student else 'Student' }} 👋
+    </h3>
 
-        <div class="profile-info">
-            <h2>Nilimesh Roy</h2>
-            <p>
-                <i class="fa-regular fa-envelope"></i>
-                nilimeshroy77@gmail.com
-            </p>
-        </div>
+    <p>
+        {{ student.student_id if student is defined and student else '' }}
+    </p>
 
+    <p>Now Show Your Exam Status</p>
+</div>
+</div>
+
+
+<!-- RESULT TITLE -->
+
+<div class="section-title">
+    <i class="fa-solid fa-chart-column"></i>
+    Exam Results History
+</div>
+
+<!-- TABLE -->
+
+<div class="table-container">
+
+<table>
+
+    <thead>
+<tr>
+    <th>#</th>
+    <th>Exam Title</th>
+    <th>Score</th>
+    <th>Status</th>
+    <th>Date</th>
+    <th>Result</th>
+</tr>
+</thead>
+
+    <tbody>
+
+{% if online_results %}
+
+    {% for r in online_results %}
+
+    <tr>
+
+        <td>{{ loop.index }}</td>
+
+        <td>{{ r.exam_title }}</td>
+
+        <td>{{ "%.2f"|format(r.percentage or 0) }}%</td>
+
+        <td>
+
+            {% if r.result_status == 'PASS' %}
+                <span class="pass">PASS</span>
+            {% else %}
+                <span class="fail">FAIL</span>
+            {% endif %}
+
+        </td>
+
+        <td>{{ r.submitted_at }}</td>
+
+        <td>
+
+            <button
+                class="result-btn"
+
+                data-student="{{ student.full_name }}"
+                data-exam="{{ r.exam_title }}"
+                data-online="{{ r.online_marks }}"
+                data-theory="{{ r.theory_marks }}"
+                data-practical="{{ r.practical_marks }}"
+                data-attendance="{{ r.attendance_marks }}"
+                data-total="{{ r.total_marks }}"
+                data-percent="{{ r.percentage }}"
+                data-status="{{ r.result_status }}"
+
+                onclick="openResult(this)">
+
+                View Result
+
+            </button>
+
+        </td>
+
+    </tr>
+
+    {% endfor %}
+
+{% else %}
+
+<tr>
+    <td colspan="6" style="text-align:center;padding:30px;">
+        No Published Results Found
+    </td>
+</tr>
+
+{% endif %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- offline result process -->
+
+<!-- ===========================
+      OFFLINE EXAM RESULT
+=========================== -->
+
+<div class="section-title">
+    <i class="fa-solid fa-file-lines"></i>
+    Offline Exam Results
+</div>
+
+
+<div class="table-container">
+
+<table>
+
+<thead>
+<tr>
+    <th>#</th>
+    <th>Exam Title</th>
+    <th>Theory</th>
+    <th>Practical</th>
+    <th>Total</th>
+    <th>Grade</th>
+    <th>Status</th>
+    <th>Result</th>
+</tr>
+</thead>
+
+
+<tbody>
+
+{% if offline_results %}
+
+{% for r in offline_results %}
+
+<tr>
+
+<td>{{ loop.index }}</td>
+
+<td>{{ r.exam_title }}</td>
+
+<td>{{ r.theory_marks }}</td>
+
+<td>{{ r.practical_marks }}</td>
+
+<td>{{ r.total_marks }}</td>
+
+<td>{{ r.grade }}</td>
+
+
+<td>
+
+{% if r.status == "PASS" %}
+
+<span class="pass">PASS</span>
+
+{% else %}
+
+<span class="fail">FAIL</span>
+
+{% endif %}
+
+</td>
+
+
+<td>
+
+<button class="result-btn"
+
+data-exam="{{ r.exam_title }}"
+data-theory="{{ r.theory_marks }}"
+data-practical="{{ r.practical_marks }}"
+data-total="{{ r.total_marks }}"
+data-grade="{{ r.grade }}"
+data-status="{{ r.status }}"
+data-question="{{ r.question_file }}"
+data-answer="{{ r.answer_sheet_file }}"
+
+onclick="openOfflineResult(this)">
+
+View Result
+
+</button>
+
+</td>
+
+</tr>
+
+
+{% endfor %}
+
+
+{% else %}
+
+<tr>
+
+<td colspan="8" style="text-align:center">
+
+No Offline Result Found
+
+</td>
+
+</tr>
+
+{% endif %}
+
+
+</tbody>
+
+</table>
+
+</div>
+
+<!-- RESULT MODAL -->
+
+<div class="modal" id="resultModal">
+
+<div class="modal-content">
+
+    <span class="close-btn"
+          onclick="closeResult()">
+        &times;
+    </span>
+
+    <div class="result-header">
+        <h2>Exam Result Details</h2>
     </div>
 
-    <!-- RESULT TITLE -->
+    <div class="result-info">
 
-    <div class="section-title">
-        <i class="fa-solid fa-chart-column"></i>
-        Exam Results History
-    </div>
+        <div class="info-box">
+            <h4>Student Name</h4>
+            <p id="studentName"></p>
+        </div>
 
-    <!-- TABLE -->
+        <!-- <div class="info-box">
+            <h4>Subject</h4>
+            <p id="subjectName"></p>
+        </div> -->
 
-    <div class="table-container">
+        <div class="info-box">
+            <h4>Exam Title</h4>
+            <p id="examName"></p>
+        </div>
 
-        <table>
+        <div class="info-box">
+            <h4>Online Marks</h4>
+            <p id="onlineMarks"></p>
+        </div>
 
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Exam Title</th>
-                    <th>Course</th>
-                    <th>Score</th>
-                    <th>Status</th>
-                    <th>Time Taken</th>
-                    <th>Date</th>
-                    <th>Result</th>
-                </tr>
-            </thead>
+        <div class="info-box">
+            <h4>Theory Marks</h4>
+            <p id="theoryMarks"></p>
+        </div>
 
-            <tbody>
+        <div class="info-box">
+            <h4>Practical Marks</h4>
+            <p id="practicalMarks"></p>
+        </div>
 
-                
+        <div class="info-box">
+            <h4>Attendance Marks</h4>
+            <p id="attendanceMarks"></p>
+        </div>
 
-                <tr>
-                    <td>1</td>
+        <div class="info-box">
+            <h4>Total Marks</h4>
+            <p id="totalMarks"></p>
+        </div>
 
-                    <td>
-                        Microsoft Excel with AI Masterclass (Self Learning) - Final Exam
-                    </td>
+        <div class="info-box">
+            <h4>Percentage</h4>
+            <p id="percentage"></p>
+        </div>
 
-                    <td>
-                        Microsoft Excel with AI Masterclass (Self Learning)
-                    </td>
-
-                    <td>87%</td>
-
-                    <td>
-                        <span class="pass">Pass</span>
-                    </td>
-
-                    <td>16m 39s</td>
-
-                    <td>22 May 2026</td>
-
-                    <td>
-                        <button class="result-btn" onclick="openResult()">
-                            View Result
-                        </button>
-                    </td>
-                </tr>
-
-            </tbody>
-
-        </table>
+        <div class="info-box">
+            <h4>Result Status</h4>
+            <p id="resultStatus"></p>
+        </div>
 
     </div>
 
 </div>
 
-<!-- RESULT POPUP -->
+</div>
 
-<div class="modal" id="resultModal">
+<!-- ==========================
+      OFFLINE RESULT MODAL
+========================== -->
 
-    <div class="modal-content">
+<div class="modal" id="offlineModal">
 
-        <span class="close-btn" onclick="closeResult()">
-            &times;
-        </span>
 
-        <div class="result-header">
-            <h2>Student Exam Result</h2>
-            <p>Published by Admin</p>
-        </div>
+<div class="modal-content">
 
-        <div class="result-info">
 
-            <div class="info-box">
-                <h4>Student Name</h4>
-                <p>Nilimesh Roy</p>
-            </div>
+<span class="close-btn"
+onclick="closeOfflineResult()">
 
-            <div class="info-box">
-                <h4>Course</h4>
-                <p>Advanced Excel</p>
-            </div>
+&times;
 
-            <div class="info-box">
-                <h4>Exam Score</h4>
-                <p>87%</p>
-            </div>
+</span>
 
-            <div class="info-box">
-                <h4>Status</h4>
-                <p style="color:green;">PASS</p>
-            </div>
 
-            <div class="info-box">
-                <h4>Total Questions</h4>
-                <p>50</p>
-            </div>
+<div class="result-header">
 
-            <div class="info-box">
-                <h4>Correct Answer</h4>
-                <p>44</p>
-            </div>
+<h2>
+Offline Exam Result Details
+</h2>
 
-            <div class="info-box">
-                <h4>Wrong Answer</h4>
-                <p>6</p>
-            </div>
+</div>
 
-            <div class="info-box">
-                <h4>Exam Date</h4>
-                <p>22 May 2026</p>
-            </div>
 
-        </div>
+<div class="result-info">
 
-    </div>
+
+<div class="info-box">
+
+<h4>Exam Title</h4>
+
+<p id="offlineExam"></p>
+
+</div>
+
+
+<div class="info-box">
+
+<h4>Theory Marks</h4>
+
+<p id="offlineTheory"></p>
+
+</div>
+
+
+<div class="info-box">
+
+<h4>Practical Marks</h4>
+
+<p id="offlinePractical"></p>
+
+</div>
+
+
+<div class="info-box">
+
+<h4>Total Marks</h4>
+
+<p id="offlineTotal"></p>
+
+</div>
+
+
+<div class="info-box">
+
+<h4>Grade</h4>
+
+<p id="offlineGrade"></p>
+
+</div>
+
+
+<div class="info-box">
+
+<h4>Status</h4>
+
+<p id="offlineStatus"></p>
+
+</div>
+
+<div class="info-box">
+
+<h4>Question Paper</h4>
+
+<p>
+<a id="questionLink"
+target="_blank">
+📄 View Question
+</a>
+</p>
+
+</div>
+
+
+<div class="info-box">
+
+<h4>Answer Sheet</h4>
+
+<p>
+<a id="answerLink"
+target="_blank">
+📝 View Answer
+</a>
+</p>
+
+</div>
+
+
+</div>
+
+</div>
 
 </div>
 
 <script>
 
-function openResult(){
+function openResult(btn){
+
+    document.getElementById("studentName").innerText =
+        btn.dataset.student;
+
+
+    document.getElementById("examName").innerText =
+        btn.dataset.exam;
+
+    document.getElementById("onlineMarks").innerText =
+        btn.dataset.online;
+
+    document.getElementById("theoryMarks").innerText =
+        btn.dataset.theory;
+
+    document.getElementById("practicalMarks").innerText =
+        btn.dataset.practical;
+
+    document.getElementById("attendanceMarks").innerText =
+        btn.dataset.attendance;
+
+    document.getElementById("totalMarks").innerText =
+        btn.dataset.total;
+
+    document.getElementById("percentage").innerText =
+        btn.dataset.percent + "%";
+
+    document.getElementById("resultStatus").innerText =
+        btn.dataset.status;
+
     document.getElementById("resultModal").style.display = "flex";
 }
 
@@ -463,12 +999,83 @@ function closeResult(){
 }
 
 window.onclick = function(event){
-    let modal = document.getElementById("resultModal");
+
+    let modal =
+        document.getElementById("resultModal");
 
     if(event.target == modal){
         modal.style.display = "none";
     }
+
 }
+
+// ================================
+// OFFLINE RESULT OPEN
+// ================================
+
+function openOfflineResult(btn){
+
+    document.getElementById("offlineExam").innerText =
+        btn.dataset.exam;
+
+
+    document.getElementById("offlineTheory").innerText =
+        btn.dataset.theory;
+
+
+    document.getElementById("offlinePractical").innerText =
+        btn.dataset.practical;
+
+
+    document.getElementById("offlineTotal").innerText =
+        btn.dataset.total;
+
+    document.getElementById("offlineGrade").innerText =
+        btn.dataset.grade;
+
+
+    document.getElementById("offlineStatus").innerText =
+        btn.dataset.status;
+
+
+    document.getElementById("offlineModal")
+        .style.display = "flex";
+    
+    document.getElementById("questionLink").href =
+      "/static/" + btn.dataset.question;
+
+
+    document.getElementById("answerLink").href =
+       "/static/" + btn.dataset.answer;  
+}
+
+
+
+// CLOSE OFFLINE MODAL
+
+function closeOfflineResult(){
+
+    document.getElementById("offlineModal")
+        .style.display = "none";
+
+}
+
+
+// Click Outside Close
+
+window.addEventListener("click", function(event){
+
+    let offline =
+        document.getElementById("offlineModal");
+
+
+    if(event.target == offline){
+
+        offline.style.display = "none";
+
+    }
+
+});
 
 </script>
 
