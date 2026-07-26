@@ -18,6 +18,9 @@ from flask import current_app
 from werkzeug.utils import secure_filename
 from datetime import datetime
 from zeep import Client
+import random
+import json
+from models.exam_model import get_shuffled_questions
 exam_bp = Blueprint('exam', __name__)
 
 # ---------------- CREATE EXAM ----------------
@@ -822,6 +825,9 @@ def exam():
 
 
 
+
+
+
 # ---------------- START EXAM ----------------
 
 @exam_bp.route('/start_exam/<int:exam_id>')
@@ -829,12 +835,11 @@ def start_exam(exam_id):
 
     print("SESSION DATA:", dict(session))
 
-    # Student Login Check
-    if session.get('user'):
-      student_id = session['user']['StudentId']
-      print("User ID:", student_id)
-    else:
+    if 'student_id' not in session:
+        print("❌ student_id not found")
         return redirect(url_for('exam.student_login'))
+
+    student_id = session['student_id']
 
     print("✅ student_id =", student_id)
     print("✅ exam_id =", exam_id)
@@ -912,6 +917,75 @@ def start_exam(exam_id):
             session['end_time'] = end_time.strftime('%Y-%m-%d %H:%M:%S')
 
             return redirect(url_for('exam.exam'))
+
+# ================= CREATE NEW ATTEMPT =================
+
+    attempt_id = create_attempt(
+    exam_id,
+    student_id,
+    request.remote_addr,
+    request.headers.get("User-Agent")
+)
+
+# ================= FAILED =================
+
+    if not attempt_id:
+       return "❌ Failed to create attempt"
+
+# ================= LOAD QUESTIONS =================
+
+    questions = get_questions_by_exam(exam_id)
+
+# ================= SHUFFLE QUESTIONS =================
+
+    if exam.get("shuffle_questions"):
+        random.shuffle(questions)
+
+# ================= SHUFFLE OPTIONS =================
+
+    if exam.get("shuffle_options"):
+      for q in questions:
+        random.shuffle(q["options"])
+
+# ================= SAVE SHUFFLED DATA =================
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    UPDATE attempts
+    SET shuffled_data = %s
+    WHERE id = %s
+""", (
+    json.dumps(questions),
+    attempt_id
+))
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+# ================= START TIME =================
+
+    started_at = datetime.now()
+
+# ================= END TIME =================
+    end_time = started_at + timedelta(
+    minutes=exam["duration_minutes"]
+)
+
+# ================= SESSION =================
+
+    session["attempt_id"] = attempt_id
+    session["exam_id"] = exam_id
+    session["answers"] = {}
+    session["end_time"] = end_time.strftime("%Y-%m-%d %H:%M:%S")
+
+    print("✅ Exam Started")
+    print("Attempt ID:", attempt_id)
+
+    return redirect(url_for("exam.exam"))
+
 
     # CREATE NEW ATTEMPT
 
@@ -1965,4 +2039,238 @@ def save_offline_result():
     )
 
 
+# --------------------fatch all question----------------------
 
+@exam_bp.route("/all_exam_questions")
+def all_exam_questions():
+
+    conn = get_db_connection()
+
+    cur = conn.cursor(dictionary=True)
+
+    cur.execute("""
+
+        SELECT
+            id,
+            title
+        FROM exams
+        ORDER BY title ASC
+
+    """)
+
+    exams = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    return render_template(
+        "all_exam_questions.html",
+        exams=exams
+    )
+
+
+@exam_bp.route("/get_exam_questions/<int:exam_id>")
+def get_exam_questions(exam_id):
+
+    conn = get_db_connection()
+    cur = conn.cursor(dictionary=True)
+
+    cur.execute("""
+
+    SELECT
+        q.id,
+        q.question_text,
+        q.question_type,
+        q.difficulty,
+        qo.id AS option_id,
+        qo.option_text,
+        qo.is_correct,
+        qo.option_order
+
+    FROM exam_questions eq
+
+    INNER JOIN questions q
+        ON q.id=eq.question_id
+
+    LEFT JOIN question_options qo
+        ON qo.question_id=q.id
+
+    WHERE eq.exam_id=%s
+
+    ORDER BY q.id,qo.option_order
+
+    """,(exam_id,))
+
+    data=cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    questions={}
+
+    for row in data:
+
+        qid=row["id"]
+
+        if qid not in questions:
+
+            questions[qid]={
+                "id":qid,
+                "question_text":row["question_text"],
+                "question_type":row["question_type"],
+                "difficulty":row["difficulty"],
+                "options":[]
+            }
+
+        questions[qid]["options"].append({
+
+            "id":row["option_id"],
+            "text":row["option_text"],
+            "correct":row["is_correct"]
+
+        })
+
+    return render_template(
+        "exam_question_list.html",
+        questions=questions.values()
+    )
+
+
+# -----------------Edit Exam Question------------------
+@exam_bp.route("/edit_question/<int:question_id>")
+def edit_question(question_id):
+
+    conn = get_db_connection()
+    cur = conn.cursor(dictionary=True)
+
+    # Question Details
+    cur.execute("""
+        SELECT
+            id,
+            question_text,
+            question_type,
+            difficulty,
+            topic,
+            explanation
+        FROM questions
+        WHERE id=%s
+    """,(question_id,))
+
+    question=cur.fetchone()
+
+    # Options
+    cur.execute("""
+        SELECT
+            id,
+            option_text,
+            is_correct,
+            option_order
+        FROM question_options
+        WHERE question_id=%s
+        ORDER BY option_order
+    """,(question_id,))
+
+    options=cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    return render_template(
+        "edit_exam_question.html",
+        question=question,
+        options=options
+    )
+
+# ------------------Update Question answer------------------------
+@exam_bp.route("/update_question/<int:question_id>", methods=["POST"])
+def update_question(question_id):
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    try:
+
+        # ------------------------
+        # Question Data
+        # ------------------------
+
+        question_text = request.form.get("question_text")
+        question_type = request.form.get("question_type")
+        difficulty = request.form.get("difficulty")
+        correct_option = request.form.get("correct_option")
+
+        # ------------------------
+        # Update Question
+        # ------------------------
+
+        cur.execute("""
+            UPDATE questions
+            SET
+                question_text=%s,
+                question_type=%s,
+                difficulty=%s
+            WHERE id=%s
+        """,(
+            question_text,
+            question_type,
+            difficulty,
+            question_id
+        ))
+
+        # ------------------------
+        # Get All Option IDs
+        # ------------------------
+
+        cur.execute("""
+            SELECT id
+            FROM question_options
+            WHERE question_id=%s
+        """,(question_id,))
+
+        option_ids = cur.fetchall()
+
+        # ------------------------
+        # Update Every Option
+        # ------------------------
+
+        for row in option_ids:
+
+            option_id = row[0]
+
+            option_text = request.form.get(f"option_{option_id}")
+
+            is_correct = 1 if str(option_id) == str(correct_option) else 0
+
+            cur.execute("""
+                UPDATE question_options
+                SET
+                    option_text=%s,
+                    is_correct=%s
+                WHERE id=%s
+            """,(
+                option_text,
+                is_correct,
+                option_id
+            ))
+
+        conn.commit()
+
+        flash("Question Updated Successfully", "success")
+
+    except Exception as e:
+
+        conn.rollback()
+
+        flash(str(e), "danger")
+
+    finally:
+
+        cur.close()
+        conn.close()
+
+    return redirect(
+        url_for(
+            "exam.edit_question",
+            question_id=question_id
+        )
+    )

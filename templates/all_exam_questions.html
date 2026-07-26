@@ -1,0 +1,182 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>All Exam Questions</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Poppins,sans-serif;
+}
+
+body{
+
+background:#f3f5f9;
+padding:40px;
+
+}
+
+.container{
+
+max-width:1200px;
+margin:auto;
+
+}
+
+.header{
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+
+}
+
+.header h1{
+
+font-size:30px;
+color:#1e293b;
+
+}
+
+.card{
+
+background:white;
+padding:30px;
+border-radius:15px;
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+}
+
+label{
+
+font-weight:600;
+
+}
+
+select{
+
+width:100%;
+margin-top:10px;
+padding:14px;
+border:1px solid #ddd;
+border-radius:10px;
+font-size:16px;
+
+}
+
+#questionArea{
+
+margin-top:30px;
+
+}
+
+.empty{
+
+padding:50px;
+text-align:center;
+color:#777;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+
+<h1>
+
+📚 All Exam Questions
+
+</h1>
+
+</div>
+
+<div class="card">
+
+<label>
+
+Select Exam
+
+</label>
+
+<select id="examSelect">
+
+<option value="">
+
+Choose an Exam
+
+</option>
+
+{% for exam in exams %}
+
+<option value="{{ exam.id }}">
+
+{{ exam.title }}
+
+</option>
+
+{% endfor %}
+
+</select>
+
+</div>
+
+<div id="questionArea">
+
+<div class="empty">
+
+No Exam Selected
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+document.getElementById("examSelect").addEventListener("change",function(){
+
+    let exam=this.value;
+
+    if(exam==""){
+
+        document.getElementById("questionArea").innerHTML="";
+
+        return;
+
+    }
+
+    fetch("/get_exam_questions/"+exam)
+
+    .then(response=>response.text())
+
+    .then(html=>{
+
+        document.getElementById("questionArea").innerHTML=html;
+
+    });
+
+});
+
+</script>
+
+</body>
+
+</html>

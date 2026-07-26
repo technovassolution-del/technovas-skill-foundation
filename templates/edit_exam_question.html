@@ -1,0 +1,591 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+
+<title>Edit Question</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Poppins,sans-serif;
+}
+
+body{
+
+background:#eef2f7;
+padding:40px;
+
+}
+
+.container{
+
+max-width:900px;
+
+margin:auto;
+
+}
+
+.card{
+
+background:#fff;
+
+padding:35px;
+
+border-radius:15px;
+
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+}
+
+h2{
+
+margin-bottom:25px;
+
+color:#1e293b;
+
+}
+
+label{
+
+display:block;
+
+margin-top:18px;
+
+margin-bottom:8px;
+
+font-weight:600;
+
+}
+
+textarea,
+select,
+input{
+
+width:100%;
+
+padding:12px;
+
+border:1px solid #d1d5db;
+
+border-radius:8px;
+
+font-size:15px;
+
+}
+
+textarea{
+
+height:120px;
+
+resize:vertical;
+
+}
+
+.option{
+
+margin-top:20px;
+
+padding:15px;
+
+border:1px solid #ddd;
+
+border-radius:10px;
+
+background:#fafafa;
+
+}
+
+.correct{
+
+margin-top:10px;
+
+display:flex;
+
+align-items:center;
+
+gap:8px;
+
+}
+
+.correct input{
+
+width:auto;
+
+}
+
+.buttons{
+
+margin-top:35px;
+
+}
+
+.save{
+
+background:#2563eb;
+
+color:white;
+
+padding:12px 28px;
+
+text-decoration:none;
+
+border:none;
+
+border-radius:8px;
+
+cursor:pointer;
+
+font-size:15px;
+
+}
+
+.back{
+
+background:#64748b;
+
+color:white;
+
+padding:12px 28px;
+
+text-decoration:none;
+
+border-radius:8px;
+
+margin-left:10px;
+
+}
+
+.alert{
+
+padding:15px;
+
+margin-bottom:20px;
+
+border-radius:8px;
+
+font-weight:600;
+
+}
+
+.success{
+
+background:#dcfce7;
+
+color:#166534;
+
+border:1px solid #16a34a;
+
+}
+
+.danger{
+
+background:#fee2e2;
+
+color:#991b1b;
+
+border:1px solid #dc2626;
+
+}
+
+#addOption{
+
+margin-top:20px;
+
+background:#16a34a;
+
+color:#fff;
+
+padding:12px 20px;
+
+border:none;
+
+border-radius:8px;
+
+cursor:pointer;
+
+font-size:15px;
+
+}
+
+#addOption:hover{
+
+background:#15803d;
+
+}
+
+.option-box{
+
+background:#f8fafc;
+
+padding:18px;
+
+margin-top:18px;
+
+border-radius:10px;
+
+border:1px solid #ddd;
+
+}
+
+.option-input{
+
+margin-top:10px;
+
+}
+
+.correct-answer{
+
+margin-top:12px;
+
+display:flex;
+
+align-items:center;
+
+gap:10px;
+
+}
+
+.deleteOption{
+
+margin-top:15px;
+
+background:#dc2626;
+
+color:#fff;
+
+border:none;
+
+padding:8px 15px;
+
+border-radius:6px;
+
+cursor:pointer;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+    {% with messages=get_flashed_messages(with_categories=true) %}
+
+{% if messages %}
+
+    {% for category,message in messages %}
+
+        <div class="alert {{ category }}">
+
+            {{ message }}
+
+        </div>
+
+    {% endfor %}
+
+{% endif %}
+
+{% endwith %}
+
+<div class="card">
+
+<h2>
+
+Edit Question
+
+</h2>
+
+<form
+method="POST"
+action="/update_question/{{ question.id }}">
+
+<label>
+
+Question
+
+</label>
+
+<textarea
+name="question_text"
+required>{{ question.question_text }}</textarea>
+
+<label>
+
+Question Type
+
+</label>
+
+<select
+name="question_type">
+
+<option
+value="MCQ_SINGLE"
+
+{% if question.question_type=="MCQ_SINGLE" %}
+selected
+{% endif %}>
+
+MCQ SINGLE
+
+</option>
+
+<option
+value="MCQ_MULTI"
+
+{% if question.question_type=="MCQ_MULTI" %}
+selected
+{% endif %}>
+
+MCQ MULTIPLE
+
+</option>
+
+<option
+value="TRUE_FALSE"
+
+{% if question.question_type=="TRUE_FALSE" %}
+selected
+{% endif %}>
+
+TRUE FALSE
+
+</option>
+
+<option
+value="SUBJECTIVE"
+
+{% if question.question_type=="SUBJECTIVE" %}
+selected
+{% endif %}>
+
+SUBJECTIVE
+
+</option>
+
+</select>
+
+<label>
+
+Difficulty
+
+</label>
+
+<select
+name="difficulty">
+
+<option
+value="EASY"
+{% if question.difficulty=="EASY" %}selected{% endif %}>
+
+Easy
+
+</option>
+
+<option
+value="MEDIUM"
+{% if question.difficulty=="MEDIUM" %}selected{% endif %}>
+
+Medium
+
+</option>
+
+<option
+value="HARD"
+{% if question.difficulty=="HARD" %}selected{% endif %}>
+
+Hard
+
+</option>
+
+</select>
+
+<div id="optionContainer">
+
+{% for option in options %}
+
+<div class="option-box">
+
+<input
+type="hidden"
+name="option_id[]"
+value="{{ option.id }}">
+
+<label>
+
+Option {{ loop.index }}
+
+</label>
+
+<input
+type="text"
+class="option-input"
+name="option_text[]"
+value="{{ option.option_text }}"
+required>
+
+<div class="correct-answer">
+
+<input
+type="radio"
+name="correct_option"
+value="{{ option.id }}"
+{% if option.is_correct %}
+checked
+{% endif %}>
+
+<span>
+
+Correct Answer
+
+</span>
+
+</div>
+
+<button
+type="button"
+class="deleteOption">
+
+Delete Option
+
+</button>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+<button
+type="button"
+id="addOption">
+
++ Add New Option
+
+</button>
+
+<div class="buttons">
+
+<button
+class="save">
+
+Save Changes
+
+</button>
+
+<a
+href="/all_exam_questions"
+
+class="back">
+
+Back
+
+</a>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+<script>
+
+let newOptionNumber=1000;
+
+document.getElementById("addOption").onclick=function(){
+
+let html=`
+
+<div class="option-box">
+
+<input
+type="hidden"
+name="option_id[]"
+value="new_${newOptionNumber}">
+
+<label>
+
+New Option
+
+</label>
+
+<input
+type="text"
+name="option_text[]"
+class="option-input"
+required>
+
+<div class="correct-answer">
+
+<input
+type="radio"
+name="correct_option"
+value="new_${newOptionNumber}">
+
+<span>
+
+Correct Answer
+
+</span>
+
+</div>
+
+<button
+type="button"
+class="deleteOption">
+
+Delete Option
+
+</button>
+
+</div>
+
+`;
+
+document
+.getElementById("optionContainer")
+.insertAdjacentHTML("beforeend",html);
+
+newOptionNumber++;
+
+bindDelete();
+
+}
+
+function bindDelete(){
+
+document
+.querySelectorAll(".deleteOption")
+.forEach(btn=>{
+
+btn.onclick=function(){
+
+this.parentElement.remove();
+
+}
+
+});
+
+}
+
+bindDelete();
+
+</script>
+
+</body>
+
+</html>

@@ -1,4 +1,6 @@
 
+from flask import json
+
 from config import get_db_connection
 from datetime import datetime
 
@@ -363,3 +365,30 @@ def get_exam_by_id(exam_id):
     conn.close()
 
     return exam
+
+# ---------------- GET SHUFFLED QUESTIONS ----------------
+
+def get_shuffled_questions(attempt_id):
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+
+        cursor.execute("""
+            SELECT shuffled_data
+            FROM attempts
+            WHERE id=%s
+        """, (attempt_id,))
+
+        row = cursor.fetchone()
+
+        if row and row["shuffled_data"]:
+            return json.loads(row["shuffled_data"])
+
+        return None
+
+    finally:
+
+        cursor.close()
+        conn.close()

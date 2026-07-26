@@ -1,0 +1,225 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exam Questions</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+    padding:30px;
+}
+
+.questions-container{
+    max-width:1200px;
+    margin:auto;
+}
+
+.question-card{
+    background:#fff;
+    border-radius:12px;
+    padding:25px;
+    margin-bottom:25px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+    transition:.3s;
+    border-left:5px solid #2563eb;
+}
+
+.question-card:hover{
+    transform:translateY(-3px);
+}
+
+.question-card h3{
+    color:#1e293b;
+    margin-bottom:10px;
+    font-size:20px;
+}
+
+.meta{
+    color:#666;
+    margin-bottom:15px;
+    font-size:14px;
+}
+
+.meta span{
+    background:#eef4ff;
+    color:#2563eb;
+    padding:4px 10px;
+    border-radius:20px;
+    margin-right:10px;
+    font-size:13px;
+}
+
+.options{
+    list-style:none;
+    margin-top:15px;
+}
+
+.options li{
+    padding:12px 15px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    margin-bottom:10px;
+    background:#fafafa;
+    transition:.2s;
+}
+
+.options li.correct{
+    background:#d1fae5;
+    border-color:#10b981;
+    color:#065f46;
+    font-weight:600;
+}
+
+.actions{
+    margin-top:20px;
+}
+
+.btn{
+    display:inline-block;
+    padding:10px 22px;
+    border-radius:8px;
+    text-decoration:none;
+    color:#fff;
+    font-size:14px;
+    margin-right:10px;
+    transition:.3s;
+}
+
+.btn-edit{
+    background:#2563eb;
+}
+
+.btn-edit:hover{
+    background:#1d4ed8;
+}
+
+.btn-delete{
+    background:#dc2626;
+}
+
+.btn-delete:hover{
+    background:#b91c1c;
+}
+
+.no-question{
+    background:#fff;
+    text-align:center;
+    padding:50px;
+    border-radius:12px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+    font-size:20px;
+    color:#777;
+}
+
+@media(max-width:768px){
+
+.question-card{
+    padding:18px;
+}
+
+.question-card h3{
+    font-size:17px;
+}
+
+.btn{
+    display:block;
+    width:100%;
+    text-align:center;
+    margin-bottom:10px;
+}
+
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="questions-container">
+
+{% if questions %}
+
+    {% for q in questions %}
+
+    <div class="question-card">
+
+        <h3>
+            Question {{ loop.index }}
+        </h3>
+
+        <p style="margin-bottom:15px;">
+            {{ q.question_text }}
+        </p>
+
+        <div class="meta">
+            <span>{{ q.question_type }}</span>
+            <span>{{ q.difficulty }}</span>
+        </div>
+
+        <ul class="options">
+
+            {% for option in q.options %}
+
+                <li class="{% if option.correct %}correct{% endif %}">
+
+                    {% if option.correct %}
+                        ✅
+                    {% else %}
+                        ○
+                    {% endif %}
+
+                    {{ option.text }}
+
+                </li>
+
+            {% endfor %}
+
+        </ul>
+
+        <div class="actions">
+
+            <a href="/edit_question/{{ q.id }}" class="btn btn-edit">
+                ✏ Edit
+            </a>
+
+            <a href="/delete_question/{{ q.id }}"
+               class="btn btn-delete"
+               onclick="return confirm('Are you sure you want to delete this question?')">
+
+                🗑 Delete
+
+            </a>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+{% else %}
+
+<div class="no-question">
+
+    📚 No Questions Found for this Exam
+
+</div>
+
+{% endif %}
+
+</div>
+
+</body>
+</html>
