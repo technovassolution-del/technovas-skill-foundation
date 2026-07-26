@@ -494,11 +494,17 @@ def student_portal():
 @exam_bp.route('/student_dashboard')
 def student_dashboard():
 
-    # Check Student Login
-    if 'student_id' not in session:
-        return redirect(url_for('exam.student_login'))
 
-    student_id = session['student_id']
+    # Check Student Login
+
+
+
+    if session.get('user'):
+          student_id = session['user']['StudentId']
+          print("User ID:", student_id)
+    else:
+           return redirect(url_for('exam.student_login'))
+
 
 
     # Auto Assign Online Exams
@@ -833,13 +839,14 @@ def exam():
 @exam_bp.route('/start_exam/<int:exam_id>')
 def start_exam(exam_id):
 
-    print("SESSION DATA:", dict(session))
 
-    if 'student_id' not in session:
-        print("❌ student_id not found")
-        return redirect(url_for('exam.student_login'))
 
-    student_id = session['student_id']
+
+    if session.get('user'):
+          student_id = session['user']['StudentId']
+          print("User ID:", student_id)
+    else:
+           return redirect(url_for('exam.student_login'))
 
     print("✅ student_id =", student_id)
     print("✅ exam_id =", exam_id)
