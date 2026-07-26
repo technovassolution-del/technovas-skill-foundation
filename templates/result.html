@@ -83,7 +83,7 @@
     </p>
 
     <!-- 🔥 CHANGE ROUTE HERE -->
-    <a href="{{ url_for('exam.student_dashboard') }}">
+    <a href="{{ url_for('exam.student_portal') }}">
 
         <button class="home-btn" type="button">
 
@@ -107,7 +107,7 @@
     window.onpopstate = function(){
 
         location.href =
-        "{{ url_for('exam.student_dashboard') }}";
+        "{{ url_for('exam.student_portal') }}";
     };
 
 </script>
