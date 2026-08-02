@@ -423,6 +423,12 @@ type="hidden"
 name="option_id[]"
 value="{{ option.id }}">
 
+
+<input
+type="hidden"
+name="delete_option_{{ option.id }}"
+value="0">
+
 <label>
 
 Option {{ loop.index }}
@@ -432,7 +438,7 @@ Option {{ loop.index }}
 <input
 type="text"
 class="option-input"
-name="option_text[]"
+name="option_{{ option.id }}"
 value="{{ option.option_text }}"
 required>
 
@@ -525,7 +531,7 @@ New Option
 
 <input
 type="text"
-name="option_text[]"
+name="option_new_${newOptionNumber}"
 class="option-input"
 required>
 
@@ -575,6 +581,24 @@ document
 btn.onclick=function(){
 
 this.parentElement.remove();
+
+}
+
+btn.onclick = function () {
+
+    let box = this.parentElement;
+
+    let optionId = box.querySelector('input[name="option_id[]"]').value;
+
+    let deleteField = box.querySelector(
+        `input[name="delete_option_${optionId}"]`
+    );
+
+    if(deleteField){
+        deleteField.value = "1";
+    }
+
+    box.style.display = "none";
 
 }
 

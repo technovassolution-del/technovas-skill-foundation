@@ -201,19 +201,50 @@ def save_exam():
 
 @exam_bp.route('/student_login', methods=['GET', 'POST'])
 def student_login():
+
     wsdl = "https://technovas.in/WebService.asmx?WSDL"
     client = Client(wsdl)
-    error = None
+
     if request.method == 'POST':
+
         student_id = request.form['UserId']
         student_pwd = request.form['password']
+
         result = client.service.GetUser(student_id, student_pwd)
+
         print("Login Result:", result)
+
         if result.Status == "Success":
+
+            # Local Database থেকে Student বের করুন
+            conn = get_db_connection()
+            cursor = conn.cursor(dictionary=True)
+
+            cursor.execute("""
+                SELECT *
+                FROM users
+                WHERE userid = %s
+            """, (result.UserId,))
+
+            student = cursor.fetchone()
+
+            cursor.close()
+            conn.close()
+
+            print("DATABASE STUDENT =", student)
+
+            # Student পাওয়া না গেলে
+            if not student:
+                return "Student not found in local database."
+
+            # Session Save
             session['user'] = {
-                    'name': result.Name,
-                    'StudentId': result.UserId
-                }
+                'id': student['id'],
+                'name': student['name'],
+                'StudentId': student['userid']
+            }
+
+            print("SESSION =", session['user'])
 
             return redirect(url_for('exam.student_portal'))
 
@@ -1080,7 +1111,7 @@ def showstudent_result():
        
     
     if session.get('user'):
-      student_id = session['user']['StudentId']
+      student_id = session['user']['id']
       print("User ID:", student_id)
     else:
         return redirect(url_for('exam.student_login'))
@@ -2075,7 +2106,7 @@ def all_exam_questions():
         exams=exams
     )
 
-
+# ------------------------EXAM QUESTIONS---------------------
 @exam_bp.route("/get_exam_questions/<int:exam_id>")
 def get_exam_questions(exam_id):
 

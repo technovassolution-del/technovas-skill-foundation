@@ -540,23 +540,20 @@ table{
  
 <div class="container">
 
-    
-     <div class="profile-card">
-  <div class="avatar">
-    {{ student.full_name[0] if student is defined and student else 'S' }}
-</div>
+    <div class="profile-card">
 
-<div class="profile-info">
-    <h3>
-        Hello, {{ student.full_name if student is defined and student else 'Student' }} 👋
-    </h3>
+    <div class="avatar">
+        {{ student['name'][0] if student else 'S' }}
+    </div>
 
-    <p>
-        {{ student.student_id if student is defined and student else '' }}
-    </p>
+    <div class="profile-info">
+        <h3>Hello, {{ student['name'] if student else 'Student' }}👋</h3>
 
-    <p>Now Show Your Exam Status</p>
-</div>
+        <!-- <p>{{ student['userid'] if student else '' }}</p> -->
+
+        <p>Now Show Your Exam Status</p>
+    </div>
+
 </div>
 
 
