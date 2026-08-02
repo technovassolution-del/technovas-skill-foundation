@@ -3,219 +3,372 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Edit Exam</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 
 <style>
 
-/* RESET */
+/* ============ TOKENS ============ */
+:root{
+    --bg:#f2f2ef;
+    --surface:#ffffff;
+    --surface-muted:#f7f7f5;
+    --border:#e4e3dd;
+    --border-strong:#d3d2c9;
+    --ink:#1b1b18;
+    --ink-soft:#6b6a62;
+    --ink-faint:#9c9b91;
+    --accent:#38395f;
+    --accent-soft:#eeeef7;
+    --success:#256d4c;
+    --danger:#a4392f;
+    --danger-soft:#fbeeec;
+    --radius-lg:14px;
+    --radius-md:9px;
+    --radius-sm:6px;
+}
+
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:'Segoe UI', sans-serif;
 }
 
-/* BODY */
 body{
     min-height:100vh;
     display:flex;
-    align-items:center;
+    align-items:flex-start;
     justify-content:center;
-    padding:20px;
-     background:linear-gradient(135deg, #5f6676, #1e293b); 
-    color:#e5e7eb;
+    padding:48px 20px;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    -webkit-font-smoothing:antialiased;
 }
 
-/* CARD */
+/* ============ CARD ============ */
 .card{
     width:100%;
-    max-width:700px;
-    /* background:#111827; */
-    padding:30px;
-    border-radius:18px;
-    box-shadow:0 15px 40px rgba(0,0,0,0.4);
+    max-width:640px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    box-shadow:0 1px 2px rgba(27,27,24,0.04), 0 20px 44px -28px rgba(27,27,24,0.35);
+    overflow:hidden;
 }
 
-/* TITLE */
-h2{
-    text-align:center;
-    margin-bottom:22px;
+/* HEADER */
+.sheet-head{
+    padding:28px 32px 24px;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:16px;
+}
+
+.sheet-head h2{
+    font-size:21px;
+    font-weight:700;
+    letter-spacing:-.01em;
+}
+
+.sheet-head .sub{
+    margin-top:4px;
+    font-size:13px;
+    color:var(--ink-soft);
+}
+
+.badge{
+    flex-shrink:0;
+    background:var(--accent-soft);
+    color:var(--accent);
+    font-size:12px;
     font-weight:600;
-    font-size:24px;
+    padding:6px 12px;
+    border-radius:100px;
+    white-space:nowrap;
 }
 
-/* LABEL */
+/* ============ FORM BODY ============ */
+form{
+    padding:28px 32px 32px;
+}
+
+.section-label{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    margin-bottom:14px;
+}
+
+/* FIELD */
+.field{
+    margin-bottom:16px;
+}
+
+.field:last-child{
+    margin-bottom:0;
+}
+
 label{
-    font-size:15px;
-    color:#ee0e0e;
-    font-weight: bold;
+    display:block;
+    font-size:13px;
+    font-weight:600;
+    color:var(--ink);
+    margin-bottom:7px;
 }
 
-/* INPUT */
+label .req{
+    color:var(--danger);
+    margin-left:2px;
+    font-weight:600;
+}
+
 input{
     width:100%;
-    padding:11px;
-    margin-top:6px;
-    margin-bottom:16px;
-    border-radius:10px;
-    border:1px solid transparent;
+    padding:10px 12px;
+    border:1px solid var(--border-strong);
+    border-radius:var(--radius-sm);
     outline:none;
-    background:#1f2937;
-    color:#e5e7eb;
-    transition:0.3s;
+    background:var(--surface);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
     font-size:14px;
+    transition:border-color .15s ease, box-shadow .15s ease;
+}
+
+input:hover{
+    border-color:var(--ink-faint);
 }
 
 input:focus{
-    border-color:#3b82f6;
-    background:#111827;
-    box-shadow:0 0 0 3px rgba(59,130,246,0.2);
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-soft);
 }
 
 /* ROW */
 .row{
     display:flex;
-    gap:12px;
+    gap:14px;
 }
 
-.row div{
+.row .field{
     flex:1;
+    min-width:0;
 }
 
-/* STUDENT BOX */
-
+/* ============ STUDENT LEDGER ============ */
 .student-box{
-    margin-top:20px;
-    background:#1f2937;
-    border-radius:14px;
-    padding:18px;
-    border:1px solid #374151;
+    margin-top:30px;
+    border:1px solid var(--border);
+    border-radius:var(--radius-md);
+    overflow:hidden;
 }
 
 .student-title{
-    font-size:16px;
+    font-size:14px;
     font-weight:600;
-    margin-bottom:15px;
-    color:#60a5fa;
-}
-
-/* SEARCH */
-
-.search-box{
-    margin-bottom:15px;
-}
-
-.search-box input{
-    margin-bottom:0;
-}
-
-/* STUDENT LIST */
-
-.student-list{
-    max-height:250px;
-    overflow-y:auto;
-    padding-right:5px;
-}
-
-/* STUDENT ITEM */
-
-.student-item{
+    padding:14px 16px;
+    background:var(--surface-muted);
+    border-bottom:1px solid var(--border);
     display:flex;
     align-items:center;
     justify-content:space-between;
-    background:#111827;
-    padding:12px 14px;
-    border-radius:10px;
-    margin-bottom:10px;
-    transition:0.3s;
+}
+
+.student-title .count{
+    font-size:12px;
+    font-weight:500;
+    color:var(--ink-faint);
+}
+
+/* SEARCH */
+.search-box{
+    padding:12px 16px;
+    border-bottom:1px solid var(--border);
+    background:var(--surface);
+}
+
+.search-box input{
+    background:var(--surface-muted);
+    border:1px solid var(--border);
+    padding:9px 12px 9px 34px;
+    font-size:13px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239c9b91' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:11px center;
+}
+
+.search-box input:focus{
+    background-color:var(--surface);
+    border-color:var(--accent);
+}
+
+/* STUDENT LIST */
+.student-list{
+    max-height:290px;
+    overflow-y:auto;
+    background:var(--surface);
+}
+
+.student-list::-webkit-scrollbar{ width:8px; }
+.student-list::-webkit-scrollbar-thumb{ background:var(--border-strong); border-radius:4px; }
+
+/* Fixed-column grid: avatar | name/id (flexible, truncates) | checkbox | button.
+   Checkbox and button columns are fixed px widths so they NEVER shift or get
+   overrun by a long name — the name column is the only one that flexes. */
+.student-item{
+    display:grid;
+    grid-template-columns:36px minmax(0,1fr) 34px 92px;
+    align-items:center;
+    column-gap:12px;
+    padding:11px 16px;
+    border-bottom:1px solid var(--border);
+}
+
+.student-item:last-child{
+    border-bottom:none;
 }
 
 .student-item:hover{
-    background:#0f172a;
+    background:var(--surface-muted);
 }
-
-/* LEFT */
-
-.student-left{
-    display:flex;
-    align-items:center;
-    gap:12px;
-}
-
-/* AVATAR */
 
 .avatar{
-    width:38px;
-    height:38px;
+    width:32px;
+    height:32px;
     border-radius:50%;
-    background:#2563eb;
+    background:var(--accent);
     display:flex;
     align-items:center;
     justify-content:center;
-    font-weight:bold;
-    color:white;
-    font-size:14px;
+    font-weight:600;
+    color:#fff;
+    font-size:13px;
 }
 
-/* NAME */
+/* name + id column — min-width:0 is what allows a grid child to shrink
+   below its content size, which is what makes ellipsis actually work */
+.student-meta{
+    min-width:0;
+}
 
 .student-name{
-    font-size:14px;
-    font-weight:500;
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--ink);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
 
 .student-id{
-    font-size:12px;
-    color:#9ca3af;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-faint);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    margin-top:1px;
 }
 
 /* CHECKBOX */
-
 .checkbox{
-    width:22px;
-    height:22px;
-    accent-color:#2563eb;
+    appearance:none;
+    -webkit-appearance:none;
+    width:18px;
+    height:18px;
+    border:1.5px solid var(--border-strong);
+    border-radius:5px;
     cursor:pointer;
+    position:relative;
+    background:var(--surface);
+    transition:.15s ease;
+    justify-self:center;
 }
 
-/* BUTTON GROUP */
+.checkbox:hover{
+    border-color:var(--accent);
+}
 
+.checkbox:checked{
+    background:var(--success);
+    border-color:var(--success);
+}
+
+.checkbox:checked::after{
+    content:"";
+    position:absolute;
+    left:5px;
+    top:1px;
+    width:5px;
+    height:9px;
+    border:solid #fff;
+    border-width:0 2px 2px 0;
+    transform:rotate(40deg);
+}
+
+/* REATTEMPT — fixed width, text never wraps or pushes other columns */
+.reattempt-btn{
+    justify-self:end;
+    width:100%;
+    background:var(--danger-soft);
+    color:var(--danger);
+    border:1px solid transparent;
+    padding:6px 4px;
+    border-radius:var(--radius-sm);
+    cursor:pointer;
+    font-family:'Inter', sans-serif;
+    font-size:11.5px;
+    font-weight:600;
+    white-space:nowrap;
+    transition:.15s ease;
+}
+
+.reattempt-btn:hover{
+    background:var(--danger);
+    color:#fff;
+}
+
+/* ============ BUTTON GROUP ============ */
 .btn-group{
     display:flex;
     gap:12px;
-    margin-top:22px;
+    margin-top:28px;
 }
-
-/* BUTTON */
 
 .btn{
     flex:1;
-    padding:12px;
+    padding:13px;
     border:none;
-    border-radius:10px;
     cursor:pointer;
+    font-family:'Inter', sans-serif;
     font-size:14px;
-    transition:0.3s;
+    font-weight:600;
     text-align:center;
+    border-radius:var(--radius-sm);
+    transition:.15s ease;
 }
 
-/* UPDATE */
-
 .update{
-    background:linear-gradient(135deg,#3b82f6,#2563eb);
-    color:white;
+    background:var(--accent);
+    color:#fff;
 }
 
 .update:hover{
-    transform:translateY(-2px);
+    background:#2b2c4c;
 }
 
-/* CANCEL */
-
 .cancel{
-    background:#374151;
-    color:#e5e7eb;
+    background:var(--surface);
+    color:var(--ink-soft);
+    border:1px solid var(--border-strong);
     text-decoration:none;
     display:flex;
     align-items:center;
@@ -223,41 +376,35 @@ input:focus{
 }
 
 .cancel:hover{
-    background:#4b5563;
+    border-color:var(--ink-faint);
+    color:var(--ink);
 }
 
-/* RESPONSIVE */
-
+/* ============ RESPONSIVE ============ */
 @media(max-width:600px){
-
-    .card{
-        padding:22px;
-    }
-
-    h2{
-        font-size:20px;
-    }
-
+    .sheet-head{ padding:22px 20px; flex-direction:column; }
+    form{ padding:22px 20px 28px; }
 }
 
 @media(max-width:480px){
+    body{ padding:0; }
+    .card{ border:none; border-radius:0; box-shadow:none; }
+    .row{ flex-direction:column; gap:0; }
+    .btn-group{ flex-direction:column; }
+    .student-item{ grid-template-columns:30px minmax(0,1fr) 30px 76px; column-gap:8px; padding:10px 12px; }
+    .reattempt-btn{ font-size:10.5px; padding:6px 2px; }
+}
 
-    body{
-        align-items:flex-start;
-    }
+@media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; }
+}
 
-    .row{
-        flex-direction:column;
-    }
-
-    .btn-group{
-        flex-direction:column;
-    }
-
-    .btn{
-        width:100%;
-    }
-
+/* Visible keyboard focus for non-input controls */
+.reattempt-btn:focus-visible,
+.checkbox:focus-visible,
+.btn:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:2px;
 }
 
 </style>
@@ -267,123 +414,109 @@ input:focus{
 
 <div class="card">
 
-    <h2>✏️ Edit Exam</h2>
+    <div class="sheet-head">
+        <div>
+            <h2>{{ exam.title }}</h2>
+            <div class="sub">Edit exam details and manage the roster.</div>
+        </div>
+        <div class="badge">Editing</div>
+    </div>
 
     <form method="POST">
 
+        <div class="section-label">Details</div>
+
         <!-- TITLE -->
-
-        <label>Title</label>
-
-        <input type="text"
-        name="title"
-        value="{{ exam.title }}"
-        required>
+        <div class="field">
+            <label>Title <span class="req">*</span></label>
+            <input type="text"
+            name="title"
+            value="{{ exam.title }}"
+            required>
+        </div>
 
         <!-- START -->
-
-        <label>Start Time</label>
-
-        <input type="datetime-local"
-        name="start_at"
-        value="{{ exam.start_at.strftime('%Y-%m-%dT%H:%M') if exam.start_at else '' }}"
-        required>
+        <div class="field">
+            <label>Start Time <span class="req">*</span></label>
+            <input type="datetime-local"
+            name="start_at"
+            value="{{ exam.start_at.strftime('%Y-%m-%dT%H:%M') if exam.start_at else '' }}"
+            required>
+        </div>
 
         <!-- END -->
-
-        <label>End Time</label>
-
-        <input type="datetime-local"
-        name="end_at"
-        value="{{ exam.end_at.strftime('%Y-%m-%dT%H:%M') if exam.end_at else '' }}"
-        required>
+        <div class="field">
+            <label>End Time <span class="req">*</span></label>
+            <input type="datetime-local"
+            name="end_at"
+            value="{{ exam.end_at.strftime('%Y-%m-%dT%H:%M') if exam.end_at else '' }}"
+            required>
+        </div>
 
         <!-- ROW -->
-
         <div class="row">
 
-            <div>
-
-                <label>Duration (min)</label>
-
+            <div class="field">
+                <label>Duration (min) <span class="req">*</span></label>
                 <input type="number"
                 name="duration"
                 value="{{ exam.duration_minutes }}"
                 required>
-
             </div>
 
-            <div>
-
-                <label>Total Marks</label>
-
+            <div class="field">
+                <label>Total Marks <span class="req">*</span></label>
                 <input type="number"
                 name="total_marks"
                 value="{{ exam.total_marks }}"
                 required>
-
             </div>
 
         </div>
 
         <!-- PASS -->
-
-        <label>Pass Marks</label>
-
-        <input type="number"
-        name="pass_marks"
-        value="{{ exam.pass_marks }}"
-        required>
+        <div class="field">
+            <label>Pass Marks <span class="req">*</span></label>
+            <input type="number"
+            name="pass_marks"
+            value="{{ exam.pass_marks }}"
+            required>
+        </div>
 
         <!-- STUDENT SELECT -->
-
         <div class="student-box">
 
             <div class="student-title">
-                👨‍🎓 Select Students For This Exam
+                Roster
+                <span class="count">{{ students|length }} student{{ 's' if students|length != 1 else '' }}</span>
             </div>
 
             <!-- SEARCH -->
-
             <div class="search-box">
-
                 <input type="text"
                 id="searchStudent"
                 placeholder="Search student name...">
-
             </div>
 
             <!-- STUDENT LIST -->
-
-            <div class="student-list"
-            id="studentList">
-
-                <!-- STUDENT -->
+            <div class="student-list" id="studentList">
 
                 {% for student in students %}
 
 <div class="student-item">
 
-    <div class="student-left">
-        <div class="avatar">
-            {{ student.name[0] }}
-        </div>
-
-        <div>
-
-            <div class="student-name">
-                {{ student.name }}
-            </div>
-
-            <div class="student-id">
-                ID: {{ student.userid }}
-            </div>
-
-        </div>
-
+    <div class="avatar">
+        {{ student.name[0] }}
     </div>
 
-    <!-- CHECKBOX -->
+    <div class="student-meta">
+        <div class="student-name">
+            {{ student.name }}
+        </div>
+        <div class="student-id">
+            ID: {{ student.userid }}
+        </div>
+    </div>
 
     <input type="checkbox"
     class="checkbox"
@@ -395,6 +528,15 @@ input:focus{
     {% endif %}
     >
 
+    <button
+        type="button"
+        class="reattempt-btn"
+        onclick="resetExam('{{ exam.id }}','{{ student.userid }}')">
+
+        Re-Attempt
+
+    </button>
+
 </div>
 
 {% endfor %}
@@ -404,21 +546,14 @@ input:focus{
         </div>
 
         <!-- BUTTON -->
-
         <div class="btn-group">
 
-            <button type="submit"
-            class="btn update">
-
+            <button type="submit" class="btn update">
                 Publish Exam
-
             </button>
 
-            <a href="/exam_list_page"
-            class="btn cancel">
-
+            <a href="/exam_list_page" class="btn cancel">
                 Cancel
-
             </a>
 
         </div>
@@ -445,12 +580,40 @@ document
 
         item.style.display =
         text.includes(value)
-        ? "flex"
+        ? "grid"
         : "none";
 
     });
 
 });
+
+
+function resetExam(examId, studentId){
+
+    if(!confirm("Allow this student to re-attempt this exam?")){
+        return;
+    }
+
+    fetch(`/reset_exam_attempt/${examId}/${studentId}`,{
+        method:"POST"
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        alert(data.message);
+
+        location.reload();
+
+    })
+    .catch(error => {
+
+        alert("Something went wrong.");
+
+        console.log(error);
+
+    });
+
+}
 
 </script>
 

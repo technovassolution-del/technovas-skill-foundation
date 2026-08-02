@@ -259,9 +259,10 @@ action="{{ url_for('exam.save_offline_result') }}"
 enctype="multipart/form-data">
 
 
-<input type="hidden"
+<input
+type="hidden"
 name="student_id"
-value="{{ r.student_id }}">
+value="{{ r.user_id }}">
 
 
 <input type="hidden"
