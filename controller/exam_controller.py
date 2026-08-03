@@ -679,10 +679,11 @@ def exam():
 
     attempt_id = session['attempt_id']
 
-    questions = get_questions_by_exam(session['exam_id'])
+    questions = get_shuffled_questions(session['attempt_id'])
 
     if not questions:
-        return "❌ No questions found"
+
+       questions = get_questions_by_exam(session['exam_id'])
 
     # ================= TIMER FIX =================
     # Create timer ONLY first time
@@ -1031,37 +1032,7 @@ def start_exam(exam_id):
     return redirect(url_for("exam.exam"))
 
 
-    # CREATE NEW ATTEMPT
-
-
-# CREATE NEW ATTEMPT
-    attempt_id = create_attempt(
-    exam_id,
-    student_id,
-    request.remote_addr,
-    request.headers.get('User-Agent')
-)
-
-# FAILED
-    if not attempt_id:
-        return "❌ Failed to create attempt"
-
-# 🔥 USE CURRENT TIME
-    started_at = datetime.now()
-
-# END TIME
-    end_time = started_at + timedelta(
-    minutes=exam['duration_minutes']
-)
-
-# SESSION
-    session['attempt_id'] = attempt_id
-    session['exam_id'] = exam_id
-    session['answers'] = {}
-    session['end_time'] = end_time.strftime('%Y-%m-%d %H:%M:%S')
-    print("✅ Exam Started")
-    print("Attempt ID:", attempt_id)
-    return redirect(url_for('exam.exam'))
+   
 
 
 # ---------------- AFTER COMPPLETED RESULT ----------------
