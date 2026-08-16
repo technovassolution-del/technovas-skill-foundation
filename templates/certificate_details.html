@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Technovas Certificate Verification</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root{
+            --primary:#0d2c73;
+            --secondary:#f0a500;
+            --secondary-dark:#d99000;
+            --dark:#0f172a;
+            --muted:#64748b;
+            --light:#f8fafc;
+            --card:#ffffff;
+            --border:#e2e8f0;
+            --success:#16a34a;
+            --danger:#dc2626;
+            --shadow:0 10px 30px rgba(15,23,42,.10);
+            --shadow-lg:0 18px 50px rgba(13,44,115,.18);
+            --radius:22px;
+        }
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Poppins',sans-serif;
+        }
+
+        body{
+            background:
+                radial-gradient(circle at top right, rgba(240,165,0,.12), transparent 18%),
+                radial-gradient(circle at left top, rgba(13,44,115,.10), transparent 22%),
+                linear-gradient(135deg,#f8fbff 0%,#f7f8fc 40%,#fffdf8 100%);
+            min-height:100vh;
+            color:var(--dark);
+        }
+
+        .page-wrap{
+            padding: 22px 14px 50px;
+        }
+
+        .top-brand-card{
+            background: linear-gradient(135deg,#0d2c73 0%, #102f85 55%, #173d9f 100%);
+            color:#fff;
+            border-radius: 28px;
+            box-shadow: var(--shadow-lg);
+            overflow:hidden;
+            position:relative;
+            border:1px solid rgba(255,255,255,.12);
+        }
+
+        .top-brand-card::before{
+            content:"";
+            position:absolute;
+            width:260px;
+            height:260px;
+            background: radial-gradient(circle, rgba(255,255,255,.15), transparent 70%);
+            top:-80px;
+            right:-60px;
+            border-radius:50%;
+        }
+
+        .top-brand-card::after{
+            content:"";
+            position:absolute;
+            width:200px;
+            height:200px;
+            background: radial-gradient(circle, rgba(240,165,0,.22), transparent 70%);
+            bottom:-70px;
+            left:-50px;
+            border-radius:50%;
+        }
+
+        .brand-logo{
+            width:72px;
+            height:72px;
+            border-radius:18px;
+            background:rgba(255,255,255,.14);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:28px;
+            font-weight:800;
+            backdrop-filter: blur(6px);
+            border:1px solid rgba(255,255,255,.18);
+            flex-shrink:0;
+        }
+
+        .brand-title{
+            font-size: clamp(1.35rem, 2.6vw, 2rem);
+            font-weight:800;
+            letter-spacing:.4px;
+            margin-bottom:4px;
+        }
+
+        .brand-sub{
+            font-size:.95rem;
+            color:rgba(255,255,255,.88);
+            margin-bottom:0;
+        }
+
+        .verified-pill{
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            background:rgba(22,163,74,.16);
+            border:1px solid rgba(255,255,255,.16);
+            color:#fff;
+            padding:10px 16px;
+            border-radius:999px;
+            font-weight:600;
+            font-size:.95rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .main-card{
+            background: rgba(255,255,255,.95);
+            border:1px solid rgba(226,232,240,.8);
+            border-radius:28px;
+            box-shadow: var(--shadow);
+            margin-top:22px;
+            overflow:hidden;
+        }
+
+        .section-title{
+            font-size:1.15rem;
+            font-weight:700;
+            color:var(--primary);
+            margin-bottom:16px;
+            display:flex;
+            align-items:center;
+            gap:10px;
+        }
+
+        .section-title .dot{
+            width:12px;
+            height:12px;
+            border-radius:50%;
+            background:linear-gradient(135deg,var(--secondary),#ffcc54);
+            box-shadow:0 0 0 6px rgba(240,165,0,.12);
+        }
+
+        .student-profile{
+            background: linear-gradient(180deg,#fff 0%, #fbfdff 100%);
+            border-right:1px solid var(--border);
+            height:100%;
+        }
+
+        .photo-box{
+            width:150px;
+            height:150px;
+            border-radius:24px;
+            overflow:hidden;
+            border:4px solid rgba(13,44,115,.08);
+            box-shadow:0 12px 30px rgba(13,44,115,.12);
+            margin:auto;
+            background:#eef4ff;
+        }
+
+        .photo-box img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+        }
+
+        .student-name{
+            font-size:1.4rem;
+            font-weight:800;
+            color:var(--dark);
+            margin-top:18px;
+            margin-bottom:6px;
+        }
+
+        .student-course{
+            color:var(--muted);
+            font-size:.95rem;
+            font-weight:500;
+            margin-bottom:14px;
+        }
+
+        .status-badge{
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            background:#ecfdf5;
+            color:#15803d;
+            border:1px solid #bbf7d0;
+            border-radius:999px;
+            padding:9px 16px;
+            font-size:.92rem;
+            font-weight:700;
+        }
+
+        .info-card{
+            background:var(--card);
+            border:1px solid var(--border);
+            border-radius:20px;
+            padding:16px;
+            height:100%;
+            box-shadow:0 8px 20px rgba(15,23,42,.04);
+        }
+
+        .detail-grid{
+            display:grid;
+            grid-template-columns: repeat(2, minmax(0,1fr));
+            gap:16px;
+        }
+
+        .detail-item{
+            background:#fff;
+            border:1px solid #edf2f7;
+            border-radius:16px;
+            padding:14px 16px;
+            transition:.25s ease;
+        }
+
+        .detail-item:hover{
+            transform:translateY(-2px);
+            box-shadow:0 10px 25px rgba(15,23,42,.06);
+        }
+
+        .detail-label{
+            font-size:.82rem;
+            color:var(--muted);
+            margin-bottom:6px;
+            font-weight:600;
+        }
+
+        .detail-value{
+            font-size:1rem;
+            color:var(--dark);
+            font-weight:700;
+            word-break:break-word;
+        }
+
+        .score-card{
+            border-radius:20px;
+            padding:18px;
+            color:#fff;
+            background:linear-gradient(135deg,#0d2c73 0%, #1748c7 100%);
+            box-shadow: var(--shadow-lg);
+            height:100%;
+            position:relative;
+            overflow:hidden;
+        }
+
+        .score-card::before{
+            content:"";
+            position:absolute;
+            width:160px;
+            height:160px;
+            border-radius:50%;
+            background:rgba(255,255,255,.08);
+            right:-50px;
+            top:-40px;
+        }
+
+        .score-title{
+            font-size:.9rem;
+            opacity:.9;
+            margin-bottom:8px;
+        }
+
+        .score-value{
+            font-size:2rem;
+            font-weight:800;
+            line-height:1;
+            margin-bottom:10px;
+        }
+
+        .score-sub{
+            font-size:.9rem;
+            color:rgba(255,255,255,.88);
+        }
+
+        .verify-box{
+            background:linear-gradient(180deg,#fffefb 0%,#fff 100%);
+            border:1px solid #f7e4b5;
+            border-radius:22px;
+            padding:18px;
+        }
+
+        .verify-item{
+            display:flex;
+            justify-content:space-between;
+            gap:15px;
+            padding:12px 0;
+            border-bottom:1px dashed #ead9aa;
+        }
+
+        .verify-item:last-child{
+            border-bottom:none;
+        }
+
+        .verify-label{
+            color:#7c6b3f;
+            font-weight:600;
+        }
+
+        .verify-value{
+            color:#2b2b2b;
+            font-weight:700;
+            text-align:right;
+        }
+
+        .reg-card{
+            background:linear-gradient(180deg,#ffffff 0%,#f9fbff 100%);
+            border:1px solid var(--border);
+            border-radius:22px;
+            padding:20px;
+            height:100%;
+        }
+
+        .reg-badge{
+            display:inline-block;
+            padding:8px 14px;
+            background:#eff6ff;
+            color:#1d4ed8;
+            border-radius:999px;
+            font-size:.82rem;
+            font-weight:700;
+            margin:4px 6px 0 0;
+            border:1px solid #dbeafe;
+        }
+
+        .timeline{
+            position:relative;
+            padding-left:26px;
+            margin-top:8px;
+        }
+
+        .timeline::before{
+            content:"";
+            position:absolute;
+            left:7px;
+            top:5px;
+            bottom:5px;
+            width:3px;
+            background:linear-gradient(180deg,var(--secondary),var(--primary));
+            border-radius:20px;
+        }
+
+        .timeline-item{
+            position:relative;
+            margin-bottom:18px;
+            background:#fff;
+            border:1px solid #eef2f7;
+            border-radius:16px;
+            padding:14px 16px;
+        }
+
+        .timeline-item::before{
+            content:"";
+            position:absolute;
+            left:-24px;
+            top:18px;
+            width:16px;
+            height:16px;
+            border-radius:50%;
+            background:var(--secondary);
+            border:4px solid #fff;
+            box-shadow:0 0 0 2px rgba(240,165,0,.25);
+        }
+
+        .timeline-title{
+            font-weight:700;
+            color:var(--dark);
+            margin-bottom:4px;
+        }
+
+        .timeline-sub{
+            font-size:.9rem;
+            color:var(--muted);
+        }
+
+        .footer-note{
+            background: linear-gradient(135deg,#0b1f53 0%,#0d2c73 100%);
+            color:#fff;
+            border-radius:24px;
+            padding:18px 20px;
+            box-shadow:var(--shadow);
+        }
+
+        .mini-tag{
+            display:inline-block;
+            padding:8px 12px;
+            border-radius:999px;
+            background:rgba(255,255,255,.1);
+            border:1px solid rgba(255,255,255,.12);
+            font-size:.85rem;
+            margin:4px 4px 0 0;
+        }
+
+        .scan-input{
+            border-radius:16px;
+            border:1px solid var(--border);
+            min-height:52px;
+            box-shadow:none !important;
+        }
+
+        .btn-brand{
+            border:none;
+            background:linear-gradient(135deg,var(--secondary),#ffbf2f);
+            color:#18212f;
+            font-weight:700;
+            border-radius:16px;
+            padding:12px 22px;
+            box-shadow:0 10px 25px rgba(240,165,0,.25);
+        }
+
+        .btn-brand:hover{
+            background:linear-gradient(135deg,#ffbf2f,var(--secondary));
+        }
+
+        @media (max-width: 991px){
+            .student-profile{
+                border-right:none;
+                border-bottom:1px solid var(--border);
+            }
+        }
+
+        @media (max-width: 767px){
+            .detail-grid{
+                grid-template-columns:1fr;
+            }
+
+            .brand-flex{
+                flex-direction:column;
+                align-items:flex-start !important;
+                gap:18px;
+            }
+
+            .verify-item{
+                flex-direction:column;
+                align-items:flex-start;
+            }
+
+            .verify-value{
+                text-align:left;
+            }
+
+            .page-wrap{
+                padding:12px 10px 30px;
+            }
+
+            .top-brand-card,
+            .main-card,
+            .footer-note{
+                border-radius:20px;
+            }
+
+            .photo-box{
+                width:120px;
+                height:120px;
+            }
+
+            .student-name{
+                font-size:1.15rem;
+            }
+
+            .score-value{
+                font-size:1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid page-wrap">
+    <div class="container">
+        {% for user in users %}
+        <!-- Top Header -->
+        <div class="top-brand-card p-4 p-lg-5">
+            <div class="d-flex justify-content-between align-items-center brand-flex gap-4 position-relative" style="z-index:2;">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="brand-logo">T</div>
+                    <div>
+                        <h1 class="brand-title mb-1">TECHNOVAS SOLUTION</h1>
+                        <p class="brand-sub">
+                            A Unit of Technovas Skill Foundation • Certificate Verification Portal
+                        </p>
+                    </div>
+                </div>
+
+                <div class="text-lg-end">
+                    <div class="verified-pill">
+                        ✔ Certificate Verified & Student Record Found
+                    </div>
+                    <div class="mt-3 small text-white-50">
+                        Scan ID / Certificate No / Registration No based digital verification
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Card -->
+        <div class="main-card">
+            <div class="row g-0">
+
+                <!-- Left Profile -->
+                <div class="col-lg-4">
+                    <div class="student-profile p-4 p-lg-5 text-center h-100">
+
+                        <div class="photo-box">
+                           <img id="studentPhoto" src="https://www.technovas.in/Admin/AdmissionDocs/PHOTO/{{ user.PhotoPath }}" alt="Student Photo">
+                                
+                        </div>
+                        <h2 class="student-name" id="studentName">{{user.Name}}</h2>
+                        <div class="student-course" id="studentCourseLine">{{user.ProgramName}}</div>
+
+                        <div class="status-badge mb-4">
+                            ✔ Successfully Certified
+                        </div>
+
+                        <div class="info-card text-start">
+                            <div class="section-title">
+                                <span class="dot"></span>
+                                Quick Identity
+                            </div>
+
+                            <div class="detail-item mb-3">
+                                <div class="detail-label">Student ID</div>
+                                <div class="detail-value" id="studentId">{{ user.UserId }}</div>
+                            </div>
+
+                            <div class="detail-item mb-3">
+                                <div class="detail-label">Certificate No</div>
+                                <div class="detail-value" id="certificateNo">NA</div>
+                            </div>
+
+                            <div class="detail-item mb-3">
+                                <div class="detail-label">Registration No</div>
+                                <div class="detail-value" id="registrationNo">{{user.Id}}</div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">Verification Status</div>
+                                <div class="detail-value text-success" id="verificationStatus">VALID & VERIFIED</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Content -->
+                <div class="col-lg-8">
+                    <div class="p-4 p-lg-5">
+
+                        <!-- Search / Scan Result Bar -->
+                        <div class="row g-3 align-items-center mb-4">
+                            <div class="col-lg-8">
+                                <label class="form-label fw-semibold text-secondary-emphasis">Search by Certificate / Student ID</label>
+                                <input type="text" id="searchInput" class="form-control scan-input" placeholder="Enter Certificate No / Student ID / Registration No">
+                            </div>
+                            <div class="col-lg-4 d-grid">
+                                <label class="form-label fw-semibold text-secondary-emphasis opacity-0">Search</label>
+                                <button class="btn btn-brand" onclick="searchStudent()">Verify Record</button>
+                            </div>
+                        </div>
+
+                        <!-- Result / Academic Overview -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <div class="score-card">
+                                    <div class="score-title">Course Duration</div>
+                                    <div class="score-value" id="courseDuration">12 Months</div>
+                                    <div class="score-sub">Total training period completed successfully</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="score-card">
+                                    <div class="score-title">Percentage</div>
+                                    <div class="score-value" id="percentage">92%</div>
+                                    <div class="score-sub">Final assessment performance</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="score-card">
+                                    <div class="score-title">Grade</div>
+                                    <div class="score-value" id="grade">A+</div>
+                                    <div class="score-sub">Certified by Technovas Solution</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Student Full Details -->
+                        <div class="section-title">
+                            <span class="dot"></span>
+                            Student Full Details
+                        </div>
+
+                        <div class="detail-grid mb-4">
+                            <div class="detail-item">
+                                <div class="detail-label">Student Full Name</div>
+                                <div class="detail-value" id="fullName">{{user.Name}}</div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">Father / Guardian Name</div>
+                                <div class="detail-value" id="guardianName">MR. SUDIP MONDAL</div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">Date of Birth</div>
+                                <div class="detail-value" id="dob">14 January 2007</div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">Gender</div>
+                                <div class="detail-value" id="gender">Male</div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">Mobile Number</div>
+                                <div class="detail-value" id="mobile">9876543210</div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">Email Address</div>
+                                <div class="detail-value" id="email">{{ user.Email }}</div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">Address</div>
+                                <div class="detail-value" id="address">Barasat, Kolkata, West Bengal</div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">Institute Branch</div>
+                                <div class="detail-value" id="branch">Suryasenpally, Ghola Road, Kazipara</div>
+                            </div>
+                        </div>
+
+                        <!-- Course Details -->
+                        <div class="section-title">
+                            <span class="dot"></span>
+                            Course & Certification Details
+                        </div>
+
+                        <div class="detail-grid mb-4">
+                            <div class="detail-item">
+                                <div class="detail-label">Course Name</div>
+                                <div class="detail-value" id="courseName">{{ user.ProgramName }}</div>
+                            </div>
+
+                           
+
+                            <div class="detail-item">
+                                <div class="detail-label">Admission Date</div>
+                                <div class="detail-value" id="admissionDate">10 January 2025</div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">Course Start Date</div>
+                                <div class="detail-value" id="courseStart">15 January 2025</div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">Course End Date</div>
+                                <div class="detail-value" id="courseEnd">14 January 2026</div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">Course Duration</div>
+                                <div class="detail-value" id="durationText">12 Months</div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">Certificate Issue Date</div>
+                                <div class="detail-value" id="issueDate">20 January 2026</div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">Completion Status</div>
+                                <div class="detail-value text-success" id="completionStatus">Completed Successfully</div>
+                            </div>
+                        </div>
+
+                        <!-- Verification + Registration -->
+                        <div class="row g-4 mb-4">
+                            <div class="col-lg-6">
+                                <div class="verify-box h-100">
+                                    <div class="section-title mb-3">
+                                        <span class="dot"></span>
+                                        Certificate Verification Details
+                                    </div>
+
+                                    <div class="verify-item">
+                                        <div class="verify-label">Certificate Source</div>
+                                        <div class="verify-value" id="certificateSource">Technovas Skill Foundation</div>
+                                    </div>
+
+                                    <div class="verify-item">
+                                        <div class="verify-label">Issued By</div>
+                                        <div class="verify-value" id="issuedBy">Technovas Solution</div>
+                                    </div>
+
+                                    <div class="verify-item">
+                                        <div class="verify-label">Issued Under</div>
+                                        <div class="verify-value" id="issuedUnder">A Unit of Technovas Skill Foundation</div>
+                                    </div>
+
+                                    <div class="verify-item">
+                                        <div class="verify-label">Verification Date</div>
+                                        <div class="verify-value" id="verificationDate">09 July 2026</div>
+                                    </div>
+
+                                    <div class="verify-item">
+                                        <div class="verify-label">Certificate Authenticity</div>
+                                        <div class="verify-value text-success" id="authenticity">Authentic / Genuine Record</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="reg-card">
+                                    <div class="section-title mb-3">
+                                        <span class="dot"></span>
+                                        Institute Registration Details
+                                    </div>
+
+                                    <p class="text-muted mb-3" style="line-height:1.8;">
+                                        This certificate record is digitally maintained by <strong>Technovas Solution</strong>,
+                                        a unit of <strong>Technovas Skill Foundation</strong>. Student course and certificate
+                                        information are verified against the official institute record.
+                                    </p>
+
+                                    <div class="mb-2">
+                                        <span class="reg-badge">ISO 9001:2015 Certified</span>
+                                        <span class="reg-badge">MSME Registered</span>
+                                        <span class="reg-badge">NITI AAYOG Registered</span>
+                                        <span class="reg-badge">MCA Registered</span>
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <div class="detail-label">Official Website</div>
+                                        <div class="detail-value">www.technovas.in</div>
+                                    </div>
+
+                                    <div class="mt-3">
+                                        <div class="detail-label">Official Email</div>
+                                        <div class="detail-value">info@technovas.in</div>
+                                    </div>
+
+                                    <div class="mt-3">
+                                        <div class="detail-label">Institute Contact</div>
+                                        <div class="detail-value">03365982295</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Learning Timeline -->
+                        <div class="section-title">
+                            <span class="dot"></span>
+                            Student Journey Timeline
+                        </div>
+
+                        <div class="timeline mb-4">
+                            <div class="timeline-item">
+                                <div class="timeline-title">Admission Completed</div>
+                                <div class="timeline-sub" id="timelineAdmission">Student enrolled on 10 January 2025 under Technovas Solution.</div>
+                            </div>
+
+                            <div class="timeline-item">
+                                <div class="timeline-title">Course Training Started</div>
+                                <div class="timeline-sub" id="timelineStart">Professional computer training started from 15 January 2025.</div>
+                            </div>
+
+                            <div class="timeline-item">
+                                <div class="timeline-title">Course Successfully Completed</div>
+                                <div class="timeline-sub" id="timelineEnd">Course completed on 14 January 2026 after successful training and evaluation.</div>
+                            </div>
+
+                            <div class="timeline-item mb-0">
+                                <div class="timeline-title">Certificate Issued & Verified</div>
+                                <div class="timeline-sub" id="timelineCertificate">Certificate issued on 20 January 2026 and record verified digitally by Technovas.</div>
+                            </div>
+                        </div>
+
+                        <!-- Footer Note -->
+                        <div class="footer-note">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-lg-8">
+                                    <h5 class="fw-bold mb-2">Official Student Certificate Verification Portal</h5>
+                                    <p class="mb-0 text-white-50">
+                                        If this record appears on scan, it confirms that the student certificate data exists in the official Technovas record database.
+                                    </p>
+                                </div>
+                                <div class="col-lg-4 text-lg-end">
+                                    <span class="mini-tag">Technovas Solution</span>
+                                    <span class="mini-tag">Skill Foundation</span>
+                                    <span class="mini-tag">Digital Verification</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+
+    function setText(id, value){
+        const el = document.getElementById(id);
+        if(el) el.textContent = value || "-";
+    }
+
+
+
+    function searchStudent(){
+        const value = document.getElementById("searchInput").value.trim();
+        if(!value){
+            alert("Please enter Certificate No / Student ID / Registration No");
+            return;
+        }
+
+       
+    }
+
+
+</script>
+
+</body>
+</html>

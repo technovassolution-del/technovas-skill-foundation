@@ -441,6 +441,64 @@ def upload():
         "file": file.filename
     })
 
+@app.route('/manageuser')
+def manageuser():
+    wsdl = "https://technovas.in/WebService.asmx?WSDL"
+    client = Client(wsdl)
+    users = client.service.GetAllUsers()
+    all_users = []
+
+    for user in users:
+
+      all_users.append({
+        "Id": user.Id,
+        "Name": user.Name,
+        "Email": user.Email,
+        "Userrole": user.Userrole,
+        "UserId": user.UserId,
+        "ProgramCode": user.ProgramCode,
+        "ProgramName": user.ProgramName,
+        "Batch_Name": user.Batch_Name,
+        "PhotoPath": user.Photo_path,
+        "QRCodePath": user.QRCode_path
+    })
+    print(all_users);
+    session['all_users'] = all_users
+    return render_template('manage_students.html', users=all_users)
+
+
+@app.route('/certifieduser/<int:id>')
+def certifieduser(id):
+    wsdl = "https://technovas.in/WebService.asmx?WSDL"
+    client = Client(wsdl)
+    users = client.service.GetAllUsers()
+    selected_user = []
+    for user in users:
+        print("Selected ID:", user)  # Debugging line to check the received ID
+        if user.Id == id:
+         selected_user.append({
+        "Id": user.Id,
+        "Name": user.Name,
+        "Email": user.Email,
+        "Userrole": user.Userrole,
+        "UserId": user.UserId,
+        "ProgramCode": user.ProgramCode,
+        "ProgramName": user.ProgramName,
+        "Batch_Name": user.Batch_Name,
+        "PhotoPath": user.Photo_path,
+        "QRCodePath": user.QRCode_path
+    })
+    print("Selected user:", selected_user)  # Debugging line to check the received ID
+    return render_template('certificate_details.html', users=selected_user)
+
+
+
+
+
+
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
