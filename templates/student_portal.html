@@ -6,22 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Skill Course Dashboard</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root{
-            --primary:#2563eb;
-            --primary-dark:#1d4ed8;
-            --success:#16a34a;
-            --warning:#f59e0b;
-            --danger:#dc2626;
-            --dark:#111827;
-            --text:#1f2937;
-            --muted:#6b7280;
+            --ink:#0c0d13;
+            --gold:#f5b942;
+            --gold-dark:#c98d1c;
+            --gold-soft:#fdf3df;
+            --success:#1a8f5c;
+            --success-soft:#e3f6ec;
+            --warning:#b9790a;
+            --warning-soft:#fdf0da;
+            --danger:#c23636;
+            --danger-soft:#fbe9e9;
+            --dark:#14151c;
+            --text:#1f2130;
+            --muted:#767887;
             --card:#ffffff;
-            --bg:#f4f7fc;
-            --border:#e5e7eb;
-            --shadow:0 12px 30px rgba(0,0,0,.08);
+            --bg:#f6f6fa;
+            --border:#ececf1;
+            --shadow:0 14px 34px -18px rgba(12,13,19,.18);
             --radius:18px;
         }
 
@@ -46,56 +53,82 @@
             width:100%;
             max-width:1200px;
             margin:0 auto;
-            padding:20px;
+            padding:24px 20px 60px;
         }
 
         /* ======================
            PROFILE
         ====================== */
         .profile-card{
-            background:var(--card);
-            padding:24px;
+            background:linear-gradient(120deg, var(--ink) 0%, #1b1d29 100%);
+            padding:28px 30px;
             border-radius:var(--radius);
             display:flex;
             align-items:center;
-            gap:18px;
+            gap:20px;
             box-shadow:var(--shadow);
             margin-bottom:28px;
             flex-wrap:wrap;
+            position:relative;
+            overflow:hidden;
+        }
+
+        .profile-card::after{
+            content:"";
+            position:absolute;
+            top:-60px;
+            right:-60px;
+            width:220px;
+            height:220px;
+            border-radius:50%;
+            background:radial-gradient(circle, var(--gold-dark) 0%, transparent 70%);
+            opacity:.35;
+            pointer-events:none;
         }
 
         .avatar{
-            width:72px;
-            height:72px;
-            min-width:72px;
-            border-radius:50%;
-            background:linear-gradient(135deg,#2563eb,#06b6d4);
+            width:74px;
+            height:74px;
+            min-width:74px;
+            clip-path:polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+            background:linear-gradient(155deg, var(--gold), var(--gold-dark));
             display:flex;
             align-items:center;
             justify-content:center;
-            color:#fff;
+            color:#1a1300;
+            font-family:'Sora', sans-serif;
             font-size:28px;
-            font-weight:700;
+            font-weight:800;
+            position:relative;
+            z-index:1;
         }
 
         .profile-info{
             flex:1;
             min-width:220px;
+            position:relative;
+            z-index:1;
         }
 
         .profile-info h3{
             margin:0 0 6px;
-            font-size:28px;
+            font-family:'Sora', sans-serif;
+            font-size:26px;
             font-weight:700;
-            color:var(--dark);
+            color:#fff;
             word-break:break-word;
         }
 
         .profile-info p{
             margin:4px 0;
-            color:var(--muted);
+            color:#b6b7c4;
             font-size:14px;
             word-break:break-word;
+        }
+
+        .profile-info p:last-child{
+            color:var(--gold);
+            font-weight:500;
         }
 
         /* ======================
@@ -104,17 +137,18 @@
         .stats{
             display:grid;
             grid-template-columns:repeat(5, 1fr);
-            gap:18px;
-            margin:24px 0 30px;
+            gap:16px;
+            margin:24px 0 34px;
         }
 
         .stat-box{
             background:var(--card);
-            border-radius:20px;
-            padding:22px 18px;
+            border-radius:18px;
+            padding:22px 16px;
             text-align:center;
             box-shadow:var(--shadow);
-            transition:.3s;
+            border:1px solid var(--border);
+            transition:.25s ease;
             min-height:120px;
             display:flex;
             flex-direction:column;
@@ -124,11 +158,13 @@
 
         .stat-box:hover{
             transform:translateY(-4px);
+            border-color:var(--gold);
         }
 
         .stat-box h2{
             margin:0;
-            color:var(--primary);
+            font-family:'Sora', sans-serif;
+            color:var(--ink);
             font-size:28px;
             font-weight:700;
             line-height:1;
@@ -137,7 +173,7 @@
         .stat-box p{
             margin-top:10px;
             color:var(--muted);
-            font-size:14px;
+            font-size:13px;
             font-weight:500;
         }
 
@@ -145,10 +181,14 @@
            SECTION TITLE
         ====================== */
         .section-title{
-            font-size:22px;
+            font-family:'Sora', sans-serif;
+            font-size:20px;
             font-weight:700;
-            margin:25px 0 15px;
+            margin:28px 0 15px;
             color:var(--dark);
+            display:flex;
+            align-items:center;
+            gap:8px;
         }
 
         /* ======================
@@ -168,19 +208,20 @@
             text-align:center;
             cursor:pointer;
             box-shadow:var(--shadow);
-            transition:.3s;
-            border:1px solid transparent;
+            transition:.25s ease;
+            border:1px solid var(--border);
         }
 
         .exam-card:hover{
             transform:translateY(-4px);
-            border-color:#dbeafe;
+            border-color:var(--gold);
         }
 
         .exam-card h3{
             margin-bottom:8px;
+            font-family:'Sora', sans-serif;
             color:var(--dark);
-            font-size:20px;
+            font-size:19px;
         }
 
         .exam-card p{
@@ -198,6 +239,7 @@
             border-radius:20px;
             overflow:hidden;
             box-shadow:var(--shadow);
+            border:1px solid var(--border);
             margin-top:12px;
         }
 
@@ -215,14 +257,16 @@
         }
 
         .online-header{
-            background:#111827;
+            background:var(--ink);
             color:#fff;
             font-weight:600;
-            font-size:14px;
+            font-size:13px;
+            letter-spacing:.03em;
+            text-transform:uppercase;
         }
 
         .online-row{
-            border-bottom:1px solid #eee;
+            border-bottom:1px solid var(--border);
             background:#fff;
         }
 
@@ -231,7 +275,16 @@
         }
 
         .online-row:hover{
-            background:#f8fafc;
+            background:#fbfaf5;
+        }
+
+        /* Explicit, high-contrast text color for every data cell — set
+           directly rather than relying on inheritance, so it can't be
+           washed out to a faint gray by any other style on the page. */
+        .online-row > div{
+            color:var(--dark);
+            font-weight:500;
+            font-size:14.5px;
         }
 
         /* ======================
@@ -248,14 +301,16 @@
         }
 
         .offline-header{
-            background:#111827;
+            background:var(--ink);
             color:#fff;
             font-weight:600;
-            font-size:14px;
+            font-size:13px;
+            letter-spacing:.03em;
+            text-transform:uppercase;
         }
 
         .offline-row{
-            border-bottom:1px solid #eee;
+            border-bottom:1px solid var(--border);
             background:#fff;
         }
 
@@ -264,7 +319,13 @@
         }
 
         .offline-row:hover{
-            background:#f8fafc;
+            background:#fbfaf5;
+        }
+
+        .offline-row > div{
+            color:var(--dark);
+            font-weight:500;
+            font-size:14.5px;
         }
 
         .exam-name{
@@ -281,24 +342,24 @@
             justify-content:center;
             padding:8px 14px;
             border-radius:999px;
-            font-size:13px;
+            font-size:12.5px;
             font-weight:600;
             min-width:110px;
         }
 
         .pending{
-            background:#fff3cd;
-            color:#856404;
+            background:var(--warning-soft);
+            color:var(--warning);
         }
 
         .passed{
-            background:#d4edda;
-            color:#155724;
+            background:var(--success-soft);
+            color:var(--success);
         }
 
         .failed{
-            background:#f8d7da;
-            color:#721c24;
+            background:var(--danger-soft);
+            color:var(--danger);
         }
 
         /* ======================
@@ -313,12 +374,11 @@
             align-items:center;
             justify-content:center;
             text-decoration:none;
-            color:#fff;
             padding:11px 18px;
             border-radius:10px;
-            font-size:14px;
+            font-size:13.5px;
             font-weight:600;
-            transition:.3s;
+            transition:.2s ease;
             border:none;
             min-height:42px;
             white-space:nowrap;
@@ -326,19 +386,26 @@
 
         .start-btn,
         .view-btn{
-            background:var(--primary);
+            background:var(--ink);
+            color:#fff;
         }
 
         .download-btn{
-            background:var(--success);
+            background:var(--success-soft);
+            color:var(--success);
         }
 
         .result-btn{
-            background:var(--warning);
+            background:var(--gold);
+            color:#1a1300;
         }
 
         .start-btn:hover,
-        .view-btn:hover,
+        .view-btn:hover{
+            transform:translateY(-2px);
+            background:#000;
+        }
+
         .action-btn:hover,
         .download-btn:hover,
         .result-btn:hover{
@@ -362,14 +429,16 @@
         .course-card{
             background:#fff;
             border-radius:20px;
-            padding:30px;
+            padding:34px 30px;
             text-align:center;
             box-shadow:var(--shadow);
+            border:1px dashed var(--border);
             margin-top:12px;
         }
 
         .course-card h4{
             margin-bottom:8px;
+            font-family:'Sora', sans-serif;
             color:var(--dark);
         }
 
@@ -410,17 +479,17 @@
         @media (max-width: 768px){
 
             .container{
-                padding:16px;
+                padding:16px 16px 48px;
             }
 
             .profile-card{
                 flex-direction:column;
                 text-align:center;
-                padding:20px;
+                padding:24px 20px;
             }
 
             .profile-info h3{
-                font-size:22px;
+                font-size:21px;
             }
 
             .profile-info p{
@@ -439,16 +508,16 @@
             }
 
             .stat-box h2{
-                font-size:24px;
+                font-size:23px;
             }
 
             .stat-box p{
-                font-size:13px;
+                font-size:12.5px;
             }
 
             .section-title{
-                font-size:18px;
-                margin:20px 0 12px;
+                font-size:17px;
+                margin:22px 0 12px;
             }
 
             .exam-menu{
@@ -462,7 +531,7 @@
             }
 
             .exam-card h3{
-                font-size:18px;
+                font-size:17px;
             }
 
             /* Hide table headers */
@@ -476,6 +545,7 @@
             .offline-table{
                 background:transparent;
                 box-shadow:none;
+                border:none;
                 border-radius:0;
                 overflow:visible;
             }
@@ -484,12 +554,12 @@
             .offline-row{
                 display:block;
                 background:#fff;
-                border-radius:18px;
+                border-radius:16px;
                 box-shadow:var(--shadow);
-                margin-bottom:16px;
+                border:1px solid var(--border);
+                margin-bottom:14px;
                 padding:18px;
                 text-align:left;
-                border:none;
             }
 
             .online-row > div,
@@ -505,73 +575,89 @@
             .online-row > div:nth-child(1)::before{
                 content:"Course Name";
                 display:block;
-                font-size:12px;
+                font-size:11.5px;
                 font-weight:600;
                 color:var(--muted);
                 margin-bottom:4px;
+                text-transform:uppercase;
+                letter-spacing:.03em;
             }
 
             .online-row > div:nth-child(2)::before{
                 content:"Total Marks";
                 display:block;
-                font-size:12px;
+                font-size:11.5px;
                 font-weight:600;
                 color:var(--muted);
                 margin-bottom:4px;
+                text-transform:uppercase;
+                letter-spacing:.03em;
             }
 
             .online-row > div:nth-child(3)::before{
                 content:"Pass Marks";
                 display:block;
-                font-size:12px;
+                font-size:11.5px;
                 font-weight:600;
                 color:var(--muted);
                 margin-bottom:4px;
+                text-transform:uppercase;
+                letter-spacing:.03em;
             }
 
             .online-row > div:nth-child(4)::before{
                 content:"Status";
                 display:block;
-                font-size:12px;
+                font-size:11.5px;
                 font-weight:600;
                 color:var(--muted);
                 margin-bottom:4px;
+                text-transform:uppercase;
+                letter-spacing:.03em;
             }
 
             .online-row > div:nth-child(5)::before{
                 content:"Action";
                 display:block;
-                font-size:12px;
+                font-size:11.5px;
                 font-weight:600;
                 color:var(--muted);
                 margin-bottom:8px;
+                text-transform:uppercase;
+                letter-spacing:.03em;
             }
 
             .offline-row > div:nth-child(1)::before{
                 content:"Exam Name";
                 display:block;
-                font-size:12px;
+                font-size:11.5px;
                 font-weight:600;
                 color:var(--muted);
                 margin-bottom:4px;
+                text-transform:uppercase;
+                letter-spacing:.03em;
             }
 
             .offline-row > div:nth-child(2)::before{
                 content:"Question Paper";
                 display:block;
-                font-size:12px;
+                font-size:11.5px;
                 font-weight:600;
                 color:var(--muted);
                 margin-bottom:8px;
+                text-transform:uppercase;
+                letter-spacing:.03em;
             }
 
             .offline-row > div:nth-child(3)::before{
                 content:"Actions";
                 display:block;
-                font-size:12px;
+                font-size:11.5px;
                 font-weight:600;
                 color:var(--muted);
                 margin-bottom:8px;
+                text-transform:uppercase;
+                letter-spacing:.03em;
             }
 
             .action-group{
@@ -609,24 +695,24 @@
         ====================== */
         @media (max-width: 480px){
             .container{
-                padding:12px;
+                padding:12px 12px 40px;
             }
 
             .profile-card{
-                padding:16px;
+                padding:18px 16px;
                 gap:14px;
                 border-radius:16px;
             }
 
             .avatar{
-                width:62px;
-                height:62px;
-                min-width:62px;
-                font-size:24px;
+                width:60px;
+                height:60px;
+                min-width:60px;
+                font-size:22px;
             }
 
             .profile-info h3{
-                font-size:19px;
+                font-size:18px;
             }
 
             .stats{
@@ -876,4 +962,3 @@
 
 </body>
 </html>
-

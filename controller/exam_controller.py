@@ -20,6 +20,7 @@ from datetime import datetime
 from zeep import Client
 import random
 import json
+from flask import jsonify
 from models.exam_model import get_shuffled_questions
 exam_bp = Blueprint('exam', __name__)
 
@@ -201,19 +202,50 @@ def save_exam():
 
 @exam_bp.route('/student_login', methods=['GET', 'POST'])
 def student_login():
+
     wsdl = "https://technovas.in/WebService.asmx?WSDL"
     client = Client(wsdl)
-    error = None
+
     if request.method == 'POST':
+
         student_id = request.form['UserId']
         student_pwd = request.form['password']
+
         result = client.service.GetUser(student_id, student_pwd)
+
         print("Login Result:", result)
+
         if result.Status == "Success":
+
+            # Local Database থেকে Student বের করুন
+            conn = get_db_connection()
+            cursor = conn.cursor(dictionary=True)
+
+            cursor.execute("""
+                SELECT *
+                FROM users
+                WHERE userid = %s
+            """, (result.UserId,))
+
+            student = cursor.fetchone()
+
+            cursor.close()
+            conn.close()
+
+            print("DATABASE STUDENT =", student)
+
+            # Student পাওয়া না গেলে
+            if not student:
+                return "Student not found in local database."
+
+            # Session Save
             session['user'] = {
-                    'name': result.Name,
-                    'StudentId': result.UserId
-                }
+                'id': student['id'],
+                'name': student['name'],
+                'StudentId': student['userid']
+            }
+
+            print("SESSION =", session['user'])
 
             return redirect(url_for('exam.student_portal'))
 
@@ -494,27 +526,22 @@ def student_portal():
 @exam_bp.route('/student_dashboard')
 def student_dashboard():
 
-
+    # ======================================
     # Check Student Login
-
-
+    # ======================================
 
     if session.get('user'):
-          student_id = session['user']['StudentId']
-          print("User ID:", student_id)
+        student_id = session['user']['StudentId']
+        print("User ID:", student_id)
     else:
-           return redirect(url_for('exam.student_login'))
+        return redirect(url_for('exam.student_login'))
 
-
-
-    # Auto Assign Online Exams
-    # assign_exams_to_student(student_id)
-
-
+    # ======================================
     # Database Connection
+    # ======================================
+
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-
 
     # ======================================
     # Student Information
@@ -523,59 +550,72 @@ def student_dashboard():
     cursor.execute("""
         SELECT *
         FROM users
-        WHERE id = %s
+        WHERE userid = %s
     """, (student_id,))
 
     student = cursor.fetchone()
-
 
     # ======================================
     # Online Exam List
     # ======================================
 
     cursor.execute("""
-        SELECT 
+        SELECT
             e.*,
 
             CASE
                 WHEN NOW() < e.start_at THEN 'UPCOMING'
-                WHEN NOW() >= e.start_at 
+                WHEN NOW() >= e.start_at
                      AND NOW() <= e.end_at THEN 'LIVE'
                 ELSE 'EXPIRED'
             END AS state
 
         FROM exams e
 
-        JOIN student_exams se
+        INNER JOIN student_exams se
             ON e.id = se.exam_id
 
         WHERE se.student_id = %s
         AND e.exam_type = 'online'
 
         ORDER BY e.start_at ASC
-
     """, (student_id,))
-
 
     exams = cursor.fetchall()
 
+    # ======================================
+    # Prepare Dashboard Exam List
+    # ======================================
 
-    # Remove Expired Exams
     courses = []
 
     for exam in exams:
 
-        if exam['state'] != 'EXPIRED':
-            courses.append(exam)
+        # Skip expired exam
+        if exam['state'] == 'EXPIRED':
+            continue
 
+        # Check Attempt
+        cursor.execute("""
+            SELECT id
+            FROM attempts
+            WHERE exam_id = %s
+            AND student_id = %s
+            LIMIT 1
+        """, (exam['id'], student_id))
 
+        attempt = cursor.fetchone()
+
+        exam['attempted'] = attempt is not None
+
+        courses.append(exam)
 
     # ======================================
     # Offline Exam Results
     # ======================================
 
     cursor.execute("""
-        SELECT 
+        SELECT
             id,
             practical_marks,
             theory_marks,
@@ -591,39 +631,36 @@ def student_dashboard():
         AND published = 1
 
         ORDER BY created_at DESC
-
     """, (student_id,))
-
 
     offline_results = cursor.fetchall()
 
-
+    # ======================================
     # Debug
+    # ======================================
+
     print("================================")
     print("Student ID:", student_id)
+    print("Student:", student)
     print("ONLINE COURSES:", courses)
     print("OFFLINE RESULTS:", offline_results)
     print("================================")
 
-
+    # ======================================
     # Close Connection
+    # ======================================
+
     cursor.close()
     conn.close()
 
-
     # ======================================
-    # Send Data To Dashboard
+    # Send Data To Template
     # ======================================
 
     return render_template(
         "student_dashboard.html",
-
         student=student,
-
-        # Online Exams
         courses=courses,
-
-        # Offline Results
         offline_results=offline_results
     )
 
@@ -642,10 +679,11 @@ def exam():
 
     attempt_id = session['attempt_id']
 
-    questions = get_questions_by_exam(session['exam_id'])
+    questions = get_shuffled_questions(session['attempt_id'])
 
     if not questions:
-        return "❌ No questions found"
+
+       questions = get_questions_by_exam(session['exam_id'])
 
     # ================= TIMER FIX =================
     # Create timer ONLY first time
@@ -994,37 +1032,7 @@ def start_exam(exam_id):
     return redirect(url_for("exam.exam"))
 
 
-    # CREATE NEW ATTEMPT
-
-
-# CREATE NEW ATTEMPT
-    attempt_id = create_attempt(
-    exam_id,
-    student_id,
-    request.remote_addr,
-    request.headers.get('User-Agent')
-)
-
-# FAILED
-    if not attempt_id:
-        return "❌ Failed to create attempt"
-
-# 🔥 USE CURRENT TIME
-    started_at = datetime.now()
-
-# END TIME
-    end_time = started_at + timedelta(
-    minutes=exam['duration_minutes']
-)
-
-# SESSION
-    session['attempt_id'] = attempt_id
-    session['exam_id'] = exam_id
-    session['answers'] = {}
-    session['end_time'] = end_time.strftime('%Y-%m-%d %H:%M:%S')
-    print("✅ Exam Started")
-    print("Attempt ID:", attempt_id)
-    return redirect(url_for('exam.exam'))
+   
 
 
 # ---------------- AFTER COMPPLETED RESULT ----------------
@@ -1072,21 +1080,27 @@ def result():
 
 
 
-# ----------------------student result---------------------
+# ---------------------- STUDENT RESULT ---------------------
 
 @exam_bp.route('/showstudent_result')
 def showstudent_result():
 
-       
-    
-    if session.get('user'):
-      student_id = session['user']['StudentId']
-      print("User ID:", student_id)
-    else:
+    # =========================
+    # Check Login
+    # =========================
+
+    if 'user' not in session:
         return redirect(url_for('exam.student_login'))
+
+    # Student IDs
+    student_userid = session['user']['StudentId']   # Login ID (8334886382)
+    student_db_id = session['user']['id']           # users.id (134)
+
+    print("Student UserID :", student_userid)
+    print("Student DB ID  :", student_db_id)
+
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-
 
     # =========================
     # Student Information
@@ -1096,10 +1110,9 @@ def showstudent_result():
         SELECT *
         FROM users
         WHERE id = %s
-    """, (student_id,))
+    """, (student_db_id,))
 
     student = cursor.fetchone()
-
 
     # =========================
     # Online Published Results
@@ -1124,20 +1137,20 @@ def showstudent_result():
         FROM attempts a
 
         JOIN results r
-        ON a.id = r.attempt_id
+            ON a.id = r.attempt_id
 
         JOIN exams e
-        ON a.exam_id = e.id
+            ON a.exam_id = e.id
 
         WHERE
             a.student_id = %s
             AND r.published = 1
 
         ORDER BY a.id DESC
-    """, (student_id,))
+
+    """, (student_userid,))
 
     online_results = cursor.fetchall()
-
 
     # =========================
     # Offline Published Results
@@ -1159,56 +1172,61 @@ def showstudent_result():
 
             e.total_marks AS exam_total,
 
-            q.question_text AS question_file,
+            GROUP_CONCAT(
+                DISTINCT q.question_text
+                SEPARATOR ' || '
+            ) AS question_file,
 
             o.created_at
 
         FROM offline_exam_results o
 
-
-        JOIN exams e
-        ON o.exam_id = e.id
-
+        INNER JOIN exams e
+            ON o.exam_id = e.id
 
         LEFT JOIN exam_questions eq
-        ON e.id = eq.exam_id
-
+            ON e.id = eq.exam_id
 
         LEFT JOIN questions q
-        ON eq.question_id = q.id
-
+            ON eq.question_id = q.id
 
         WHERE
             o.student_id = %s
             AND o.published = 1
 
+        GROUP BY
+            o.id,
+            e.title,
+            o.theory_marks,
+            o.practical_marks,
+            o.total_marks,
+            o.grade,
+            o.status,
+            o.answer_sheet_file,
+            e.total_marks,
+            o.created_at
+
         ORDER BY o.id DESC
 
-    """, (student_id,))
-
+    """, (student_db_id,))
 
     offline_results = cursor.fetchall()
 
-
+    # =========================
     # Debug
-    print("ONLINE RESULT:", online_results)
-    print("OFFLINE RESULT:", offline_results)
+    # =========================
 
+    print("ONLINE RESULTS :", online_results)
+    print("OFFLINE RESULTS:", offline_results)
 
     cursor.close()
     conn.close()
 
-
     return render_template(
-
         "showstudent_result.html",
-
         student=student,
-
         online_results=online_results,
-
         offline_results=offline_results
-
     )
 
 
@@ -1708,7 +1726,75 @@ def student_exams():
     return render_template(
         'student_exams.html',
         exams=exams
-    )
+     )
+
+# --------------------REATTEMPT EXAM---------------------------------------------
+
+@exam_bp.route('/reset_exam_attempt/<int:exam_id>/<student_id>', methods=['POST'])
+def reset_exam_attempt(exam_id, student_id):
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+
+        # Find Attempt
+        cursor.execute("""
+            SELECT id
+            FROM attempts
+            WHERE exam_id=%s
+            AND student_id=%s
+            LIMIT 1
+        """, (exam_id, student_id))
+
+        attempt = cursor.fetchone()
+
+        if not attempt:
+            return jsonify({
+                "status": "error",
+                "message": "Attempt not found."
+            })
+
+        attempt_id = attempt["id"]
+
+        # Delete Result
+        cursor.execute("""
+            DELETE FROM results
+            WHERE attempt_id=%s
+        """, (attempt_id,))
+
+        # Delete Answers
+        cursor.execute("""
+            DELETE FROM student_answers
+            WHERE attempt_id=%s
+        """, (attempt_id,))
+
+        # Delete Attempt
+        cursor.execute("""
+            DELETE FROM attempts
+            WHERE id=%s
+        """, (attempt_id,))
+
+        conn.commit()
+
+        return jsonify({
+            "status": "success",
+            "message": "Student can now re-attempt this exam."
+        })
+
+    except Exception as e:
+
+        conn.rollback()
+
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        })
+
+    finally:
+
+        cursor.close()
+        conn.close()
 
 
 
@@ -1727,104 +1813,80 @@ def all_offline_results():
     query = """
     SELECT
 
-    se.student_id,
-    se.exam_id,
+        u.id AS user_id,
+        u.userid,
+        se.student_id,
+        se.exam_id,
 
-    u.name,
+        u.name,
 
-    e.title,
-    e.total_marks,
-    e.pass_marks,
+        e.title,
+        e.total_marks,
+        e.pass_marks,
 
-    r.id AS result_id,
-    r.theory_marks,
-    r.practical_marks,
-    r.total_marks AS saved_total,
-    r.grade,
-    r.status,
-    r.answer_sheet_file,
-    r.published,
+        r.id AS result_id,
+        r.theory_marks,
+        r.practical_marks,
+        r.total_marks AS saved_total,
+        r.grade,
+        r.status,
+        r.answer_sheet_file,
+        r.published,
 
-    GROUP_CONCAT(
-        DISTINCT q.question_text
-        SEPARATOR '|'
-    ) AS question_files
+        GROUP_CONCAT(
+            DISTINCT q.question_text
+            SEPARATOR '|'
+        ) AS question_files
 
+    FROM student_exams se
 
-FROM student_exams se
+    INNER JOIN users u
+        ON u.userid = se.student_id
 
+    INNER JOIN exams e
+        ON e.id = se.exam_id
 
-JOIN users u
-ON se.student_id = u.id
+    LEFT JOIN exam_questions eq
+        ON eq.exam_id = e.id
 
+    LEFT JOIN questions q
+        ON q.id = eq.question_id
 
-JOIN exams e
-ON se.exam_id = e.id
+    LEFT JOIN offline_exam_results r
+        ON r.student_id = u.id
+        AND r.exam_id = se.exam_id
 
+    WHERE e.exam_type = 'offline'
 
-LEFT JOIN exam_questions eq
-ON e.id = eq.exam_id
+    GROUP BY
 
+        u.id,
+        u.userid,
+        se.student_id,
+        se.exam_id,
 
-LEFT JOIN questions q
-ON eq.question_id = q.id
+        u.name,
 
+        e.title,
+        e.total_marks,
+        e.pass_marks,
 
-LEFT JOIN offline_exam_results r
-ON r.student_id = se.student_id
-AND r.exam_id = se.exam_id
+        r.id,
+        r.theory_marks,
+        r.practical_marks,
+        r.total_marks,
+        r.grade,
+        r.status,
+        r.answer_sheet_file,
+        r.published
 
-
-WHERE 
-    e.exam_type = 'offline'
-
-
-GROUP BY
-
-    se.student_id,
-    se.exam_id,
-    u.name,
-    e.title,
-    e.total_marks,
-    e.pass_marks,
-
-    r.id,
-    r.theory_marks,
-    r.practical_marks,
-    r.total_marks,
-    r.grade,
-    r.status,
-    r.answer_sheet_file,
-    r.published
-
-
-ORDER BY
-    se.exam_id DESC,
-    u.name ASC
-"""
+    ORDER BY
+        se.exam_id DESC,
+        u.name ASC
+    """
 
     cursor.execute(query)
-
     results = cursor.fetchall()
-
-
-    # print("========== DEBUG ==========")
-    # print("TOTAL RESULTS:", len(results))
-
-    # for r in results:
-    #   print(
-    #     "Student:", r["student_id"],
-    #     "Exam:", r["exam_id"],
-    #     "Title:", r["title"]
-    # )
-
-    # print("===========================")
-    
-
-
-    # ==========================
-    # Question File Clean
-    # ==========================
 
     for row in results:
 
@@ -1835,28 +1897,22 @@ ORDER BY
             clean_files = []
 
             for f in files:
-
                 f = f.replace("\\", "/")
                 f = f.replace("static/", "")
-
                 clean_files.append(f)
 
             row["question_files"] = clean_files
 
         else:
-
             row["question_files"] = []
-
 
     cursor.close()
     conn.close()
-    
-
 
     return render_template(
         "all_offline_results.html",
         results=results
-    ) 
+    )
 
 
 
@@ -2075,7 +2131,7 @@ def all_exam_questions():
         exams=exams
     )
 
-
+# ------------------------EXAM QUESTIONS---------------------
 @exam_bp.route("/get_exam_questions/<int:exam_id>")
 def get_exam_questions(exam_id):
 
@@ -2281,3 +2337,49 @@ def update_question(question_id):
             question_id=question_id
         )
     )
+
+
+# ---------------- DELETE QUESTION ----------------
+
+@exam_bp.route("/delete_question/<int:question_id>")
+def delete_question(question_id):
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    try:
+
+        # 1. আগে exam_questions থেকে Delete
+        cur.execute("""
+            DELETE FROM exam_questions
+            WHERE question_id = %s
+        """, (question_id,))
+
+        # 2. তারপর question_options থেকে Delete
+        cur.execute("""
+            DELETE FROM question_options
+            WHERE question_id = %s
+        """, (question_id,))
+
+        # 3. শেষে questions Table থেকে Delete
+        cur.execute("""
+            DELETE FROM questions
+            WHERE id = %s
+        """, (question_id,))
+
+        conn.commit()
+
+        flash("Question Deleted Successfully.", "success")
+
+    except Exception as e:
+
+        conn.rollback()
+
+        flash(str(e), "danger")
+
+    finally:
+
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("exam.all_exam_questions"))

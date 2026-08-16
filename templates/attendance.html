@@ -1,15 +1,299 @@
-<h2>Attendance</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mark Attendance</title>
 
-<video id="video" width="400" autoplay></video>
-<br><br>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-<button onclick="attendance()">Mark Attendance</button>
-<a href="/onlineattendance">Back</a>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family:'Inter', sans-serif;
+}
 
-<p id="result"></p>
+:root{
+    --bg:#F6F7FB;
+    --surface:#FFFFFF;
+    --border:#E7E9F1;
+    --text:#20232E;
+    --muted:#7A8094;
+    --accent:#5B5FEF;
+    --accent-soft:#EEEEFE;
+    --green:#16A34A;
+    --green-soft:#EAFBF0;
+    --red:#E1483F;
+    --red-soft:#FDEEEE;
+    --radius:18px;
+}
+
+body{
+    min-height:100vh;
+    background:
+        linear-gradient(rgba(246,247,251,0.88), rgba(246,247,251,0.93)),
+        url('https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=1600&q=60')
+        no-repeat center center/cover;
+    background-attachment:fixed;
+    color:var(--text);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px 20px;
+}
+
+.wrap{
+    width:100%;
+    max-width:420px;
+}
+
+/* Header */
+.head{
+    text-align:center;
+    margin-bottom:22px;
+}
+
+.eyebrow{
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin-bottom:8px;
+}
+
+h2{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:25px;
+    letter-spacing:-0.01em;
+    margin-bottom:8px;
+}
+
+.head p{
+    color:var(--muted);
+    font-size:13.5px;
+}
+
+/* Card */
+.panel{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:20px;
+    box-shadow:0 10px 30px rgba(20,23,32,0.07);
+}
+
+/* Video frame */
+.scan-frame{
+    position:relative;
+    width:100%;
+    aspect-ratio:4/3;
+    border-radius:14px;
+    overflow:hidden;
+    background:#11131A;
+    margin-bottom:18px;
+}
+
+video{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+/* corner brackets for the "scan" feel */
+.corner{
+    position:absolute;
+    width:26px;
+    height:26px;
+    border:2.5px solid rgba(255,255,255,0.85);
+    z-index:2;
+}
+.corner.tl{ top:12px; left:12px; border-right:none; border-bottom:none; border-radius:6px 0 0 0; }
+.corner.tr{ top:12px; right:12px; border-left:none; border-bottom:none; border-radius:0 6px 0 0; }
+.corner.bl{ bottom:12px; left:12px; border-right:none; border-top:none; border-radius:0 0 0 6px; }
+.corner.br{ bottom:12px; right:12px; border-left:none; border-top:none; border-radius:0 0 6px 0; }
+
+.status-dot{
+    position:absolute;
+    top:12px;
+    left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:5px 11px;
+    border-radius:20px;
+    background:rgba(17,19,26,0.55);
+    backdrop-filter:blur(4px);
+    font-size:11px;
+    font-weight:600;
+    color:#fff;
+    letter-spacing:0.03em;
+    z-index:2;
+}
+
+.status-dot::before{
+    content:"";
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:#4ade80;
+    box-shadow:0 0 0 3px rgba(74,222,128,0.28);
+}
+
+/* Buttons */
+.btn{
+    width:100%;
+    padding:13px 16px;
+    border-radius:11px;
+    border:none;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:600;
+    font-family:'Inter', sans-serif;
+    transition:0.2s ease;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+}
+
+.btn-primary{
+    background:var(--accent);
+    color:#fff;
+    box-shadow:0 8px 18px rgba(91,95,239,0.28);
+}
+
+.btn-primary:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 22px rgba(91,95,239,0.34);
+}
+
+.btn-primary:disabled{
+    opacity:0.7;
+    cursor:default;
+    transform:none;
+}
+
+.btn svg{
+    width:16px; height:16px;
+    stroke:currentColor; fill:none;
+    stroke-width:2; stroke-linecap:round; stroke-linejoin:round;
+    flex-shrink:0;
+}
+
+.spinner{
+    width:14px; height:14px;
+    border-radius:50%;
+    border:2px solid rgba(255,255,255,0.4);
+    border-top-color:#fff;
+    animation:spin 0.7s linear infinite;
+}
+
+@keyframes spin{ to{ transform:rotate(360deg); } }
+
+.back-link{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    margin-top:16px;
+    color:var(--muted);
+    text-decoration:none;
+    font-size:13px;
+    font-weight:500;
+}
+
+.back-link:hover{ color:var(--text); }
+
+.back-link svg{
+    width:14px; height:14px;
+    stroke:currentColor; fill:none;
+    stroke-width:2; stroke-linecap:round; stroke-linejoin:round;
+}
+
+/* Result */
+#result{
+    margin-top:14px;
+    min-height:0;
+}
+
+.result-card{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    padding:13px 14px;
+    border-radius:11px;
+    font-size:13px;
+    line-height:1.5;
+    word-break:break-word;
+}
+
+.result-card svg{
+    width:17px; height:17px;
+    stroke:currentColor; fill:none;
+    stroke-width:2; stroke-linecap:round; stroke-linejoin:round;
+    flex-shrink:0;
+    margin-top:1px;
+}
+
+.result-ok{ background:var(--green-soft); color:var(--green); }
+.result-fail{ background:var(--red-soft); color:var(--red); }
+
+@media(max-width:420px){
+    h2{ font-size:22px; }
+    .panel{ padding:16px; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+    <div class="head">
+        <div class="eyebrow">Live Scan</div>
+        <h2>Mark Attendance</h2>
+        <p>Position your face in the frame and confirm below.</p>
+    </div>
+
+    <div class="panel">
+
+        <div class="scan-frame">
+            <span class="corner tl"></span>
+            <span class="corner tr"></span>
+            <span class="corner bl"></span>
+            <span class="corner br"></span>
+            <span class="status-dot">CAMERA LIVE</span>
+            <video id="video" autoplay playsinline></video>
+        </div>
+
+        <button class="btn btn-primary" id="markBtn" onclick="attendance()">
+            <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+            Mark Attendance
+        </button>
+
+        <a href="/onlineattendance" class="back-link">
+            <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+            Back
+        </a>
+
+        <div id="result"></div>
+
+    </div>
+
+</div>
 
 <script>
 const video = document.getElementById('video');
+const markBtn = document.getElementById('markBtn');
+const resultBox = document.getElementById('result');
 
 navigator.mediaDevices.getUserMedia({ video: true })
 .then(stream => video.srcObject = stream);
@@ -21,6 +305,10 @@ function attendance() {
     canvas.getContext('2d').drawImage(video,0,0,400,300);
     let image = canvas.toDataURL('image/jpeg');
 
+    markBtn.disabled = true;
+    markBtn.innerHTML = '<span class="spinner"></span> Checking...';
+    resultBox.innerHTML = '';
+
     fetch('/mark_attendance',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
@@ -28,12 +316,36 @@ function attendance() {
     })
     .then(res=>res.json())
     .then(data=>{
-        document.getElementById('result').innerHTML =
-            JSON.stringify(data);
-        console.log(data.status)
+        console.log(data.status);
+
+        const statusText = (data.status || '').toString().toLowerCase();
+        const isOk = statusText.includes('success') || statusText.includes('marked') || statusText === 'ok';
+
+        const icon = isOk
+            ? '<svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>'
+            : '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>';
+
+        resultBox.innerHTML =
+            '<div class="result-card ' + (isOk ? 'result-ok' : 'result-fail') + '">' +
+                icon +
+                '<span>' + JSON.stringify(data) + '</span>' +
+            '</div>';
+
         //window.location.href = "/attendance_view";
-  
-    
+    })
+    .catch(err=>{
+        resultBox.innerHTML =
+            '<div class="result-card result-fail">' +
+                '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>' +
+                '<span>' + err + '</span>' +
+            '</div>';
+    })
+    .finally(()=>{
+        markBtn.disabled = false;
+        markBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg> Mark Attendance';
     });
 }
 </script>
+
+</body>
+</html>

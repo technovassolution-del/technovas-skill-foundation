@@ -371,22 +371,53 @@ def get_exam_by_id(exam_id):
 def get_shuffled_questions(attempt_id):
 
     conn = get_db_connection()
+
     cursor = conn.cursor(dictionary=True)
 
     try:
 
         cursor.execute("""
-            SELECT shuffled_data
-            FROM attempts
-            WHERE id=%s
+        SELECT shuffled_data
+        FROM attempts
+        WHERE id=%s
         """, (attempt_id,))
 
         row = cursor.fetchone()
 
         if row and row["shuffled_data"]:
+
             return json.loads(row["shuffled_data"])
 
         return None
+
+    finally:
+
+        cursor.close()
+
+        conn.close()
+
+def allow_reattempt(exam_id, student_id):
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+
+        cursor.execute("""
+            UPDATE student_exams
+            SET reattempt_allowed = 1
+            WHERE exam_id=%s
+            AND student_id=%s
+        """, (exam_id, student_id))
+
+        conn.commit()
+
+        return True
+
+    except Exception:
+
+        conn.rollback()
+        return False
 
     finally:
 
