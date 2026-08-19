@@ -1119,36 +1119,38 @@ def showstudent_result():
     # =========================
 
     cursor.execute("""
-        SELECT
+    SELECT
 
-            e.title AS exam_title,
+        e.title AS exam_title,
 
-            r.online_marks,
-            r.theory_marks,
-            r.practical_marks,
-            r.attendance_marks,
+        r.online_marks,
+        r.theory_marks,
+        r.practical_marks,
+        r.attendance_marks,
 
-            r.total_marks,
-            r.percentage,
-            r.result_status,
+        r.total_marks,
+        r.obtained_marks,
+        r.percentage,
+        r.grade,
+        r.result_status,
 
-            a.submitted_at
+        a.submitted_at
 
-        FROM attempts a
+    FROM attempts a
 
-        JOIN results r
-            ON a.id = r.attempt_id
+    JOIN results r
+        ON a.id = r.attempt_id
 
-        JOIN exams e
-            ON a.exam_id = e.id
+    JOIN exams e
+        ON a.exam_id = e.id
 
-        WHERE
-            a.student_id = %s
-            AND r.published = 1
+    WHERE
+        a.student_id = %s
+        AND r.published = 1
 
-        ORDER BY a.id DESC
+    ORDER BY a.id DESC
 
-    """, (student_userid,))
+""", (student_userid,))
 
     online_results = cursor.fetchall()
 
@@ -1259,7 +1261,9 @@ def publish_result_route(attempt_id):
 
 
 
-# ---------------- ONLINE RESULT PROCESSING ----------------
+# ============================================================
+# RESULT PROCESSING DASHBOARD
+# ============================================================
 
 @exam_bp.route('/result_processing')
 def result_processing():
@@ -1278,6 +1282,8 @@ def result_processing():
 
                 a.student_id,
 
+                COALESCE(u.name, 'Unknown Student') AS student_name,
+
                 e.title AS exam_title,
 
                 r.online_marks,
@@ -1286,11 +1292,13 @@ def result_processing():
 
                 r.practical_marks,
 
-                r.attendance_marks,
-
                 r.total_marks,
 
+                r.obtained_marks,
+
                 r.percentage,
+
+                r.grade,
 
                 r.result_status,
 
@@ -1308,6 +1316,9 @@ def result_processing():
             INNER JOIN exams e
                 ON a.exam_id = e.id
 
+            LEFT JOIN users u
+                ON a.student_id = u.userid
+
             ORDER BY r.attempt_id DESC
 
         """
@@ -1318,14 +1329,13 @@ def result_processing():
 
     except Exception as e:
 
-        print("ERROR => ", e)
+        print("RESULT PROCESSING ERROR =>", e)
 
         results = []
 
     finally:
 
         cursor.close()
-
         conn.close()
 
     return render_template(
@@ -1337,8 +1347,374 @@ def result_processing():
 
 
 
-# ----------------Real Calculation Logic----------------------
-def calculate_result(attempt_id):
+# ============================================================
+# RESULT CALCULATION LOGIC
+# ============================================================
+
+def calculate_grade(percentage):
+
+    percentage = float(percentage)
+
+    if percentage >= 90:
+        return 'A+'
+
+    elif percentage >= 80:
+        return 'A'
+
+    elif percentage >= 70:
+        return 'B+'
+
+    elif percentage >= 60:
+        return 'B'
+
+    elif percentage >= 50:
+        return 'C'
+
+    elif percentage >= 40:
+        return 'D'
+
+    else:
+        return 'F'
+
+
+def calculate_result_values(
+    online_marks,
+    theory_marks,
+    practical_marks,
+    total_marks
+):
+
+    online_marks = float(online_marks or 0)
+    theory_marks = float(theory_marks or 0)
+    practical_marks = float(practical_marks or 0)
+    total_marks = float(total_marks or 0)
+
+    # --------------------------------
+    # TOTAL MAXIMUM MARKS VALIDATION
+    # --------------------------------
+
+    if total_marks <= 0:
+
+        return {
+            'obtained_marks': 0,
+            'percentage': 0,
+            'grade': 'F',
+            'result_status': 'PENDING'
+        }
+
+    # --------------------------------
+    # OBTAINED MARKS
+    # --------------------------------
+
+    obtained_marks = (
+        online_marks
+        + theory_marks
+        + practical_marks
+    )
+
+    # --------------------------------
+    # PERCENTAGE
+    # --------------------------------
+
+    percentage = (
+        (obtained_marks / total_marks) * 100
+    )
+
+    # --------------------------------
+    # GRADE
+    # --------------------------------
+
+    grade = calculate_grade(percentage)
+
+    # --------------------------------
+    # PASS / FAIL
+    # --------------------------------
+
+    if percentage >= 40:
+        result_status = 'PASS'
+    else:
+        result_status = 'FAIL'
+
+    return {
+        'obtained_marks': round(obtained_marks, 2),
+        'percentage': round(percentage, 2),
+        'grade': grade,
+        'result_status': result_status
+    }
+
+    # except Exception as e:
+
+    #     print("ERROR:", e)
+
+    #     return 0, 0, 0, 'FAIL'
+
+    # finally:
+
+    #     cursor.close()
+
+    #     conn.close()
+
+
+    # ============================================================
+# SAVE RESULT PROCESSING
+# ============================================================
+
+@exam_bp.route(
+    '/update_offline_marks/<int:attempt_id>',
+    methods=['POST']
+)
+def update_offline_marks(attempt_id):
+
+    conn = get_db_connection()
+
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+
+        # ----------------------------------------------------
+        # GET FORM VALUES
+        # ----------------------------------------------------
+
+        total_marks = request.form.get(
+            'total_marks',
+            '0'
+        )
+
+        theory_marks = request.form.get(
+            'theory_marks',
+            '0'
+        )
+
+        practical_marks = request.form.get(
+            'practical_marks',
+            '0'
+        )
+        
+
+        # ----------------------------------------------------
+        # CONVERT TO FLOAT
+        # ----------------------------------------------------
+
+        try:
+
+            total_marks = float(total_marks or 0)
+            theory_marks = float(theory_marks or 0)
+            practical_marks = float(practical_marks or 0)
+
+        except ValueError:
+
+            flash(
+                'Invalid marks entered.',
+                'error'
+            )
+
+            return redirect(
+                url_for('exam.result_processing')
+            )
+
+        # ----------------------------------------------------
+        # BASIC VALIDATION
+        # ----------------------------------------------------
+
+        if total_marks <= 0:
+
+            flash(
+                'Total Marks must be greater than 0.',
+                'error'
+            )
+
+            return redirect(
+                url_for('exam.result_processing')
+            )
+
+        if theory_marks < 0:
+
+            flash(
+                'Theory Marks cannot be negative.',
+                'error'
+            )
+
+            return redirect(
+                url_for('exam.result_processing')
+            )
+
+        if practical_marks < 0:
+
+            flash(
+                'Practical Marks cannot be negative.',
+                'error'
+            )
+
+            return redirect(
+                url_for('exam.result_processing')
+            )
+
+        # ----------------------------------------------------
+        # GET ONLINE MARKS
+        # ----------------------------------------------------
+
+        cursor.execute(
+            """
+            SELECT online_marks
+            FROM results
+            WHERE attempt_id = %s
+            """,
+            (attempt_id,)
+        )
+
+        result_row = cursor.fetchone()
+
+        if not result_row:
+
+            flash(
+                'Result record not found.',
+                'error'
+            )
+
+            return redirect(
+                url_for('exam.result_processing')
+            )
+
+        online_marks = float(
+            result_row['online_marks'] or 0
+        )
+
+        # ----------------------------------------------------
+        # CALCULATE
+        # ----------------------------------------------------
+
+        calculation = calculate_result_values(
+
+            online_marks=online_marks,
+
+            theory_marks=theory_marks,
+
+            practical_marks=practical_marks,
+
+            total_marks=total_marks
+
+        )
+
+        obtained_marks = calculation[
+            'obtained_marks'
+        ]
+
+        percentage = calculation[
+            'percentage'
+        ]
+
+        grade = calculation[
+            'grade'
+        ]
+
+        result_status = calculation[
+            'result_status'
+        ]
+
+        # ----------------------------------------------------
+        # IMPORTANT VALIDATION
+        # ----------------------------------------------------
+        # Obtained marks cannot be greater than Total Marks
+        # ----------------------------------------------------
+
+        if obtained_marks > total_marks:
+
+            flash(
+                f'Obtained Marks ({obtained_marks}) '
+                f'cannot be greater than Total Marks '
+                f'({total_marks}).',
+                'error'
+            )
+
+            return redirect(
+                url_for('exam.result_processing')
+            )
+
+        # ----------------------------------------------------
+        # UPDATE DATABASE
+        # ----------------------------------------------------
+
+        cursor.execute(
+            """
+            UPDATE results
+
+            SET
+
+                total_marks = %s,
+
+                theory_marks = %s,
+
+                practical_marks = %s,
+
+                obtained_marks = %s,
+
+                percentage = %s,
+
+                grade = %s,
+
+                result_status = %s,
+
+                evaluated_at = NOW()
+
+            WHERE attempt_id = %s
+            """,
+
+            (
+                total_marks,
+
+                theory_marks,
+
+                practical_marks,
+
+                obtained_marks,
+
+                percentage,
+
+                grade,
+
+                result_status,
+
+                attempt_id
+            )
+        )
+
+        conn.commit()
+
+        flash(
+            'Result saved successfully.',
+            'success'
+        )
+
+    except Exception as e:
+
+        conn.rollback()
+
+        print(
+            "UPDATE RESULT ERROR =>",
+            e
+        )
+
+        flash(
+            'Error while saving result.',
+            'error'
+        )
+
+    finally:
+
+        cursor.close()
+        conn.close()
+
+    return redirect(
+        url_for('exam.result_processing')
+    )
+
+
+
+# ============================================================
+# CALCULATE ONLINE EXAM MARKS
+# ============================================================
+
+def calculate_online_marks(attempt_id):
 
     conn = get_db_connection()
 
@@ -1347,22 +1723,25 @@ def calculate_result(attempt_id):
     try:
 
         cursor.execute("""
-            SELECT 
+            SELECT
                 sa.question_id,
                 sa.selected_option_id,
                 qo.is_correct
 
             FROM student_answers sa
 
-            JOIN question_options qo
-            ON sa.selected_option_id = qo.id
+            INNER JOIN question_options qo
+                ON sa.selected_option_id = qo.id
 
             WHERE sa.attempt_id = %s
         """, (attempt_id,))
 
         data = cursor.fetchall()
 
-        total_questions = len(data)
+
+        # ====================================================
+        # COUNT CORRECT ANSWERS
+        # ====================================================
 
         correct_answers = 0
 
@@ -1372,33 +1751,32 @@ def calculate_result(attempt_id):
 
                 correct_answers += 1
 
-        total_marks = total_questions
 
-        obtained_marks = correct_answers
+        # ====================================================
+        # ONLINE MARKS
+        # ====================================================
 
-        percentage = (
-            (obtained_marks / total_marks) * 100
-            if total_marks > 0 else 0
+        online_marks = correct_answers
+
+
+        print(
+            "ONLINE MARKS CALCULATED =",
+            online_marks
         )
 
-        result_status = (
-            'PASS'
-            if percentage >= 40
-            else 'FAIL'
-        )
 
-        return (
-            obtained_marks,
-            total_marks,
-            percentage,
-            result_status
-        )
+        return online_marks
+
 
     except Exception as e:
 
-        print("ERROR:", e)
+        print(
+            "❌ ONLINE MARK CALCULATION ERROR =>",
+            e
+        )
 
-        return 0, 0, 0, 'FAIL'
+        return 0
+
 
     finally:
 
@@ -1407,7 +1785,9 @@ def calculate_result(attempt_id):
         conn.close()
 
 
-# -------------------- SUBMIT FUNCTION --------------------
+# ============================================================
+# SUBMIT ATTEMPT
+# ============================================================
 
 def submit_attempt(attempt_id):
 
@@ -1417,90 +1797,210 @@ def submit_attempt(attempt_id):
 
     try:
 
-        # =========================
-        # MARK SUBMITTED
-        # =========================
+        # ====================================================
+        # 1. CALCULATE ONLINE MARKS
+        # ====================================================
+
+        online_marks = calculate_online_marks(
+            attempt_id
+        )
+
+
+        print(
+            "======================================"
+        )
+
+        print(
+            "ATTEMPT ID =",
+            attempt_id
+        )
+
+        print(
+            "ONLINE MARKS =",
+            online_marks
+        )
+
+        print(
+            "======================================"
+        )
+
+
+        # ====================================================
+        # 2. MARK ATTEMPT AS SUBMITTED
+        # ====================================================
 
         cursor.execute("""
             UPDATE attempts
+
             SET
-                status='SUBMITTED',
-                submitted_at=NOW()
-            WHERE id=%s
+                status = 'SUBMITTED',
+                submitted_at = NOW()
+
+            WHERE id = %s
         """, (attempt_id,))
 
-        # =========================
-        # CALCULATE RESULT
-        # =========================
 
-        obtained_marks, total_marks, percentage, result_status = calculate_result(attempt_id)
-
-        # =========================
-        # SAVE RESULT
-        # =========================
+        # ====================================================
+        # 3. CHECK RESULT ALREADY EXISTS
+        # ====================================================
 
         cursor.execute("""
-            INSERT INTO results
-            (
+            SELECT id
+
+            FROM results
+
+            WHERE attempt_id = %s
+        """, (attempt_id,))
+
+        existing_result = cursor.fetchone()
+
+
+        # ====================================================
+        # 4. CREATE RESULT IF NOT EXISTS
+        # ====================================================
+
+        if not existing_result:
+
+            cursor.execute("""
+                INSERT INTO results
+                (
+                    attempt_id,
+
+                    online_marks,
+
+                    total_marks,
+
+                    theory_marks,
+
+                    practical_marks,
+
+                    obtained_marks,
+
+                    attendance_marks,
+
+                    percentage,
+
+                    grade,
+
+                    result_status,
+
+                    published,
+
+                    evaluated_at
+                )
+
+                VALUES
+                (
+                    %s,
+                    %s,
+                    0.00,
+                    0.00,
+                    0.00,
+                    0.00,
+                    0.00,
+                    0.00,
+                    NULL,
+                    'PENDING',
+                    0,
+                    NOW()
+                )
+            """, (
+
                 attempt_id,
+
+                online_marks
+
+            ))
+
+
+            print(
+                "✅ NEW RESULT RECORD CREATED"
+            )
+
+
+        # ====================================================
+        # 5. IF RESULT ALREADY EXISTS
+        # ====================================================
+
+        else:
+
+            cursor.execute("""
+                UPDATE results
+
+                SET
+                    online_marks = %s
+
+                WHERE attempt_id = %s
+            """, (
+
                 online_marks,
-                total_marks,
-                theory_marks,
-                practical_marks,
-                attendance_marks,
-                percentage,
-                result_status,
-                published,
-                evaluated_at
+
+                attempt_id
+
+            ))
+
+
+            print(
+                "✅ EXISTING RESULT UPDATED"
             )
-            VALUES
-            (
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                0,
-                NOW()
-            )
-        """, (
 
-            attempt_id,
 
-            obtained_marks,     # online_marks
-
-            obtained_marks,     # total_marks initially same as online marks
-
-            0,                  # theory_marks
-
-            0,                  # practical_marks
-
-            0,                  # attendance_marks
-
-            percentage,
-
-            result_status
-
-        ))
+        # ====================================================
+        # 6. COMMIT
+        # ====================================================
 
         conn.commit()
 
-        print("✅ RESULT SAVED SUCCESSFULLY")
+
+        print(
+            "======================================"
+        )
+
+        print(
+            "✅ RESULT SAVED SUCCESSFULLY"
+        )
+
+        print(
+            "ATTEMPT ID:",
+            attempt_id
+        )
+
+        print(
+            "ONLINE MARKS:",
+            online_marks
+        )
+
+        print(
+            "STATUS: PENDING"
+        )
+
+        print(
+            "======================================"
+        )
+
 
     except Exception as e:
 
         conn.rollback()
 
-        print("ERROR:", e)
+        print(
+            "❌ SUBMIT ATTEMPT ERROR =>",
+            e
+        )
+
+
+    
+
+        raise
+
 
     finally:
 
         cursor.close()
 
         conn.close()
+
+
 
 
 
