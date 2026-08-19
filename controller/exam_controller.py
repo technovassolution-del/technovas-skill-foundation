@@ -1035,47 +1035,98 @@ def start_exam(exam_id):
    
 
 
-# ---------------- AFTER COMPPLETED RESULT ----------------
+# ============================================================
+# AFTER COMPLETED EXAM RESULT PAGE
+# ============================================================
 
 @exam_bp.route('/result')
 def result():
-    attempt_id = session.get('attempt_id')
-    student = session.get('student')
-    student_name = student['name'] if student else "Student"
 
-    # 🔥 IMPORTANT: call submit only once
+    # ========================================================
+    # GET ATTEMPT ID FROM SESSION
+    # ========================================================
+
+    attempt_id = session.get('attempt_id')
+
+
+    # ========================================================
+    # GET STUDENT INFORMATION
+    # ========================================================
+
+    student = session.get('student')
+
+    if student:
+
+        student_name = student.get(
+            'name',
+            'Student'
+        )
+
+    else:
+
+        student_name = 'Student'
+
+
+    # ========================================================
+    # SUBMIT ATTEMPT
+    # ========================================================
+
     if attempt_id:
 
         try:
 
-            submit_attempt(attempt_id)
+            submit_attempt(
+                attempt_id
+            )
 
-            # ✅ UPDATE STATUS
-            conn = get_db_connection()
+            print(
+                "✅ ATTEMPT SUBMITTED SUCCESSFULLY"
+            )
 
-            cursor = conn.cursor()
+            print(
+                "✅ ATTEMPT ID:",
+                attempt_id
+            )
 
-            cursor.execute("""
-                UPDATE attempts
-                SET status='SUBMITTED'
-                WHERE id=%s
-            """, (attempt_id,))
-
-            conn.commit()
-            cursor.close()
-            conn.close()
 
         except Exception as e:
-            print("ERROR in submit_attempt:", e)
 
-    # 🔥 CLEAR SESSION (AFTER EVERYTHING)
-    session.pop('answers', None)
-    session.pop('exam_id', None)
-    session.pop('attempt_id', None)
+            print(
+                "❌ ERROR IN SUBMIT ATTEMPT:",
+                e
+            )
+
+
+    # ========================================================
+    # CLEAR EXAM SESSION DATA
+    # ========================================================
+
+    session.pop(
+        'answers',
+        None
+    )
+
+    session.pop(
+        'exam_id',
+        None
+    )
+
+    session.pop(
+        'attempt_id',
+        None
+    )
+
+
+    # ========================================================
+    # SHOW RESULT COMPLETED PAGE
+    # ========================================================
 
     return render_template(
+
         'result.html',
+
         student_name=student_name
+
     )
 
 
@@ -2002,77 +2053,75 @@ def submit_attempt(attempt_id):
 
 
 
+# # --------------------update offline marks-------------------------
 
+# @exam_bp.route('/update_offline_marks/<int:attempt_id>', methods=['POST'])
+# def update_offline_marks(attempt_id):
 
-# --------------------update offline marks-------------------------
+#     conn = get_db_connection()
+#     cursor = conn.cursor(dictionary=True)
 
-@exam_bp.route('/update_offline_marks/<int:attempt_id>', methods=['POST'])
-def update_offline_marks(attempt_id):
+#     try:
 
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+#         theory_marks = float(request.form.get('theory_marks', 0))
+#         practical_marks = float(request.form.get('practical_marks', 0))
+#         attendance_marks = float(request.form.get('attendance_marks', 0))
 
-    try:
+#         # Current Online Marks
+#         cursor.execute("""
+#             SELECT online_marks
+#             FROM results
+#             WHERE attempt_id=%s
+#         """, (attempt_id,))
 
-        theory_marks = float(request.form.get('theory_marks', 0))
-        practical_marks = float(request.form.get('practical_marks', 0))
-        attendance_marks = float(request.form.get('attendance_marks', 0))
+#         result = cursor.fetchone()
 
-        # Current Online Marks
-        cursor.execute("""
-            SELECT online_marks
-            FROM results
-            WHERE attempt_id=%s
-        """, (attempt_id,))
+#         if not result:
+#             flash("Result not found", "error")
+#             return redirect(url_for('exam.result_processing'))
 
-        result = cursor.fetchone()
+#         online_marks = float(result['online_marks'])
 
-        if not result:
-            flash("Result not found", "error")
-            return redirect(url_for('exam.result_processing'))
+#         total_marks = (
+#             online_marks +
+#             theory_marks +
+#             practical_marks +
+#             attendance_marks
+#         )
 
-        online_marks = float(result['online_marks'])
+#         cursor.execute("""
+#             UPDATE results
+#             SET
+#                 theory_marks=%s,
+#                 practical_marks=%s,
+#                 attendance_marks=%s,
+#                 total_marks=%s
+#             WHERE attempt_id=%s
+#         """, (
+#             theory_marks,
+#             practical_marks,
+#             attendance_marks,
+#             total_marks,
+#             attempt_id
+#         ))
 
-        total_marks = (
-            online_marks +
-            theory_marks +
-            practical_marks +
-            attendance_marks
-        )
+#         conn.commit()
 
-        cursor.execute("""
-            UPDATE results
-            SET
-                theory_marks=%s,
-                practical_marks=%s,
-                attendance_marks=%s,
-                total_marks=%s
-            WHERE attempt_id=%s
-        """, (
-            theory_marks,
-            practical_marks,
-            attendance_marks,
-            total_marks,
-            attempt_id
-        ))
+#         flash("Offline Marks Updated Successfully", "success")
 
-        conn.commit()
+#     except Exception as e:
 
-        flash("Offline Marks Updated Successfully", "success")
+#         conn.rollback()
+#         print("ERROR:", e)
 
-    except Exception as e:
+#         flash("Update Failed", "error")
 
-        conn.rollback()
-        print("ERROR:", e)
+#     finally:
 
-        flash("Update Failed", "error")
+#         cursor.close()
+#         conn.close()
 
-    finally:
-
-        cursor.close()
-        conn.close()
-
-    return redirect(url_for('exam.result_processing'))
+#     return redirect(url_for('exam.result_processing'))
 
 
 
