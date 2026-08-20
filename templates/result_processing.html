@@ -8,7 +8,10 @@
 
 <title>Result Processing</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link
+href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet"
+>
 
 <style>
 
@@ -20,24 +23,40 @@
 }
 
 body{
+
     background:#111827;
+
     color:white;
+
     min-height:100vh;
+
     padding:30px;
+
     overflow-x:hidden;
 }
 
-/* ================= TITLE ================= */
+
+/* =====================================================
+   TITLE
+===================================================== */
 
 h2{
+
     margin-bottom:25px;
+
     text-align:center;
+
     font-size:32px;
+
     color:#06b6d4;
+
     line-height:1.4;
 }
 
-/* ================= TABLE CONTAINER ================= */
+
+/* =====================================================
+   TABLE CONTAINER
+===================================================== */
 
 .table-container{
 
@@ -49,95 +68,359 @@ h2{
 
     background:#1f2937;
 
-    box-shadow:0 10px 25px rgba(0,0,0,0.25);
+    box-shadow:
+        0 10px 25px rgba(0,0,0,0.25);
 
     border:1px solid #374151;
 }
 
-/* CUSTOM SCROLLBAR */
+
+/* =====================================================
+   SCROLLBAR
+===================================================== */
 
 .table-container::-webkit-scrollbar{
+
     height:8px;
 }
 
 .table-container::-webkit-scrollbar-track{
+
     background:#111827;
 }
 
 .table-container::-webkit-scrollbar-thumb{
+
     background:#06b6d4;
+
     border-radius:10px;
 }
 
-/* ================= TABLE ================= */
+
+/* =====================================================
+   TABLE
+===================================================== */
 
 table{
+
     width:100%;
+
     border-collapse:collapse;
-    min-width:950px;
+
+    min-width:1600px;
+
     background:#1f2937;
 }
 
-/* HEADER */
+
+/* =====================================================
+   HEADER
+===================================================== */
 
 th{
+
     background:#0f172a;
+
     color:#06b6d4;
 
-    padding:16px;
+    padding:16px 12px;
 
-    font-size:15px;
+    font-size:14px;
 
     font-weight:600;
 
     border-bottom:1px solid #374151;
 
     white-space:nowrap;
+
+    text-align:center;
 }
 
-/* BODY */
+
+/* =====================================================
+   BODY
+===================================================== */
 
 td{
-    padding:15px;
+
+    padding:15px 12px;
+
     text-align:center;
+
     border-bottom:1px solid #374151;
+
     font-size:14px;
+
     color:#f3f4f6;
+
+    vertical-align:middle;
 }
 
-/* HOVER */
+
+/* =====================================================
+   HOVER
+===================================================== */
 
 tr:hover{
+
     background:#273549;
+
     transition:0.3s;
 }
 
-/* STATUS */
+
+/* =====================================================
+   STUDENT NAME
+===================================================== */
+
+.student-name{
+
+    color:#ffffff;
+
+    font-weight:600;
+
+    min-width:150px;
+}
+
+
+/* =====================================================
+   STUDENT ID
+===================================================== */
+
+.student-id{
+
+    color:#cbd5e1;
+
+    font-weight:500;
+
+    white-space:nowrap;
+}
+
+
+/* =====================================================
+   EXAM
+===================================================== */
+
+.exam-title{
+
+    max-width:220px;
+
+    min-width:180px;
+
+    white-space:normal;
+
+    line-height:1.5;
+
+    color:#f8fafc;
+}
+
+
+/* =====================================================
+   MARK INPUT
+===================================================== */
+
+.mark-input{
+
+    width:85px;
+
+    padding:9px 7px;
+
+    border-radius:7px;
+
+    border:1px solid #374151;
+
+    background:#111827;
+
+    color:#fff;
+
+    text-align:center;
+
+    outline:none;
+
+    font-size:14px;
+
+    font-weight:500;
+}
+
+.mark-input:focus{
+
+    border-color:#06b6d4;
+
+    box-shadow:
+        0 0 0 2px rgba(6,182,212,0.15);
+}
+
+
+/* =====================================================
+   TOTAL MARKS
+===================================================== */
+
+.total-input{
+
+    border-color:#f59e0b;
+
+    color:#fbbf24;
+}
+
+
+/* =====================================================
+   THEORY
+===================================================== */
+
+.theory-input{
+
+    border-color:#8b5cf6;
+}
+
+
+/* =====================================================
+   PRACTICAL
+===================================================== */
+
+.practical-input{
+
+    border-color:#06b6d4;
+}
+
+
+/* =====================================================
+   ONLINE MARKS
+===================================================== */
+
+.online-mark{
+
+    color:#38bdf8;
+
+    font-weight:700;
+
+    white-space:nowrap;
+}
+
+
+/* =====================================================
+   OBTAINED MARKS
+===================================================== */
+
+.obtained-mark{
+
+    color:#22c55e;
+
+    font-weight:700;
+
+    white-space:nowrap;
+}
+
+
+/* =====================================================
+   PERCENTAGE
+===================================================== */
+
+.percentage{
+
+    color:#facc15;
+
+    font-weight:700;
+
+    white-space:nowrap;
+}
+
+
+/* =====================================================
+   GRADE
+===================================================== */
+
+.grade{
+
+    color:#a78bfa;
+
+    font-size:17px;
+
+    font-weight:700;
+
+    white-space:nowrap;
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
 
 .pass{
+
     color:#22c55e;
-    font-weight:bold;
+
+    font-weight:700;
+
+    white-space:nowrap;
 }
 
 .fail{
+
     color:#ef4444;
-    font-weight:bold;
+
+    font-weight:700;
+
+    white-space:nowrap;
 }
 
-.published{
-    color:#22c55e;
-    font-weight:bold;
+.pending{
+
+    color:#f59e0b;
+
+    font-weight:700;
+
+    white-space:nowrap;
 }
 
-/* BUTTON */
+
+/* =====================================================
+   BUTTON
+===================================================== */
+
+.save-btn{
+
+    background:#22c55e;
+
+    color:white;
+
+    border:none;
+
+    padding:9px 15px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-weight:600;
+
+    font-size:13px;
+
+    transition:0.3s;
+
+    white-space:nowrap;
+}
+
+.save-btn:hover{
+
+    background:#16a34a;
+
+    transform:translateY(-1px);
+}
+
+
+/* =====================================================
+   PUBLISH
+===================================================== */
 
 .publish-btn{
+
     background:#06b6d4;
+
     color:white;
 
     text-decoration:none;
 
-    padding:8px 14px;
+    padding:9px 14px;
 
     border-radius:8px;
 
@@ -145,297 +428,580 @@ tr:hover{
 
     display:inline-block;
 
-    font-size:14px;
+    font-size:13px;
 
-    font-weight:500;
+    font-weight:600;
+
+    white-space:nowrap;
 }
 
 .publish-btn:hover{
+
     background:#0891b2;
-    transform:scale(1.05);
+
+    transform:scale(1.03);
 }
 
-/* EMPTY */
+
+/* =====================================================
+   PUBLISHED
+===================================================== */
+
+.published{
+
+    color:#22c55e;
+
+    font-weight:700;
+
+    white-space:nowrap;
+}
+
+
+/* =====================================================
+   DATE
+===================================================== */
+
+.date-time{
+
+    color:#cbd5e1;
+
+    white-space:nowrap;
+
+    line-height:1.5;
+}
+
+
+/* =====================================================
+   EMPTY
+===================================================== */
 
 .empty{
+
     text-align:center;
+
     padding:40px;
+
     color:orange;
+
     font-size:18px;
 }
 
-.mark-input{
-    width:70px;
-    padding:8px;
-    border-radius:6px;
-    border:1px solid #374151;
-    background:#111827;
-    color:#fff;
-    text-align:center;
-}
 
-.save-btn{
-    background:#22c55e;
-    color:white;
-    border:none;
-    padding:8px 12px;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:600;
-}
-
-.save-btn:hover{
-    background:#16a34a;
-}
-
-/* ================= TABLET ================= */
+/* =====================================================
+   RESPONSIVE
+===================================================== */
 
 @media(max-width:900px){
 
     body{
+
         padding:20px;
     }
 
     h2{
+
         font-size:28px;
     }
 
     th{
-        padding:14px;
-        font-size:14px;
-    }
 
-    td{
-        padding:14px;
+        padding:14px 10px;
+
         font-size:13px;
     }
 
-    .publish-btn{
-        padding:7px 12px;
+    td{
+
+        padding:13px 10px;
+
         font-size:13px;
     }
 }
 
-
-
-/* ================= MOBILE ================= */
 
 @media(max-width:600px){
 
     body{
+
         padding:15px;
     }
 
     h2{
+
         font-size:24px;
+
         margin-bottom:20px;
     }
 
     .table-container{
+
         border-radius:14px;
     }
 
     table{
-        min-width:850px;
+
+        min-width:1500px;
     }
 
     th{
-        padding:12px;
-        font-size:13px;
+
+        padding:12px 9px;
+
+        font-size:12px;
     }
 
     td{
-        padding:12px;
+
+        padding:12px 9px;
+
+        font-size:12px;
+    }
+
+    .mark-input{
+
+        width:75px;
+
+        padding:8px 5px;
+
+        font-size:12px;
+    }
+
+    .save-btn{
+
+        padding:7px 11px;
+
         font-size:12px;
     }
 
     .publish-btn{
-        padding:6px 10px;
-        font-size:12px;
-        border-radius:6px;
-    }
 
-    .empty{
-        font-size:15px;
-        padding:30px;
+        padding:7px 10px;
+
+        font-size:12px;
     }
 }
 
-/* ================= SMALL MOBILE ================= */
 
 @media(max-width:400px){
 
     h2{
+
         font-size:20px;
     }
 
-    th{
-        font-size:12px;
-    }
-
-    td{
-        font-size:11px;
-    }
-
-    .publish-btn{
-        font-size:11px;
-    }
 }
 
 </style>
 
 </head>
 
+
 <body>
 
-<h2>📊 Result Processing Dashboard</h2>
+
+<h2>
+    📊 Result Processing Dashboard
+</h2>
+
 
 <div class="table-container">
 
+
 <table>
 
-    <tr>
+
+<thead>
+
+<tr>
 
     <th>Attempt ID</th>
+
     <th>Student ID</th>
+
+    <th>Student Name</th>
+
     <th>Exam</th>
 
-    <th>Online</th>
-    <th>Theory</th>
-    <th>Practical</th>
-    <th>Attendance</th>
+    <th>Total Marks</th>
 
-    <th>Total</th>
+    <th>Online</th>
+
+    <th>Theory</th>
+
+    <th>Practical</th>
+
+    <th>Obtained</th>
+
     <th>Percentage</th>
+
+    <th>Grade</th>
 
     <th>Status</th>
 
     <th>Started</th>
+
     <th>Submitted</th>
 
     <th>Save</th>
+
     <th>Publish</th>
 
 </tr>
 
-    {% if results %}
+</thead>
 
-        {% for r in results %}
 
-        <tr>
+<tbody>
 
-<form method="POST"
-      action="{{ url_for('exam.update_offline_marks', attempt_id=r.attempt_id) }}">
 
-    <td>{{ r.attempt_id }}</td>
+{% if results %}
 
-    <td>{{ r.student_id }}</td>
 
-    <td>{{ r.exam_title }}</td>
+    {% for r in results %}
 
-    <td>{{ r.online_marks }}</td>
 
-    <td>
-        <input
-            type="number"
-            step="0.01"
-            name="theory_marks"
-            value="{{ r.theory_marks }}"
-            class="mark-input">
-    </td>
+    <!-- =================================================
+         EACH RESULT ROW
+    ================================================== -->
 
-    <td>
-        <input
-            type="number"
-            step="0.01"
-            name="practical_marks"
-            value="{{ r.practical_marks }}"
-            class="mark-input">
-    </td>
+    <tr>
 
-    <td>
-        <input
-            type="number"
-            step="0.01"
-            name="attendance_marks"
-            value="{{ r.attendance_marks }}"
-            class="mark-input">
-    </td>
 
-    <td>{{ r.total_marks }}</td>
+        <!-- ATTEMPT ID -->
 
-    <td>
+        <td>
 
-        {% if r.percentage is not none %}
-            {{ "%.2f"|format(r.percentage) }}%
-        {% else %}
-            0.00%
-        {% endif %}
+            {{ r.attempt_id }}
 
-    </td>
+        </td>
 
-    <td>
 
-        {% if r.result_status == 'PASS' %}
-            <span class="pass">✅ PASS</span>
-        {% else %}
-            <span class="fail">❌ FAIL</span>
-        {% endif %}
+        <!-- STUDENT ID -->
 
-    </td>
+        <td class="student-id">
 
-    <td>{{ r.started_at }}</td>
+            {{ r.student_id }}
 
-    <td>{{ r.submitted_at }}</td>
+        </td>
 
-    <td>
-        <button type="submit" class="save-btn">
-            Save
-        </button>
-    </td>
 
-</form>
+        <!-- STUDENT NAME -->
 
-    <td>
+        <td class="student-name">
 
-        {% if r.published == 1 %}
+            {{ r.student_name }}
 
-            <span class="published">
-                ✅ Published
-            </span>
+        </td>
 
-        {% else %}
 
-            <a
-                class="publish-btn"
-                href="{{ url_for('exam.publish_result_route', attempt_id=r.attempt_id) }}"
+        <!-- EXAM -->
+
+        <td class="exam-title">
+
+            {{ r.exam_title }}
+
+        </td>
+
+
+        <!-- =================================================
+             TOTAL MARKS
+        ================================================== -->
+
+        <td>
+
+            <input
+
+                form="result-form-{{ r.attempt_id }}"
+
+                type="number"
+
+                step="0.01"
+
+                min="1"
+
+                name="total_marks"
+
+                value="{{ r.total_marks or '' }}"
+
+                class="mark-input total-input"
+
+                placeholder="100"
+
+                required
+
             >
-                Publish
-            </a>
 
-        {% endif %}
+        </td>
 
-    </td>
 
-</tr>
+        <!-- =================================================
+             ONLINE MARKS
+             AUTOMATIC
+        ================================================== -->
 
-        {% endfor %}
+        <td class="online-mark">
 
-    {% else %}
+            {{ "%.2f"|format(r.online_marks or 0) }}
 
-        <tr>
+        </td>
 
-            <td colspan="14" class="empty">
-    ⚠️ No Results Found
-</td>
 
-        </tr>
+        <!-- =================================================
+             THEORY MARKS
+        ================================================== -->
 
-    {% endif %}
+        <td>
+
+            <input
+
+                form="result-form-{{ r.attempt_id }}"
+
+                type="number"
+
+                step="0.01"
+
+                min="0"
+
+                name="theory_marks"
+
+                value="{{ r.theory_marks or 0 }}"
+
+                class="mark-input theory-input"
+
+                required
+
+            >
+
+        </td>
+
+
+        <!-- =================================================
+             PRACTICAL MARKS
+        ================================================== -->
+
+        <td>
+
+            <input
+
+                form="result-form-{{ r.attempt_id }}"
+
+                type="number"
+
+                step="0.01"
+
+                min="0"
+
+                name="practical_marks"
+
+                value="{{ r.practical_marks or 0 }}"
+
+                class="mark-input practical-input"
+
+                required
+
+            >
+
+        </td>
+
+
+        <!-- =================================================
+             OBTAINED MARKS
+        ================================================== -->
+
+        <td class="obtained-mark">
+
+            {{ "%.2f"|format(r.obtained_marks or 0) }}
+
+        </td>
+
+
+        <!-- =================================================
+             PERCENTAGE
+        ================================================== -->
+
+        <td class="percentage">
+
+            {{ "%.2f"|format(r.percentage or 0) }}%
+
+        </td>
+
+
+        <!-- =================================================
+             GRADE
+        ================================================== -->
+
+        <td class="grade">
+
+            {% if r.grade %}
+
+                {{ r.grade }}
+
+            {% else %}
+
+                -
+
+            {% endif %}
+
+        </td>
+
+
+        <!-- =================================================
+             STATUS
+        ================================================== -->
+
+        <td>
+
+            {% if r.result_status == 'PASS' %}
+
+                <span class="pass">
+
+                    ✅ PASS
+
+                </span>
+
+
+            {% elif r.result_status == 'FAIL' %}
+
+                <span class="fail">
+
+                    ❌ FAIL
+
+                </span>
+
+
+            {% else %}
+
+                <span class="pending">
+
+                    ⏳ PENDING
+
+                </span>
+
+            {% endif %}
+
+        </td>
+
+
+        <!-- STARTED -->
+
+        <td class="date-time">
+
+            {{ r.started_at }}
+
+        </td>
+
+
+        <!-- SUBMITTED -->
+
+        <td class="date-time">
+
+            {{ r.submitted_at }}
+
+        </td>
+
+
+        <!-- =================================================
+             SAVE FORM
+        ================================================== -->
+
+        <td>
+
+            <form
+
+                id="result-form-{{ r.attempt_id }}"
+
+                method="POST"
+
+                action="{{ url_for(
+                    'exam.update_offline_marks',
+                    attempt_id=r.attempt_id
+                ) }}"
+            >
+
+                <button
+                    type="submit"
+                    class="save-btn"
+                >
+
+                    💾 Save
+
+                </button>
+
+            </form>
+
+        </td>
+
+
+        <!-- =================================================
+             PUBLISH
+        ================================================== -->
+
+        <td>
+
+            {% if r.published == 1 %}
+
+                <span class="published">
+
+                    ✅ Published
+
+                </span>
+
+            {% else %}
+
+                <a
+
+                    class="publish-btn"
+
+                    href="{{ url_for(
+                        'exam.publish_result_route',
+                        attempt_id=r.attempt_id
+                    ) }}"
+
+                >
+
+                    📢 Publish
+
+                </a>
+
+            {% endif %}
+
+        </td>
+
+
+    </tr>
+
+
+    {% endfor %}
+
+
+{% else %}
+
+
+    <tr>
+
+        <td
+            colspan="16"
+            class="empty"
+        >
+
+            ⚠️ No Results Found
+
+        </td>
+
+    </tr>
+
+
+{% endif %}
+
+
+</tbody>
+
 
 </table>
 
+
 </div>
+
 
 </body>
 

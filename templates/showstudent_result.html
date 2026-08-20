@@ -386,6 +386,29 @@ table{
     word-break:break-word;
 }
 
+.grade{
+    color:#a78bfa;
+    font-weight:700;
+}
+
+.obtained-result{
+    color:#22c55e;
+    font-size:18px;
+    font-weight:700;
+}
+
+.percentage-result{
+    color:#facc15;
+    font-size:18px;
+    font-weight:700;
+}
+
+.grade-result{
+    color:#a78bfa;
+    font-size:20px;
+    font-weight:700;
+}
+
 
 /* =================================
    TABLET
@@ -603,31 +626,57 @@ table{
 </div>
 
 
-<!-- RESULT TITLE -->
+<!-- =========================================================
+     ONLINE EXAM RESULTS
+========================================================= -->
 
 <div class="section-title">
+
     <i class="fa-solid fa-chart-column"></i>
+
     Exam Results History
+
 </div>
 
-<!-- TABLE -->
 
 <div class="table-container">
 
 <table>
 
-    <thead>
+<thead>
+
 <tr>
+
     <th>#</th>
+
     <th>Exam Title</th>
-    <th>Score</th>
+
+    <th>Total Marks</th>
+
+    <th>Online</th>
+
+    <th>Theory</th>
+
+    <th>Practical</th>
+
+    <th>Obtained</th>
+
+    <th>Percentage</th>
+
+    <th>Grade</th>
+
     <th>Status</th>
+
     <th>Date</th>
+
     <th>Result</th>
+
 </tr>
+
 </thead>
 
-    <tbody>
+
+<tbody>
 
 {% if online_results %}
 
@@ -635,40 +684,164 @@ table{
 
     <tr>
 
-        <td>{{ loop.index }}</td>
+        <!-- SERIAL -->
 
-        <td>{{ r.exam_title }}</td>
+        <td>
+            {{ loop.index }}
+        </td>
 
-        <td>{{ "%.2f"|format(r.percentage or 0) }}%</td>
+
+        <!-- EXAM -->
+
+        <td>
+            {{ r.exam_title }}
+        </td>
+
+
+        <!-- TOTAL MARKS -->
+
+        <td>
+
+            {{ "%.2f"|format(r.total_marks or 0) }}
+
+        </td>
+
+
+        <!-- ONLINE -->
+
+        <td>
+
+            {{ "%.2f"|format(r.online_marks or 0) }}
+
+        </td>
+
+
+        <!-- THEORY -->
+
+        <td>
+
+            {{ "%.2f"|format(r.theory_marks or 0) }}
+
+        </td>
+
+
+        <!-- PRACTICAL -->
+
+        <td>
+
+            {{ "%.2f"|format(r.practical_marks or 0) }}
+
+        </td>
+
+
+        <!-- OBTAINED -->
+
+        <td>
+
+            <strong>
+
+                {{ "%.2f"|format(r.obtained_marks or 0) }}
+
+            </strong>
+
+        </td>
+
+
+        <!-- PERCENTAGE -->
+
+        <td>
+
+            <strong>
+
+                {{ "%.2f"|format(r.percentage or 0) }}%
+
+            </strong>
+
+        </td>
+
+
+        <!-- GRADE -->
+
+        <td>
+
+            <strong class="grade">
+
+                {{ r.grade or '-' }}
+
+            </strong>
+
+        </td>
+
+
+        <!-- STATUS -->
 
         <td>
 
             {% if r.result_status == 'PASS' %}
-                <span class="pass">PASS</span>
+
+                <span class="pass">
+                    ✅ PASS
+                </span>
+
+            {% elif r.result_status == 'FAIL' %}
+
+                <span class="fail">
+                    ❌ FAIL
+                </span>
+
             {% else %}
-                <span class="fail">FAIL</span>
+
+                <span>
+                    PENDING
+                </span>
+
             {% endif %}
 
         </td>
 
-        <td>{{ r.submitted_at }}</td>
+
+        <!-- DATE -->
+
+        <td>
+
+            {{ r.submitted_at }}
+
+        </td>
+
+
+        <!-- RESULT BUTTON -->
 
         <td>
 
             <button
+
                 class="result-btn"
 
                 data-student="{{ student.name }}"
+
                 data-exam="{{ r.exam_title }}"
-                data-online="{{ r.online_marks }}"
-                data-theory="{{ r.theory_marks }}"
-                data-practical="{{ r.practical_marks }}"
-                data-attendance="{{ r.attendance_marks }}"
-                data-total="{{ r.total_marks }}"
-                data-percent="{{ r.percentage }}"
+
+                data-total="{{ r.total_marks or 0 }}"
+
+                data-online="{{ r.online_marks or 0 }}"
+
+                data-theory="{{ r.theory_marks or 0 }}"
+
+                data-practical="{{ r.practical_marks or 0 }}"
+
+                data-obtained="{{ r.obtained_marks or 0 }}"
+
+                data-attendance="{{ r.attendance_marks or 0 }}"
+
+                data-percent="{{ r.percentage or 0 }}"
+
+                data-grade="{{ r.grade or '-' }}"
+
                 data-status="{{ r.result_status }}"
 
-                onclick="openResult(this)">
+                onclick="openResult(this)"
+
+            >
 
                 View Result
 
@@ -680,12 +853,20 @@ table{
 
     {% endfor %}
 
+
 {% else %}
 
 <tr>
-    <td colspan="6" style="text-align:center;padding:30px;">
+
+    <td
+        colspan="12"
+        style="text-align:center;padding:30px;"
+    >
+
         No Published Results Found
+
     </td>
+
 </tr>
 
 {% endif %}
@@ -812,76 +993,201 @@ No Offline Result Found
 
 </div>
 
-<!-- RESULT MODAL -->
+<!-- =========================================================
+     ONLINE RESULT MODAL
+========================================================= -->
 
 <div class="modal" id="resultModal">
 
-<div class="modal-content">
 
-    <span class="close-btn"
-          onclick="closeResult()">
-        &times;
-    </span>
+    <div class="modal-content">
 
-    <div class="result-header">
-        <h2>Exam Result Details</h2>
+
+        <!-- CLOSE -->
+
+        <span
+            class="close-btn"
+            onclick="closeResult()"
+        >
+
+            &times;
+
+        </span>
+
+
+        <!-- HEADER -->
+
+        <div class="result-header">
+
+            <h2>
+                Exam Result Details
+            </h2>
+
+        </div>
+
+
+        <!-- RESULT INFORMATION -->
+
+        <div class="result-info">
+
+
+            <!-- STUDENT NAME -->
+
+            <div class="info-box">
+
+                <h4>
+                    Student Name
+                </h4>
+
+                <p id="studentName"></p>
+
+            </div>
+
+
+            <!-- EXAM -->
+
+            <div class="info-box">
+
+                <h4>
+                    Exam Title
+                </h4>
+
+                <p id="examName"></p>
+
+            </div>
+
+
+            <!-- TOTAL MARKS -->
+
+            <div class="info-box">
+
+                <h4>
+                    Total Marks
+                </h4>
+
+                <p id="totalMarks"></p>
+
+            </div>
+
+
+            <!-- ONLINE -->
+
+            <div class="info-box">
+
+                <h4>
+                    Online Marks
+                </h4>
+
+                <p id="onlineMarks"></p>
+
+            </div>
+
+
+            <!-- THEORY -->
+
+            <div class="info-box">
+
+                <h4>
+                    Theory Marks
+                </h4>
+
+                <p id="theoryMarks"></p>
+
+            </div>
+
+
+            <!-- PRACTICAL -->
+
+            <div class="info-box">
+
+                <h4>
+                    Practical Marks
+                </h4>
+
+                <p id="practicalMarks"></p>
+
+            </div>
+
+
+            <!-- ATTENDANCE -->
+
+            <div class="info-box">
+
+                <h4>
+                    Attendance Marks
+                </h4>
+
+                <p id="attendanceMarks"></p>
+
+            </div>
+
+
+            <!-- OBTAINED -->
+
+            <div class="info-box">
+
+                <h4>
+                    Obtained Marks
+                </h4>
+
+                <p
+                    id="obtainedMarks"
+                    class="obtained-result"
+                ></p>
+
+            </div>
+
+
+            <!-- PERCENTAGE -->
+
+            <div class="info-box">
+
+                <h4>
+                    Percentage
+                </h4>
+
+                <p
+                    id="percentage"
+                    class="percentage-result"
+                ></p>
+
+            </div>
+
+
+            <!-- GRADE -->
+
+            <div class="info-box">
+
+                <h4>
+                    Grade
+                </h4>
+
+                <p
+                    id="resultGrade"
+                    class="grade-result"
+                ></p>
+
+            </div>
+
+
+            <!-- STATUS -->
+
+            <div class="info-box">
+
+                <h4>
+                    Result Status
+                </h4>
+
+                <p
+                    id="resultStatus"
+                ></p>
+
+            </div>
+
+
+        </div>
+
     </div>
-
-    <div class="result-info">
-
-        <div class="info-box">
-            <h4>Student Name</h4>
-            <p id="studentName"></p>
-        </div>
-
-        <!-- <div class="info-box">
-            <h4>Subject</h4>
-            <p id="subjectName"></p>
-        </div> -->
-
-        <div class="info-box">
-            <h4>Exam Title</h4>
-            <p id="examName"></p>
-        </div>
-
-        <div class="info-box">
-            <h4>Online Marks</h4>
-            <p id="onlineMarks"></p>
-        </div>
-
-        <div class="info-box">
-            <h4>Theory Marks</h4>
-            <p id="theoryMarks"></p>
-        </div>
-
-        <div class="info-box">
-            <h4>Practical Marks</h4>
-            <p id="practicalMarks"></p>
-        </div>
-
-        <div class="info-box">
-            <h4>Attendance Marks</h4>
-            <p id="attendanceMarks"></p>
-        </div>
-
-        <div class="info-box">
-            <h4>Total Marks</h4>
-            <p id="totalMarks"></p>
-        </div>
-
-        <div class="info-box">
-            <h4>Percentage</h4>
-            <p id="percentage"></p>
-        </div>
-
-        <div class="info-box">
-            <h4>Result Status</h4>
-            <p id="resultStatus"></p>
-        </div>
-
-    </div>
-
-</div>
 
 </div>
 
@@ -1004,53 +1310,236 @@ target="_blank">
 
 <script>
 
+// ============================================================
+// OPEN ONLINE RESULT
+// ============================================================
+
 function openResult(btn){
+
+    // ========================================================
+    // STUDENT
+    // ========================================================
 
     document.getElementById("studentName").innerText =
         btn.dataset.student;
 
 
+    // ========================================================
+    // EXAM
+    // ========================================================
+
     document.getElementById("examName").innerText =
         btn.dataset.exam;
 
-    document.getElementById("onlineMarks").innerText =
-        btn.dataset.online;
 
-    document.getElementById("theoryMarks").innerText =
-        btn.dataset.theory;
+    // ========================================================
+    // GET MARKS
+    // ========================================================
 
-    document.getElementById("practicalMarks").innerText =
-        btn.dataset.practical;
+    const totalMarks =
+        parseFloat(btn.dataset.total) || 0;
 
-    document.getElementById("attendanceMarks").innerText =
-        btn.dataset.attendance;
+    const onlineMarks =
+        parseFloat(btn.dataset.online) || 0;
+
+    const theoryMarks =
+        parseFloat(btn.dataset.theory) || 0;
+
+    const practicalMarks =
+        parseFloat(btn.dataset.practical) || 0;
+
+    const attendanceMarks =
+        parseFloat(btn.dataset.attendance) || 0;
+
+
+    // ========================================================
+    // CALCULATE OBTAINED MARKS
+    // ========================================================
+    // Your result formula:
+    //
+    // Obtained =
+    // Online + Theory + Practical
+    //
+    // Attendance is NOT included in obtained marks.
+    // ========================================================
+
+    const obtainedMarks =
+        onlineMarks +
+        theoryMarks +
+        practicalMarks;
+
+
+    // ========================================================
+    // CALCULATE PERCENTAGE
+    // ========================================================
+
+    let percentage = 0;
+
+    if(totalMarks > 0){
+
+        percentage =
+            (obtainedMarks / totalMarks) * 100;
+
+    }
+
+
+    // ========================================================
+    // GRADE
+    // ========================================================
+
+    let grade = "-";
+
+    if(percentage >= 80){
+
+        grade = "A";
+
+    }
+    else if(percentage >= 60){
+
+        grade = "B";
+
+    }
+    else if(percentage >= 50){
+
+        grade = "C";
+
+    }
+    else if(percentage >= 40){
+
+        grade = "D";
+
+    }
+    else{
+
+        grade = "F";
+
+    }
+
+
+    // ========================================================
+    // RESULT STATUS
+    // ========================================================
+
+    let resultStatus = "FAIL";
+
+    if(percentage >= 40){
+
+        resultStatus = "PASS";
+
+    }
+
+
+    // ========================================================
+    // DISPLAY TOTAL
+    // ========================================================
 
     document.getElementById("totalMarks").innerText =
-        btn.dataset.total;
+        totalMarks.toFixed(2);
+
+
+    // ========================================================
+    // DISPLAY ONLINE
+    // ========================================================
+
+    document.getElementById("onlineMarks").innerText =
+        onlineMarks.toFixed(2);
+
+
+    // ========================================================
+    // DISPLAY THEORY
+    // ========================================================
+
+    document.getElementById("theoryMarks").innerText =
+        theoryMarks.toFixed(2);
+
+
+    // ========================================================
+    // DISPLAY PRACTICAL
+    // ========================================================
+
+    document.getElementById("practicalMarks").innerText =
+        practicalMarks.toFixed(2);
+
+
+    // ========================================================
+    // DISPLAY ATTENDANCE
+    // ========================================================
+
+    document.getElementById("attendanceMarks").innerText =
+        attendanceMarks.toFixed(2);
+
+
+    // ========================================================
+    // DISPLAY OBTAINED
+    // ========================================================
+
+    document.getElementById("obtainedMarks").innerText =
+        obtainedMarks.toFixed(2);
+
+
+    // ========================================================
+    // DISPLAY PERCENTAGE
+    // ========================================================
 
     document.getElementById("percentage").innerText =
-        btn.dataset.percent + "%";
+        percentage.toFixed(2) + "%";
+
+
+    // ========================================================
+    // DISPLAY GRADE
+    // ========================================================
+
+    document.getElementById("resultGrade").innerText =
+        grade;
+
+
+    // ========================================================
+    // DISPLAY RESULT STATUS
+    // ========================================================
 
     document.getElementById("resultStatus").innerText =
-        btn.dataset.status;
+        resultStatus;
 
-    document.getElementById("resultModal").style.display = "flex";
+
+    // ========================================================
+    // OPEN MODAL
+    // ========================================================
+
+    document.getElementById("resultModal").style.display =
+        "flex";
+
 }
+
+
+// ============================================================
+// CLOSE ONLINE RESULT
+// ============================================================
 
 function closeResult(){
-    document.getElementById("resultModal").style.display = "none";
+
+    document.getElementById("resultModal").style.display =
+        "none";
+
 }
+
+
+// ============================================================
+// CLICK OUTSIDE MODAL TO CLOSE
+// ============================================================
 
 window.onclick = function(event){
 
     let modal =
         document.getElementById("resultModal");
 
-    if(event.target == modal){
+    if(event.target === modal){
+
         modal.style.display = "none";
+
     }
 
-}
+};
+
 
 // ================================
 // OFFLINE RESULT OPEN
