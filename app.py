@@ -497,7 +497,8 @@ def certifieduser(id):
         "course_end_date":user.course_end_date,
         "course_start_date":user.course_start_date,
         "certificate_issue_date":user.certificate_issue_date,
-        "certificate_status":user.certificate_status
+        "certificate_status":user.certificate_status,
+        "Address":user.Address
         
     })
     print("Selected user:", selected_user)  # Debugging line to check the received ID
