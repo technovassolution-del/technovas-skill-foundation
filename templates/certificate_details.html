@@ -534,7 +534,7 @@
 
                             <div class="detail-item mb-3">
                                 <div class="detail-label">Certificate No</div>
-                                <div class="detail-value" id="certificateNo">NA</div>
+                                <div class="detail-value" id="certificateNo">{{user.certificate_number}}</div>
                             </div>
 
                             <div class="detail-item mb-3">
@@ -561,24 +561,17 @@
                             <div class="col-md-4">
                                 <div class="score-card">
                                     <div class="score-title">Course Duration</div>
-                                    <div class="score-value" id="courseDuration">12 Months</div>
+                                    <div class="score-value" id="courseDuration">{{user.duration_month}} Months</div>
                                     <div class="score-sub">Total training period completed successfully</div>
                                 </div>
                             </div>
+               
                             <div class="col-md-4">
                                 <div class="score-card">
-                                    <div class="score-title">Percentage</div>
-                                    <div class="score-value" id="percentage">92%</div>
-                                    <div class="score-sub">Final assessment performance</div>
+                                    <div class="score-title">Certificate Status</div>
+                                    <div class="score-value" id="certificateStatus">Issued</div>
+                                    <div class="score-sub">Certificate issued and digitally verified</div>
                                 </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="score-card">
-                                    <div class="score-title">Grade</div>
-                                    <div class="score-value" id="grade">A+</div>
-                                    <div class="score-sub">Certified by Technovas Solution</div>
-                                </div>
-                            </div>
                         </div>
 
                         <!-- Student Full Details -->
@@ -595,22 +588,22 @@
 
                             <div class="detail-item">
                                 <div class="detail-label">Father / Guardian Name</div>
-                                <div class="detail-value" id="guardianName">MR. SUDIP MONDAL</div>
+                                <div class="detail-value" id="guardianName">{{user.gurdianName}}</div>
                             </div>
 
                             <div class="detail-item">
                                 <div class="detail-label">Date of Birth</div>
-                                <div class="detail-value" id="dob">14 January 2007</div>
+                                <div class="detail-value" id="dob">{{user.dob}}</div>
                             </div>
 
                             <div class="detail-item">
                                 <div class="detail-label">Gender</div>
-                                <div class="detail-value" id="gender">Male</div>
+                                <div class="detail-value" id="gender">{{user.gender}}</div>
                             </div>
 
                             <div class="detail-item">
                                 <div class="detail-label">Mobile Number</div>
-                                <div class="detail-value" id="mobile">9876543210</div>
+                                <div class="detail-value" id="mobile">{{user.moble}}</div>
                             </div>
 
                             <div class="detail-item">
@@ -625,7 +618,7 @@
 
                             <div class="detail-item">
                                 <div class="detail-label">Institute Branch</div>
-                                <div class="detail-value" id="branch">Suryasenpally, Ghola Road, Kazipara</div>
+                                <div class="detail-value" id="branch">Suryasenpally,Ghola Road,Kazipara Barasat North 24 Parganas</div>
                             </div>
                         </div>
 
@@ -638,34 +631,34 @@
                         <div class="detail-grid mb-4">
                             <div class="detail-item">
                                 <div class="detail-label">Course Name</div>
-                                <div class="detail-value" id="courseName">{{ user.ProgramName }}</div>
+                                <div class="detail-value" id="courseName">{{user.ProgramName }}</div>
                             </div>
 
                            
 
                             <div class="detail-item">
                                 <div class="detail-label">Admission Date</div>
-                                <div class="detail-value" id="admissionDate">10 January 2025</div>
+                                <div class="detail-value" id="admissionDate">{{user.admission_date}}</div>
                             </div>
 
                             <div class="detail-item">
                                 <div class="detail-label">Course Start Date</div>
-                                <div class="detail-value" id="courseStart">15 January 2025</div>
+                                <div class="detail-value" id="courseStart">{{user.course_start_date}}</div>
                             </div>
 
                             <div class="detail-item">
                                 <div class="detail-label">Course End Date</div>
-                                <div class="detail-value" id="courseEnd">14 January 2026</div>
+                                <div class="detail-value" id="courseEnd">{{user.course_end_date}}</div>
                             </div>
 
                             <div class="detail-item">
                                 <div class="detail-label">Course Duration</div>
-                                <div class="detail-value" id="durationText">12 Months</div>
+                                <div class="detail-value" id="durationText">{{user.duration_month}}</div>
                             </div>
 
                             <div class="detail-item">
                                 <div class="detail-label">Certificate Issue Date</div>
-                                <div class="detail-value" id="issueDate">20 January 2026</div>
+                                <div class="detail-value" id="issueDate">{{user.certificate_issue_date}}</div>
                             </div>
 
                             <div class="detail-item">
@@ -698,10 +691,7 @@
                                         <div class="verify-value" id="issuedUnder">A Unit of Technovas Skill Foundation</div>
                                     </div>
 
-                                    <div class="verify-item">
-                                        <div class="verify-label">Verification Date</div>
-                                        <div class="verify-value" id="verificationDate">09 July 2026</div>
-                                    </div>
+                           
 
                                     <div class="verify-item">
                                         <div class="verify-label">Certificate Authenticity</div>
@@ -757,22 +747,22 @@
                         <div class="timeline mb-4">
                             <div class="timeline-item">
                                 <div class="timeline-title">Admission Completed</div>
-                                <div class="timeline-sub" id="timelineAdmission">Student enrolled on 10 January 2025 under Technovas Solution.</div>
+                                <div class="timeline-sub" id="timelineAdmission">Student enrolled on {{user.admission_date}} under Technovas Solution.</div>
                             </div>
 
                             <div class="timeline-item">
                                 <div class="timeline-title">Course Training Started</div>
-                                <div class="timeline-sub" id="timelineStart">Professional computer training started from 15 January 2025.</div>
+                                <div class="timeline-sub" id="timelineStart">Professional computer training started from {{user.course_start_date}}.</div>
                             </div>
 
                             <div class="timeline-item">
                                 <div class="timeline-title">Course Successfully Completed</div>
-                                <div class="timeline-sub" id="timelineEnd">Course completed on 14 January 2026 after successful training and evaluation.</div>
+                                <div class="timeline-sub" id="timelineEnd">Course completed on {{user.course_end_date}} after successful training and evaluation.</div>
                             </div>
 
                             <div class="timeline-item mb-0">
                                 <div class="timeline-title">Certificate Issued & Verified</div>
-                                <div class="timeline-sub" id="timelineCertificate">Certificate issued on 20 January 2026 and record verified digitally by Technovas.</div>
+                                <div class="timeline-sub" id="timelineCertificate">Certificate issued on {{user.certificate_issue_date}} and record verified digitally by Technovas.</div>
                             </div>
                         </div>
 

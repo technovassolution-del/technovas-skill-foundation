@@ -486,7 +486,18 @@ def certifieduser(id):
         "ProgramName": user.ProgramName,
         "Batch_Name": user.Batch_Name,
         "PhotoPath": user.Photo_path,
-        "QRCodePath": user.QRCode_path
+        "QRCodePath": user.QRCode_path,
+        "gurdianName": user.gurdian_name,
+        "certificate_number": user.certificate_number,
+        "duration_month": user.duration_month,
+        "dob": user.dob,
+        "gender": user.gender,
+        "moble":user.moble,
+        "admission_date":user.admission_date,
+        "course_end_date":user.course_end_date,
+        "course_start_date":user.course_start_date,
+        "certificate_issue_date":user.certificate_issue_date
+        
     })
     print("Selected user:", selected_user)  # Debugging line to check the received ID
     return render_template('certificate_details.html', users=selected_user)
