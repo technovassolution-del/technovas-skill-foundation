@@ -496,20 +496,12 @@ def certifieduser(id):
         "admission_date":user.admission_date,
         "course_end_date":user.course_end_date,
         "course_start_date":user.course_start_date,
-        "certificate_issue_date":user.certificate_issue_date
+        "certificate_issue_date":user.certificate_issue_date,
+        "certificate_status":user.certificate_status
         
     })
     print("Selected user:", selected_user)  # Debugging line to check the received ID
     return render_template('certificate_details.html', users=selected_user)
-
-
-
-
-
-
-
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)

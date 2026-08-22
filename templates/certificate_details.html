@@ -558,7 +558,7 @@
 
                         <!-- Result / Academic Overview -->
                         <div class="row g-3 mb-4">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="score-card">
                                     <div class="score-title">Course Duration</div>
                                     <div class="score-value" id="courseDuration">{{user.duration_month}} Months</div>
@@ -566,10 +566,10 @@
                                 </div>
                             </div>
                
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="score-card">
                                     <div class="score-title">Certificate Status</div>
-                                    <div class="score-value" id="certificateStatus">Issued</div>
+                                    <div class="score-value" id="certificateStatus">{{user.certificate_status}}</div>
                                     <div class="score-sub">Certificate issued and digitally verified</div>
                                 </div>
                         </div>
