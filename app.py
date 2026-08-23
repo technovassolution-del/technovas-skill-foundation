@@ -475,7 +475,7 @@ def certifieduser(id):
     selected_user = []
     for user in users:
         print("Selected ID:", user)  # Debugging line to check the received ID
-        if user.Id == id:
+        if user.Id == id and user.certificate_status == "Y":
          selected_user.append({
         "Id": user.Id,
         "Name": user.Name,
@@ -501,6 +501,8 @@ def certifieduser(id):
         "Address":user.Address
         
     })
+        else:
+         print("No certified user found with ID:", id)  # Debugging line to check if no user is found
     print("Selected user:", selected_user)  # Debugging line to check the received ID
     return render_template('certificate_details.html', users=selected_user)
 
