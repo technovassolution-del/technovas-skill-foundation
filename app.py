@@ -509,14 +509,7 @@ def certifieduser(id):
     return render_template('certificate_details.html', users=selected_user)
 
 
-from attendance import capture_employee
-@app.route('/api/employee/faceregister/<int:id>')
 
-def faceregister(id):
-    capture_employee(
-            id
-            
-        )
     
      
 
