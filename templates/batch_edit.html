@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Edit Batch</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+
+            margin: 0;
+
+            font-family: 'Poppins', sans-serif;
+
+            background: #f4f7fb;
+
+            color: #111827;
+
+        }
+
+        .page {
+
+            padding: 35px;
+
+        }
+
+        .header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 25px;
+
+        }
+
+        h1 {
+
+            margin: 0;
+
+            font-size: 30px;
+
+            font-weight: 700;
+
+        }
+
+        .subtitle {
+
+            color: #6b7280;
+
+            margin-top: 5px;
+
+        }
+
+        .back-btn {
+
+            text-decoration: none;
+
+            background: #111827;
+
+            color: white;
+
+            padding: 12px 18px;
+
+            border-radius: 9px;
+
+            font-weight: 600;
+
+        }
+
+        .form-card {
+
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 35px;
+
+            box-shadow:
+                0 10px 35px rgba(0,0,0,.06);
+
+            max-width: 1100px;
+
+        }
+
+        .grid {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 25px;
+
+        }
+
+        .full {
+
+            grid-column: 1 / -1;
+
+        }
+
+        label {
+
+            display: block;
+
+            margin-bottom: 8px;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+        }
+
+        input,
+        select {
+
+            width: 100%;
+
+            padding: 14px;
+
+            border: 1px solid #d1d5db;
+
+            border-radius: 9px;
+
+            font-family: inherit;
+
+            font-size: 14px;
+
+            outline: none;
+
+        }
+
+        input:focus,
+        select:focus {
+
+            border-color: #2563eb;
+
+        }
+
+        .actions {
+
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 12px;
+
+            margin-top: 30px;
+
+        }
+
+        .cancel {
+
+            text-decoration: none;
+
+            background: #e5e7eb;
+
+            color: #111827;
+
+            padding: 13px 22px;
+
+            border-radius: 9px;
+
+            font-weight: 600;
+
+        }
+
+        .save {
+
+            border: none;
+
+            background: #2563eb;
+
+            color: white;
+
+            padding: 13px 25px;
+
+            border-radius: 9px;
+
+            font-family: inherit;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+        }
+
+        .alert {
+
+            padding: 13px 16px;
+
+            border-radius: 9px;
+
+            margin-bottom: 20px;
+
+        }
+
+        .success {
+
+            background: #dcfce7;
+
+            color: #166534;
+
+        }
+
+        .error {
+
+            background: #fee2e2;
+
+            color: #991b1b;
+
+        }
+
+        @media(max-width: 700px) {
+
+            .page {
+
+                padding: 15px;
+
+            }
+
+            .grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+            .full {
+
+                grid-column: auto;
+
+            }
+
+            .header {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 15px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="page">
+
+    <!-- =========================================
+         HEADER
+    ========================================== -->
+
+    <div class="header">
+
+        <div>
+
+            <h1>
+                Edit Batch
+            </h1>
+
+            <div class="subtitle">
+
+                Update batch information and class schedule
+
+            </div>
+
+        </div>
+
+        <a
+            href="{{ url_for('batch.batch_list') }}"
+            class="back-btn"
+        >
+            ← Back to Batches
+        </a>
+
+    </div>
+
+
+    <!-- =========================================
+         FLASH MESSAGES
+    ========================================== -->
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% if messages %}
+
+            {% for category, message in messages %}
+
+                <div
+                    class="alert
+                    {% if category == 'success' %}
+                        success
+                    {% else %}
+                        error
+                    {% endif %}"
+                >
+
+                    {{ message }}
+
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- =========================================
+         FORM
+    ========================================== -->
+
+    <div class="form-card">
+
+        <form
+            method="POST"
+            action="{{ url_for(
+                'batch.edit_batch',
+                batch_id=batch.id
+            ) }}"
+        >
+
+            <div class="grid">
+
+                <!-- Batch Code -->
+
+                <div>
+
+                    <label>
+                        Batch Code *
+                    </label>
+
+                    <input
+                        type="text"
+                        name="batch_code"
+                        value="{{ batch.batch_code or '' }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Batch Name -->
+
+                <div>
+
+                    <label>
+                        Batch Name *
+                    </label>
+
+                    <input
+                        type="text"
+                        name="batch_name"
+                        value="{{ batch.batch_name or '' }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Course -->
+
+                <div class="full">
+
+                    <label>
+                        Course Name *
+                    </label>
+
+                    <input
+                        type="text"
+                        name="course_name"
+                        value="{{ batch.course_name or '' }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Day -->
+
+                <div>
+
+                    <label>
+                        Class Day *
+                    </label>
+
+                    <select
+                        name="day_of_week"
+                        required
+                    >
+
+                        <option value="">
+                            Select Day
+                        </option>
+
+                        {% for day in [
+                            'MONDAY',
+                            'TUESDAY',
+                            'WEDNESDAY',
+                            'THURSDAY',
+                            'FRIDAY',
+                            'SATURDAY',
+                            'SUNDAY'
+                        ] %}
+
+                            <option
+                                value="{{ day }}"
+                                {% if batch.day_of_week == day %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ day }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- Status -->
+
+                <div>
+
+                    <label>
+                        Status
+                    </label>
+
+                    <select
+                        name="status"
+                    >
+
+                        <option
+                            value="ACTIVE"
+                            {% if batch.status == 'ACTIVE' %}
+                                selected
+                            {% endif %}
+                        >
+                            Active
+                        </option>
+
+                        <option
+                            value="INACTIVE"
+                            {% if batch.status == 'INACTIVE' %}
+                                selected
+                            {% endif %}
+                        >
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Start Time -->
+
+                <div>
+
+                    <label>
+                        Start Time *
+                    </label>
+
+                    <input
+                        type="time"
+                        name="start_time"
+                        value="{{ batch.start_time or '' }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- End Time -->
+
+                <div>
+
+                    <label>
+                        End Time *
+                    </label>
+
+                    <input
+                        type="time"
+                        name="end_time"
+                        value="{{ batch.end_time or '' }}"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================
+                 BUTTONS
+            ====================================== -->
+
+            <div class="actions">
+
+                <a
+                    href="{{ url_for('batch.batch_list') }}"
+                    class="cancel"
+                >
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="save"
+                >
+                    Save Changes
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

@@ -34,3 +34,39 @@ def all_users():
     cursor.execute("SELECT * FROM users")
     users = cursor.fetchall()
     return render_template('all_users.html', users=users)
+
+@user_bp.route('/students')
+def student_list():
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        cursor.execute("""
+            SELECT
+                id,
+                name,
+                userid,
+                role,
+                enrollmentid,
+                programcode,
+                programname,
+                batchname,
+                is_active,
+                created_at,
+                updated_at
+            FROM users
+            WHERE role = 'STUDENT'
+            ORDER BY id DESC
+        """)
+
+        students = cursor.fetchall()
+
+        return render_template(
+            'student_list.html',
+            students=students
+        )
+
+    finally:
+        cursor.close()
+        conn.close()

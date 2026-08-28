@@ -583,6 +583,58 @@ body{
             </div>
         </a>
 
+        <a href="{{ url_for('user.student_list') }}" class="card">
+    <div class="card-icon">
+        <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="8" r="3.2"/>
+            <path d="M5 20c0-3.5 3.1-6 7-6s7 2.5 7 6"/>
+        </svg>
+    </div>
+
+    <div>
+        <h3>Show All Students</h3>
+        <p>View and manage all student records</p>
+    </div>
+</a>
+
+<a href="{{ url_for('batch.batch_list') }}" class="card">
+
+    <div class="card-icon">
+
+        <svg viewBox="0 0 24 24">
+
+            <!-- Batch / Group Icon -->
+            <rect
+                x="3"
+                y="5"
+                width="18"
+                height="14"
+                rx="2"
+            />
+
+            <path d="M7 9h10"/>
+            <path d="M7 13h4"/>
+            <path d="M14 13h3"/>
+            <path d="M7 16h3"/>
+            <path d="M13 16h4"/>
+
+        </svg>
+
+    </div>
+
+    <div>
+
+        <h3>Batch Creation</h3>
+
+        <p>
+            Create and manage training batches
+        </p>
+
+    </div>
+
+</a>
+
+
     </div>
 
 </main>

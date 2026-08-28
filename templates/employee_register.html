@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Employee Registration</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+
+        body {
+            background: #f4f6f9;
+        }
+
+        .registration-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #0d6efd;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 8px;
+        }
+
+        #video {
+            width: 100%;
+            max-width: 320px;
+            height: 280px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 3px solid #0d6efd;
+            background: #000;
+        }
+
+        #photoPreview {
+            width: 100%;
+            max-width: 250px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 3px solid #198754;
+            background: #f1f1f1;
+        }
+
+        #canvas {
+            display: none;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-10">
+
+            <div class="registration-card">
+
+                <div class="text-center mb-4">
+
+                    <h2 class="fw-bold">
+                        Employee Registration
+                    </h2>
+
+                    <p class="text-muted">
+                        Register employee details and capture live photo.
+                    </p>
+
+                </div>
+
+
+                <form id="employeeForm"
+                      method="POST"
+                      action="/employee/register"
+                      enctype="multipart/form-data">
+
+
+                    <!-- PHOTO SECTION -->
+
+                    <div class="section-title">
+                        Live Camera Photo
+                    </div>
+
+
+                    <div class="row">
+
+                        <!-- CAMERA -->
+
+                        <div class="col-md-6 text-center">
+
+                            <h6 class="mb-3">
+                                Live Camera
+                            </h6>
+
+                            <video id="video"
+                                   autoplay
+                                   playsinline>
+                            </video>
+
+
+                            <div class="mt-3">
+
+                                <button type="button"
+                                        class="btn btn-success"
+                                        onclick="startCamera()">
+
+                                    Start Camera
+
+                                </button>
+
+
+                                <button type="button"
+                                        class="btn btn-danger"
+                                        onclick="stopCamera()">
+
+                                    Stop Camera
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- PHOTO PREVIEW -->
+
+                        <div class="col-md-6 text-center">
+
+                            <h6 class="mb-3">
+                                Captured Employee Photo
+                            </h6>
+
+
+                            <img id="photoPreview"
+                                 src="https://via.placeholder.com/250?text=Employee+Photo"
+                                 alt="Employee Photo">
+
+
+                            <canvas id="canvas"></canvas>
+
+
+                            <div class="mt-3">
+
+                                <button type="button"
+                                        class="btn btn-primary"
+                                        onclick="capturePhoto()">
+
+                                    Capture Photo
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- HIDDEN PHOTO DATA -->
+
+                    <input type="hidden"
+                           id="capturedPhoto"
+                           name="capturedPhoto">
+
+
+                    <hr>
+
+
+                    <!-- PERSONAL DETAILS -->
+
+                    <div class="section-title">
+                        Employee Details
+                    </div>
+
+
+                    <div class="row g-3">
+
+
+                       
+
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Full Name
+                            </label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   name="fullName"
+                                   placeholder="Enter Full Name"
+                                   required>
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Mobile Number
+                            </label>
+
+                            <input type="tel"
+                                   class="form-control"
+                                   name="mobile"
+                                   placeholder="Enter Mobile Number"
+                                   maxlength="10"
+                                   required>
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Email Address
+                            </label>
+
+                            <input type="email"
+                                   class="form-control"
+                                   name="email"
+                                   placeholder="Enter Email">
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Gender
+                            </label>
+
+                            <select class="form-select"
+                                    name="gender">
+
+                                <option value="">
+                                    Select Gender
+                                </option>
+
+                                <option value="Male">
+                                    Male
+                                </option>
+
+                                <option value="Female">
+                                    Female
+                                </option>
+
+                                <option value="Other">
+                                    Other
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Date of Birth
+                            </label>
+
+                            <input type="date"
+                                   class="form-control"
+                                   name="dob">
+
+                        </div>
+
+                         <div class="col-md-4">
+
+                            <label class="form-label">
+                                Heighest Educational Qualification
+                            </label>
+
+                            <select class="form-select"
+                                    name="qualification">
+
+                                 <option value="">-- Select Highest Qualification --</option>
+    <option value="Below 10th">Below 10th</option>
+    <option value="10th Pass">10th Pass (SSC)</option>
+    <option value="12th Pass">12th Pass (HSC)</option>
+    <option value="ITI">ITI</option>
+    <option value="Diploma">Diploma</option>
+    <option value="Undergraduate">Undergraduate</option>
+    <option value="Graduate">Graduate / Bachelor's Degree</option>
+    <option value="Postgraduate">Postgraduate / Master's Degree</option>
+    <option value="M.Phil">M.Phil</option>
+    <option value="Ph.D">Ph.D / Doctorate</option>
+    <option value="Professional Qualification">Professional Qualification</option>
+    <option value="Other">Other</option>
+
+                            </select>
+
+                        </div>
+
+
+
+
+                                          <div class="col-md-4">
+
+                            <label class="form-label">
+                                Bank Name
+                            </label>
+
+                            <select class="form-select"
+                                    name="bankName">
+
+                                <option value="">
+                                    Select Bank
+                                </option>
+
+                                <option value="State Bank of India">
+                                    State Bank of India
+                                </option>
+
+                                <option value="HDFC Bank">
+                                    HDFC Bank
+                                </option>
+
+                                <option value="ICICI Bank">
+                                    ICICI Bank
+                                </option>
+
+                                 <option value="KOTAK MAHINDRA BANK">
+                                    KOTAK MAHINDRA BANK
+                                </option>
+
+                            </select>
+
+                        </div>
+           
+<div class="col-md-4">
+
+                            <label class="form-label">
+                                Bank Account Number
+                            </label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   name="accountNo"
+                                   placeholder="Enter Bank Account Number"
+                                   required>
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                IFSC Code
+                            </label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   name="ifscCode"
+                                   placeholder="Enter IFSC Code"
+                                   required>
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                PAN NUMBER
+                            </label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   name="panNo"
+                                   placeholder="Enter PAN NUMBER"
+                                   required>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Address
+                            </label>
+
+                            <textarea class="form-control"
+                                      name="address"
+                                      rows="3"></textarea>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Aadhaar / ID Number
+                            </label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   name="aadharNumber"
+                                   placeholder="Enter Aadhaar Number">
+
+                        </div>
+
+
+
+
+
+
+                                    
+
+                               
+
+                           
+
+
+
+
+
+                         
+                         
+
+
+
+                    </div>
+
+
+                    <!-- DOCUMENT UPLOAD -->
+
+                    <div class="section-title">
+
+                        Document Upload
+
+                    </div>
+
+
+                    <div class="row g-3">
+
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Aadhaar Card
+                            </label>
+
+                            <input type="file"
+                                   class="form-control"
+                                   name="aadhar_file"
+                                   accept=".jpg,.jpeg,.png,.pdf">
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                PAN Card
+                            </label>
+
+                            <input type="file"
+                                   class="form-control"
+                                   name="panDocument"
+                                   accept=".jpg,.jpeg,.png,.pdf">
+
+                        </div>
+
+
+                        
+
+
+             
+
+
+                    </div>
+
+
+                    <!-- SUBMIT BUTTON -->
+
+                    <div class="text-center mt-5">
+
+                        <button type="submit"
+                                class="btn btn-primary px-5">
+
+                            Register Employee
+
+                        </button>
+
+
+                        <button type="reset"
+                                class="btn btn-secondary px-4 ms-2">
+
+                            Reset
+
+                        </button>
+
+                    </div>
+
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+let stream = null;
+
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const photoPreview = document.getElementById("photoPreview");
+const capturedPhoto = document.getElementById("capturedPhoto");
+
+
+/* ===============================
+   START LIVE CAMERA
+================================ */
+
+async function startCamera() {
+
+    try {
+
+        stream = await navigator.mediaDevices.getUserMedia({
+
+            video: {
+
+                width: 640,
+                height: 480,
+
+                facingMode: "user"
+
+            },
+
+            audio: false
+
+        });
+
+
+        video.srcObject = stream;
+
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Camera access denied or camera not available."
+        );
+
+    }
+
+}
+
+
+
+/* ===============================
+   STOP CAMERA
+================================ */
+
+function stopCamera() {
+
+    if (stream) {
+
+        stream.getTracks().forEach(function(track) {
+
+            track.stop();
+
+        });
+
+
+        video.srcObject = null;
+
+        stream = null;
+
+    }
+
+}
+
+
+
+/* ===============================
+   CAPTURE LIVE PHOTO
+================================ */
+
+function capturePhoto() {
+
+    if (!stream) {
+
+        alert(
+            "Please start the camera first."
+        );
+
+        return;
+
+    }
+
+
+    canvas.width = video.videoWidth;
+
+    canvas.height = video.videoHeight;
+
+
+    const context = canvas.getContext("2d");
+
+
+    context.drawImage(
+
+        video,
+
+        0,
+        0,
+
+        canvas.width,
+        canvas.height
+
+    );
+
+
+    const imageData = canvas.toDataURL(
+
+        "image/jpeg",
+
+        0.90
+
+    );
+
+
+    /* Show captured photo */
+
+    photoPreview.src = imageData;
+
+
+    /* Save Base64 photo */
+
+    capturedPhoto.value = imageData;
+
+
+    alert(
+        "Employee photo captured successfully."
+    );
+
+}
+
+
+
+/* ===============================
+   FORM VALIDATION
+================================ */
+
+document.getElementById("employeeForm")
+.addEventListener("submit", function(event) {
+
+    if (!capturedPhoto.value) {
+
+        event.preventDefault();
+
+        alert(
+            "Please capture the employee photo before registration."
+        );
+
+    }
+
+});
+
+
+
+/* ===============================
+   STOP CAMERA ON PAGE CLOSE
+================================ */
+
+window.addEventListener(
+    "beforeunload",
+    function() {
+
+        stopCamera();
+
+    }
+);
+
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+</body>
+</html>

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Create New Batch</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 40px;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        .page-header {
+            max-width: 1150px;
+            margin: 0 auto 30px;
+        }
+
+        .page-header h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        .page-header p {
+            color: #64748b;
+            font-size: 17px;
+            margin-top: 10px;
+        }
+
+        .form-card {
+            max-width: 1150px;
+            margin: auto;
+            background: white;
+            border-radius: 18px;
+            padding: 36px;
+            box-shadow: 0 15px 40px rgba(15, 23, 42, 0.08);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 26px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .required {
+            color: red;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 15px 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+            background: white;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .time-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .button-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 32px;
+        }
+
+        .btn {
+            border: none;
+            padding: 14px 25px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn-cancel {
+            background: #e5e7eb;
+            color: #111827;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .flash-container {
+            max-width: 1150px;
+            margin: 0 auto 20px;
+        }
+
+        .alert {
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .alert-danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        @media (max-width: 800px) {
+
+            body {
+                padding: 20px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full {
+                grid-column: auto;
+            }
+
+            .time-row {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+    <div class="page-header">
+
+        <h1>
+            Create New Batch
+        </h1>
+
+        <p>
+            Create a new daily training batch
+        </p>
+
+    </div>
+
+
+    <!-- FLASH MESSAGE -->
+
+    <div class="flash-container">
+
+        {% with messages = get_flashed_messages(
+            with_categories=true
+        ) %}
+
+            {% for category, message in messages %}
+
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endwith %}
+
+    </div>
+
+
+    <div class="form-card">
+
+        <form
+            method="POST"
+            action="{{ url_for('batch.create_batch') }}"
+        >
+
+            <div class="form-grid">
+
+
+                <!-- BATCH CODE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Batch Code
+                        <span class="required">*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        name="batch_code"
+                        placeholder="Example: B01"
+                        required
+                        style="text-transform: uppercase;"
+                    >
+
+                </div>
+
+
+                <!-- BATCH NAME -->
+
+                <div class="form-group">
+
+                    <label>
+                        Batch Name
+                        <span class="required">*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        name="batch_name"
+                        placeholder="Example: Morning Computer Batch"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- COURSE -->
+
+                <div class="form-group full">
+
+                    <label>
+                        Course Name
+                    </label>
+
+                    <input
+                        type="text"
+                        name="course_name"
+                        placeholder="Example: Professional Computer Course"
+                    >
+
+                </div>
+
+
+                <!-- DAY -->
+
+                <div class="form-group">
+
+                    <label>
+                        Class Day
+                        <span class="required">*</span>
+                    </label>
+
+                    <select
+                        name="day_of_week"
+                        required
+                    >
+
+                        <option value="">
+                            Select Day
+                        </option>
+
+                        <option value="MONDAY">
+                            Monday
+                        </option>
+
+                        <option value="TUESDAY">
+                            Tuesday
+                        </option>
+
+                        <option value="WEDNESDAY">
+                            Wednesday
+                        </option>
+
+                        <option value="THURSDAY">
+                            Thursday
+                        </option>
+
+                        <option value="FRIDAY">
+                            Friday
+                        </option>
+
+                        <option value="SATURDAY">
+                            Saturday
+                        </option>
+
+                        <option value="SUNDAY">
+                            Sunday
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- TIME -->
+
+                <div class="form-group">
+
+                    <label>
+                        Class Time
+                        <span class="required">*</span>
+                    </label>
+
+                    <div class="time-row">
+
+                        <input
+                            type="time"
+                            name="start_time"
+                            required
+                        >
+
+                        <input
+                            type="time"
+                            name="end_time"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- FACULTY -->
+
+                <div class="form-group">
+
+                    <label>
+                        Faculty Name
+                    </label>
+
+                    <input
+                        type="text"
+                        name="faculty_name"
+                        placeholder="Faculty name"
+                    >
+
+                </div>
+
+
+                <!-- ROOM -->
+
+                <div class="form-group">
+
+                    <label>
+                        Room No.
+                    </label>
+
+                    <input
+                        type="text"
+                        name="room_no"
+                        placeholder="Example: Room 1"
+                    >
+
+                </div>
+
+
+                <!-- DESCRIPTION -->
+
+                <div class="form-group full">
+
+                    <label>
+                        Description
+                    </label>
+
+                    <textarea
+                        name="description"
+                        placeholder="Enter batch description..."
+                    ></textarea>
+
+                </div>
+
+
+                <!-- STATUS -->
+
+                <div class="form-group">
+
+                    <label>
+                        Status
+                    </label>
+
+                    <select name="status">
+
+                        <option value="ACTIVE">
+                            Active
+                        </option>
+
+                        <option value="INACTIVE">
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- BUTTONS -->
+
+            <div class="button-row">
+
+                <a
+                    href="{{ url_for('batch.batch_list') }}"
+                    class="btn btn-cancel"
+                >
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Create Batch
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+</body>
+
+</html>

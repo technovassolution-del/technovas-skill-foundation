@@ -13,11 +13,13 @@ from config import get_db_connection
 from controller.exam_controller import exam_bp
 from controller.question_controller import question_bp   
 from controller.user_controller import user_bp
+from controller.batch_controller import batch_bp
 app = Flask(__name__)
 app.secret_key = "secret123"
 # Register Blueprints
 app.register_blueprint(exam_bp)
 app.register_blueprint(question_bp)  
+app.register_blueprint(batch_bp)
 # Register Blueprint
 app.register_blueprint(user_bp) 
 db=get_db_connection()
@@ -505,6 +507,19 @@ def certifieduser(id):
          print("No certified user found with ID:", id)  # Debugging line to check if no user is found
     print("Selected user:", selected_user)  # Debugging line to check the received ID
     return render_template('certificate_details.html', users=selected_user)
+
+
+from attendance import capture_employee
+@app.route('/api/employee/faceregister/<int:id>')
+
+def faceregister(id):
+    capture_employee(
+            id
+            
+        )
+    
+     
+
 
 if __name__ == '__main__':
     app.run(debug=True)

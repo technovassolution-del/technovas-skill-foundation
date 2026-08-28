@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {{ batch.batch_name }} | Batch Management
+    </title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+
+            margin: 0;
+
+            font-family:
+                'Poppins',
+                sans-serif;
+
+            background: #f4f7fb;
+
+            color: #111827;
+        }
+
+        .page {
+
+            padding: 30px;
+        }
+
+        /* =========================================
+           HEADER
+        ========================================= */
+
+        .header {
+
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            align-items: center;
+
+            margin-bottom: 25px;
+        }
+
+        .title h1 {
+
+            margin: 0;
+
+            font-size: 28px;
+        }
+
+        .subtitle {
+
+            margin-top: 5px;
+
+            color: #6b7280;
+
+            font-size: 14px;
+        }
+
+        .back-btn {
+
+            text-decoration: none;
+
+            background: #111827;
+
+            color: white;
+
+            padding:
+                11px 18px;
+
+            border-radius: 8px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+        /* =========================================
+           FLASH
+        ========================================= */
+
+        .message {
+
+            padding: 13px 16px;
+
+            border-radius: 9px;
+
+            margin-bottom: 18px;
+
+            font-size: 13px;
+        }
+
+        .success {
+
+            background: #dcfce7;
+
+            color: #166534;
+        }
+
+        .error {
+
+            background: #fee2e2;
+
+            color: #991b1b;
+        }
+
+        /* =========================================
+           BATCH INFO
+        ========================================= */
+
+        .info-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 15px;
+
+            margin-bottom: 25px;
+        }
+
+        .info-card {
+
+            background: white;
+
+            border-radius: 12px;
+
+            padding: 20px;
+
+            box-shadow:
+                0 5px 20px
+                rgba(0,0,0,.05);
+        }
+
+        .info-label {
+
+            color: #6b7280;
+
+            font-size: 11px;
+
+            margin-bottom: 7px;
+
+            text-transform:
+                uppercase;
+
+            letter-spacing: .4px;
+        }
+
+        .info-value {
+
+            font-size: 16px;
+
+            font-weight: 600;
+        }
+
+        .badge {
+
+            display: inline-block;
+
+            padding:
+                5px 11px;
+
+            border-radius: 20px;
+
+            font-size: 11px;
+
+            font-weight: 600;
+        }
+
+        .active {
+
+            background: #dcfce7;
+
+            color: #166534;
+        }
+
+        .inactive {
+
+            background: #fee2e2;
+
+            color: #991b1b;
+        }
+
+        /* =========================================
+           STUDENT SECTION
+        ========================================= */
+
+        .card {
+
+            background: white;
+
+            border-radius: 14px;
+
+            padding: 25px;
+
+            box-shadow:
+                0 5px 20px
+                rgba(0,0,0,.05);
+
+            margin-bottom: 25px;
+        }
+
+        .section-header {
+
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            align-items: center;
+
+            margin-bottom: 20px;
+        }
+
+        .section-header h2 {
+
+            margin: 0;
+
+            font-size: 20px;
+        }
+
+        .count {
+
+            background: #eff6ff;
+
+            color: #1d4ed8;
+
+            padding:
+                6px 12px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            font-weight: 600;
+        }
+
+        /* =========================================
+           ADD STUDENT
+        ========================================= */
+
+        .add-box {
+
+            background: #f8fafc;
+
+            border: 1px solid #e5e7eb;
+
+            padding: 20px;
+
+            border-radius: 12px;
+
+            margin-bottom: 25px;
+        }
+
+        .add-box h3 {
+
+            margin:
+                0 0 15px 0;
+
+            font-size: 15px;
+        }
+
+        .form-row {
+
+            display: flex;
+
+            gap: 10px;
+        }
+
+        select {
+
+            flex: 1;
+
+            padding:
+                12px 14px;
+
+            border:
+                1px solid #d1d5db;
+
+            border-radius: 8px;
+
+            background: white;
+
+            font-family:
+                'Poppins',
+                sans-serif;
+
+            font-size: 13px;
+
+            outline: none;
+        }
+
+        select:focus {
+
+            border-color:
+                #2563eb;
+        }
+
+        .add-btn {
+
+            border: none;
+
+            background:
+                #2563eb;
+
+            color: white;
+
+            padding:
+                12px 20px;
+
+            border-radius: 8px;
+
+            font-family:
+                'Poppins',
+                sans-serif;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+        }
+
+        .add-btn:hover {
+
+            background:
+                #1d4ed8;
+        }
+
+        /* =========================================
+           TABLE
+        ========================================= */
+
+        .table-wrapper {
+
+            overflow-x: auto;
+        }
+
+        table {
+
+            width: 100%;
+
+            border-collapse:
+                collapse;
+        }
+
+        th {
+
+            background:
+                #111827;
+
+            color: white;
+
+            padding:
+                13px;
+
+            text-align: left;
+
+            font-size: 12px;
+        }
+
+        td {
+
+            padding:
+                13px;
+
+            border-bottom:
+                1px solid #e5e7eb;
+
+            font-size: 13px;
+        }
+
+        tr:hover {
+
+            background:
+                #f9fafb;
+        }
+
+        .student-name {
+
+            font-weight: 600;
+        }
+
+        .student-id {
+
+            color: #6b7280;
+        }
+
+        .remove-btn {
+
+            border: none;
+
+            background:
+                #fee2e2;
+
+            color:
+                #991b1b;
+
+            padding:
+                7px 11px;
+
+            border-radius: 6px;
+
+            font-size: 11px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+        }
+
+        /* =========================================
+           EMPTY
+        ========================================= */
+
+        .empty {
+
+            text-align: center;
+
+            padding: 40px;
+
+            color: #6b7280;
+        }
+
+        .empty-icon {
+
+            font-size: 40px;
+
+            margin-bottom: 10px;
+        }
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media(max-width: 900px) {
+
+            .page {
+
+                padding: 15px;
+            }
+
+            .header {
+
+                flex-direction: column;
+
+                align-items:
+                    flex-start;
+
+                gap: 15px;
+            }
+
+            .info-grid {
+
+                grid-template-columns:
+                    1fr 1fr;
+            }
+
+        }
+
+        @media(max-width: 600px) {
+
+            .info-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+            .form-row {
+
+                flex-direction:
+                    column;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="page">
+
+
+    <!-- =========================================
+         HEADER
+    ========================================== -->
+
+    <div class="header">
+
+        <div class="title">
+
+            <h1>
+                {{ batch.batch_name }}
+            </h1>
+
+            <div class="subtitle">
+
+                Manage batch information and students
+
+            </div>
+
+        </div>
+
+
+        <a
+            href="{{ url_for('batch.batch_list') }}"
+            class="back-btn"
+        >
+
+            ← Back to Batches
+
+        </a>
+
+    </div>
+
+
+    <!-- =========================================
+         FLASH MESSAGE
+    ========================================== -->
+
+    {% with
+        messages =
+        get_flashed_messages(
+            with_categories=true
+        )
+    %}
+
+        {% if messages %}
+
+            {% for category, message in messages %}
+
+                <div
+                    class="message
+                    {% if category == 'success' %}
+                        success
+                    {% else %}
+                        error
+                    {% endif %}"
+                >
+
+                    {{ message }}
+
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- =========================================
+         BATCH INFORMATION
+    ========================================== -->
+
+    <div class="info-grid">
+
+
+        <!-- BATCH CODE -->
+
+        <div class="info-card">
+
+            <div class="info-label">
+
+                Batch Code
+
+            </div>
+
+            <div class="info-value">
+
+                {{ batch.batch_code }}
+
+            </div>
+
+        </div>
+
+
+        <!-- COURSE -->
+
+        <div class="info-card">
+
+            <div class="info-label">
+
+                Course
+
+            </div>
+
+            <div class="info-value">
+
+                {{ batch.course_name or '-' }}
+
+            </div>
+
+        </div>
+
+
+        <!-- DAY -->
+
+        <div class="info-card">
+
+            <div class="info-label">
+
+                Class Day
+
+            </div>
+
+            <div class="info-value">
+
+                {{ batch.day_of_week }}
+
+            </div>
+
+        </div>
+
+
+        <!-- TIME -->
+
+        <div class="info-card">
+
+            <div class="info-label">
+
+                Class Time
+
+            </div>
+
+            <div class="info-value">
+
+                {{ batch.start_time }}
+                -
+                {{ batch.end_time }}
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =========================================
+         STUDENT MANAGEMENT
+    ========================================== -->
+
+    <div class="card">
+
+
+        <div class="section-header">
+
+            <h2>
+
+                Students in this Batch
+
+            </h2>
+
+            <div class="count">
+
+                {{ student_count }}
+                Students
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             ADD STUDENT
+        ====================================== -->
+
+        <div class="add-box">
+
+            <h3>
+
+                + Assign Student to this Batch
+
+            </h3>
+
+
+            <form
+                method="POST"
+                action="{{ url_for(
+                    'batch.add_student',
+                    batch_id=batch.id
+                ) }}"
+            >
+
+                <div class="form-row">
+
+
+                    <select
+                        name="student_id"
+                        required
+                    >
+
+                        <option value="">
+
+                            Select Student
+
+                        </option>
+
+
+                        {% for student
+                           in available_students %}
+
+                            <option
+                                value="{{ student.id }}"
+                            >
+
+                                {{ student.name }}
+
+                                —
+                                {{ student.userid }}
+
+                            </option>
+
+                        {% endfor %}
+
+
+                    </select>
+
+
+                    <button
+                        type="submit"
+                        class="add-btn"
+                    >
+
+                        + Assign Student
+
+                    </button>
+
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+        <!-- =====================================
+             STUDENT TABLE
+        ====================================== -->
+
+        {% if students %}
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                #
+                            </th>
+
+                            <th>
+                                Student ID
+                            </th>
+
+                            <th>
+                                Student Name
+                            </th>
+
+                            <th>
+                                Assigned At
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+
+                        {% for student
+                           in students %}
+
+
+                            <tr>
+
+
+                                <td>
+
+                                    {{ loop.index }}
+
+                                </td>
+
+
+                                <td>
+
+                                    <span
+                                        class="student-id"
+                                    >
+
+                                        {{ student.userid }}
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    <span
+                                        class="student-name"
+                                    >
+
+                                        {{ student.name }}
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ student.assigned_at }}
+
+                                </td>
+
+
+                                <td>
+
+                                    <span
+                                        class="badge active"
+                                    >
+
+                                        ACTIVE
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for(
+                                            'batch.remove_student',
+                                            batch_id=batch.id,
+                                            assignment_id=student.assignment_id
+                                        ) }}"
+                                        onsubmit="
+                                            return confirm(
+                                                'Are you sure you want to remove this student from this batch?'
+                                            );
+                                        "
+                                    >
+
+                                        <button
+                                            type="submit"
+                                            class="remove-btn"
+                                        >
+
+                                            Remove
+
+                                        </button>
+
+                                    </form>
+
+                                </td>
+
+
+                            </tr>
+
+
+                        {% endfor %}
+
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+        {% else %}
+
+
+            <div class="empty">
+
+                <div class="empty-icon">
+                    👨‍🎓
+                </div>
+
+                <h3>
+                    No Students Assigned
+                </h3>
+
+                <p>
+                    Select a student above to assign them to this batch.
+                </p>
+
+            </div>
+
+
+        {% endif %}
+
+
+    </div>
+
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Employee Attendance</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f1f3f6;
+        }
+
+        .container {
+            width: 950px;
+            max-width: 95%;
+            margin: 30px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,.15);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .camera-box {
+            position: relative;
+            width: 700px;
+            max-width: 100%;
+            margin: auto;
+        }
+
+        video {
+            display: block;
+            width: 100%;
+            border-radius: 15px;
+            background: black;
+        }
+
+        canvas {
+            display: none;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 18px;
+            text-align: center;
+            border-radius: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            background: #eee;
+        }
+
+        .employee {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+            padding: 20px;
+            border-radius: 12px;
+            background: #f8f9fa;
+        }
+
+        .employee-name {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .attendance-type {
+            margin-top: 15px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .attendance-time {
+            font-size: 20px;
+            margin-top: 10px;
+        }
+
+        .camera-status {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+    <h1>
+        Employee Face Attendance
+    </h1>
+
+
+    <div class="camera-box">
+
+        <video
+            id="video"
+            autoplay
+            muted
+            playsinline>
+        </video>
+
+        <canvas id="canvas"></canvas>
+
+    </div>
+
+
+    <div
+        id="cameraStatus"
+        class="camera-status">
+
+        Starting camera...
+
+    </div>
+
+
+    <div
+        id="status"
+        class="status">
+
+        Please look at the camera
+
+    </div>
+
+
+    <div
+        id="employee"
+        class="employee">
+
+        <div
+            id="employeeName"
+            class="employee-name">
+        </div>
+
+
+        <div>
+            Employee ID:
+            <strong id="employeeId"></strong>
+        </div>
+
+
+        <div
+            id="attendanceType"
+            class="attendance-type">
+        </div>
+
+
+        <div
+            id="attendanceMessage">
+        </div>
+
+
+        <div
+            id="attendanceTime"
+            class="attendance-time">
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+
+// ==========================================================
+// VARIABLES
+// ==========================================================
+
+let video =
+    document.getElementById("video");
+
+let canvas =
+    document.getElementById("canvas");
+
+let context =
+    canvas.getContext("2d");
+
+let stream = null;
+
+let recognitionTimer = null;
+
+let processing = false;
+
+let lastEmployeeId = null;
+
+let lastRecognitionTime = 0;
+
+
+// ==========================================================
+// AUTOMATIC CAMERA START
+// ==========================================================
+
+window.addEventListener(
+    "load",
+    function() {
+
+        startCamera();
+
+    }
+);
+
+
+// ==========================================================
+// START CAMERA
+// ==========================================================
+
+async function startCamera() {
+
+    try {
+
+        document.getElementById(
+            "cameraStatus"
+        ).innerText =
+            "Starting camera...";
+
+
+        stream =
+            await navigator.mediaDevices.getUserMedia({
+
+                video: {
+
+                    width: {
+                        ideal: 640
+                    },
+
+                    height: {
+                        ideal: 480
+                    },
+
+                    facingMode: "user"
+
+                },
+
+                audio: false
+
+            });
+
+
+        video.srcObject =
+            stream;
+
+
+        await video.play();
+
+
+        document.getElementById(
+            "cameraStatus"
+        ).innerText =
+            "Camera active";
+
+
+        document.getElementById(
+            "status"
+        ).innerText =
+            "Please look at the camera";
+
+
+        startRecognition();
+
+
+    }
+    catch (error) {
+
+        console.error(
+            "Camera Error:",
+            error
+        );
+
+
+        document.getElementById(
+            "cameraStatus"
+        ).innerText =
+            "Camera access denied";
+
+
+        document.getElementById(
+            "status"
+        ).innerText =
+            "Please allow camera permission and reload the page.";
+
+    }
+
+}
+
+
+// ==========================================================
+// FACE RECOGNITION TIMER
+// ==========================================================
+
+function startRecognition() {
+
+    if (recognitionTimer) {
+
+        clearInterval(
+            recognitionTimer
+        );
+
+    }
+
+
+    /*
+       Check camera every 1.5 seconds
+    */
+
+    recognitionTimer =
+        setInterval(
+            captureFrame,
+            1500
+        );
+
+}
+
+
+// ==========================================================
+// CAPTURE CAMERA FRAME
+// ==========================================================
+
+async function captureFrame() {
+
+    if (!stream) {
+        return;
+    }
+
+
+    if (processing) {
+        return;
+    }
+
+
+    if (
+        video.readyState !==
+        video.HAVE_ENOUGH_DATA
+    ) {
+
+        return;
+
+    }
+
+
+    processing = true;
+
+
+    try {
+
+        canvas.width =
+            video.videoWidth;
+
+        canvas.height =
+            video.videoHeight;
+
+
+        context.drawImage(
+            video,
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+
+        const imageData =
+            canvas.toDataURL(
+                "image/jpeg",
+                0.80
+            );
+
+
+        await recognizeFace(
+            imageData
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            error
+        );
+
+    }
+    finally {
+
+        processing = false;
+
+    }
+
+}
+
+
+// ==========================================================
+// SEND FACE TO FLASK
+// ==========================================================
+
+async function recognizeFace(
+    imageData
+) {
+
+    try {
+
+        const response =
+            await fetch(
+                "/recognize",
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body: JSON.stringify({
+
+                        image: imageData
+
+                    })
+
+                }
+            );
+
+
+        const text =
+            await response.text();
+
+
+        console.log(
+            "Server:",
+            text
+        );
+
+
+        let result;
+
+
+        try {
+
+            result =
+                JSON.parse(text);
+
+        }
+        catch (error) {
+
+            console.error(
+                "Invalid JSON:",
+                text
+            );
+
+            return;
+
+        }
+
+
+        // ==================================================
+        // FACE NOT RECOGNIZED
+        // ==================================================
+
+        if (!result.success) {
+
+            document.getElementById(
+                "status"
+            ).innerText =
+                result.message ||
+                "Please look at the camera";
+
+            return;
+
+        }
+
+
+        // ==================================================
+        // EMPLOYEE FOUND
+        // ==================================================
+
+        const employeeId =
+            result.employee_id;
+
+
+        const currentTime =
+            Date.now();
+
+
+        /*
+          Prevent the same employee from being
+          processed continuously.
+        */
+
+        if (
+            employeeId === lastEmployeeId &&
+            currentTime -
+            lastRecognitionTime < 10000
+        ) {
+
+            return;
+
+        }
+
+
+        lastEmployeeId =
+            employeeId;
+
+        lastRecognitionTime =
+            currentTime;
+
+
+        showAttendance(
+            result
+        );
+
+
+    }
+    catch (error) {
+
+        console.error(
+            "Recognition error:",
+            error
+        );
+
+    }
+
+}
+
+
+// ==========================================================
+// SHOW ATTENDANCE
+// ==========================================================
+
+function showAttendance(
+    result
+) {
+
+    const attendance =
+        result.attendance;
+
+
+    document.getElementById(
+        "employee"
+    ).style.display =
+        "block";
+
+
+    document.getElementById(
+        "employeeName"
+    ).innerText =
+        result.employee_name;
+
+
+    document.getElementById(
+        "employeeId"
+    ).innerText =
+        result.employee_id;
+
+
+    document.getElementById(
+        "attendanceType"
+    ).innerText =
+        attendance.type;
+
+
+    document.getElementById(
+        "attendanceMessage"
+    ).innerText =
+        attendance.message;
+
+
+    document.getElementById(
+        "attendanceTime"
+    ).innerText =
+        attendance.time;
+
+
+    // ======================================================
+    // ATTENDANCE MESSAGE
+    // ======================================================
+
+    if (
+        attendance.type === "IN"
+    ) {
+
+        document.getElementById(
+            "status"
+        ).innerText =
+            "Attendance completed";
+
+
+    }
+    else if (
+        attendance.type === "OUT"
+    ) {
+
+        document.getElementById(
+            "status"
+        ).innerText =
+            "Attendance completed";
+
+
+    }
+    else {
+
+        document.getElementById(
+            "status"
+        ).innerText =
+            "Attendance already completed";
+
+    }
+
+
+    // ======================================================
+    // VOICE
+    // ======================================================
+
+    speakAttendance(
+        attendance.type
+    );
+
+
+    // ======================================================
+    // HIDE EMPLOYEE AFTER 5 SEC
+    // ======================================================
+
+    setTimeout(
+        function() {
+
+            document.getElementById(
+                "employee"
+            ).style.display =
+                "none";
+
+
+            document.getElementById(
+                "status"
+            ).innerText =
+                "Please look at the camera";
+
+
+        },
+        5000
+    );
+
+}
+
+
+// ==========================================================
+// TEXT TO SPEECH
+// ==========================================================
+
+function speakAttendance(
+    type
+) {
+
+    if (
+        !("speechSynthesis" in window)
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+       Stop previous voice
+    */
+
+    window.speechSynthesis.cancel();
+
+
+    let message =
+        "Attendance completed";
+
+
+    if (type === "IN") {
+
+        message =
+            "Attendance completed. Check in successful";
+
+    }
+
+
+    if (type === "OUT") {
+
+        message =
+            "Attendance completed. Check out successful";
+
+    }
+
+
+    if (type === "COMPLETED") {
+
+        message =
+            "Attendance already completed";
+
+    }
+
+
+    const speech =
+        new SpeechSynthesisUtterance(
+            message
+        );
+
+
+    speech.lang =
+        "en-IN";
+
+    speech.rate =
+        0.9;
+
+    speech.pitch =
+        1;
+
+
+    window.speechSynthesis.speak(
+        speech
+    );
+
+}
+
+
+// ==========================================================
+// CAMERA ERROR
+// ==========================================================
+
+window.addEventListener(
+    "beforeunload",
+    function() {
+
+        if (stream) {
+
+            stream
+                .getTracks()
+                .forEach(
+                    track =>
+                        track.stop()
+                );
+
+        }
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>
