@@ -1539,7 +1539,6 @@ def student_batch_schedule(enrollment_id):
         # =====================================================
 
         db = get_db_connection()
-
         cursor = db.cursor(dictionary=True)
 
         # =====================================================
@@ -1693,7 +1692,7 @@ def student_batch_schedule(enrollment_id):
                 b.start_time ASC
 
             """,
-            (student["enrollmentid"],)
+            (student.get("id"),)
         )
 
         schedules = cursor.fetchall()
