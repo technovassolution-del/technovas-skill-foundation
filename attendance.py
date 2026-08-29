@@ -12,8 +12,10 @@ import face_recognition
 def get_connection():
 
     return mssql_python.connect(
-        "Server=DESKTOP-B4RCPPB\\SQLEXPRESS;"
-        "Database=technovas_masterdb;"
+        "Server=103.14.121.8,34569;"
+        "Database=technova_db;"
+        "User Id=technova;"
+        "Password=fUwAzxRZBN6t4fz%;"
         "Trusted_Connection=yes;"
         "Encrypt=yes;"
         "TrustServerCertificate=yes;"
@@ -32,7 +34,6 @@ def save_employee(
 
     conn = None
     cursor = None
-
     try:
 
         conn = get_connection()

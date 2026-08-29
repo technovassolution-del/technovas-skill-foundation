@@ -335,7 +335,15 @@
         </div>
 
         <div class="student-count">
-            ON RECORD &nbsp;<strong>{{ students|length }}</strong>
+            ON RECORD &nbsp;<strong>{{total_students}}</strong>
+        </div>
+
+        <div class="student-count">
+            ON GOING &nbsp;<strong>{{total_ongoing}}</strong>
+        </div>
+
+         <div class="student-count">
+            COMPLETED &nbsp;<strong>{{total_completed}}</strong>
         </div>
 
     </div>
@@ -355,7 +363,11 @@
                     <th>Batch</th>
                     <th>Role</th>
                     <th>Status</th>
-                    <th>Created At</th>
+                    <th>Admission Date</th>
+                    <th>Photo</th>
+                    <th>QR Code</th>
+                    <th>Password</th>
+
                 </tr>
             </thead>
 
@@ -368,42 +380,42 @@
                     <tr>
 
                         <td>
-                            <span class="entry-no">{{ student.id }}</span>
+                            <span class="entry-no">{{loop.index}}</span>
                         </td>
 
                         <td>
                             <strong>
-                                {{ student.name or '-' }}
+                                {{ student.Name or '-' }}
                             </strong>
                         </td>
 
                         <td>
-                            <span class="mono-field">{{ student.userid }}</span>
+                            <span class="mono-field">{{ student.UserId }}</span>
                         </td>
 
                         <td>
-                            <span class="mono-field">{{ student.enrollmentid or '-' }}</span>
+                            <span class="mono-field">{{ student.Id or '-' }}</span>
                         </td>
 
                         <td>
-                            <span class="mono-field">{{ student.programcode or '-' }}</span>
+                            <span class="mono-field">{{ student.ProgramCode or '-' }}</span>
                         </td>
 
                         <td>
-                            {{ student.programname or '-' }}
+                            {{ student.ProgramName or '-' }}
                         </td>
 
                         <td>
-                            {{ student.batchname or '-' }}
+                            {{ student.Batch_Name or '-' }}
                         </td>
 
                         <td>
-                            <span class="role-tag">{{ student.role }}</span>
+                            <span class="role-tag">{{student.Userrole }}</span>
                         </td>
 
                         <td>
 
-                            {% if student.is_active == 1 %}
+                            {% if student.coursestatus=="Ongoing" %}
 
                                 <span class="status active">
                                     Active
@@ -412,15 +424,37 @@
                             {% else %}
 
                                 <span class="status inactive">
-                                    Inactive
+                                    Completed
                                 </span>
 
                             {% endif %}
 
                         </td>
 
+                         <td>
+                            <span class="mono-field">{{ student.adminssion_date }}</span>
+                        </td>
+
+
                         <td>
-                            <span class="mono-field">{{ student.created_at }}</span>
+                   <img src="https://www.technovas.in/Admin/AdmissionDocs/PHOTO/{{ student.PhotoPath }}"
+                                 width="60"
+                                 height="60"
+                                 style="object-fit:cover;
+                                        border-radius:50%;">
+
+                        </td>
+
+                        <td>
+
+                             <img src="https://www.technovas.in/Admin/QRCode/{{student.QRCodePath }}"
+                         width="80"
+                         height="80">
+                        </td>
+
+                       
+                          <td>
+                            <span class="mono-field">{{ student.pwd }}</span>
                         </td>
 
                     </tr>

@@ -448,11 +448,11 @@ def manageuser():
     wsdl = "https://technovas.in/WebService.asmx?WSDL"
     client = Client(wsdl)
     users = client.service.GetAllUsers()
-    all_users = []
+    students = []
 
     for user in users:
 
-      all_users.append({
+      students.append({
         "Id": user.Id,
         "Name": user.Name,
         "Email": user.Email,
@@ -462,11 +462,31 @@ def manageuser():
         "ProgramName": user.ProgramName,
         "Batch_Name": user.Batch_Name,
         "PhotoPath": user.Photo_path,
-        "QRCodePath": user.QRCode_path
+        "QRCodePath": user.QRCode_path,
+        "pwd": user.Password,
+        "coursestatus": user.CourseStatus,
+        "adminssion_date": user.admission_date
+        
     })
-    print(all_users);
-    session['all_users'] = all_users
-    return render_template('manage_students.html', users=all_users)
+    print(students);
+
+    total_students = len(students)
+
+    total_ongoing = sum(
+            1 for student in students
+            if student.get("coursestatus","").lower()=="ongoing"
+        )
+
+    total_completed = sum(
+        1 for student in students
+        if student.get("coursestatus", "").lower() == "completed"
+    )
+
+    session['all_users'] = students
+    return render_template('student_list.html', students=students,
+    total_students=total_students,
+    total_completed=total_completed,
+    total_ongoing=total_ongoing)
 
 
 @app.route('/certifieduser/<int:id>')
@@ -501,6 +521,7 @@ def certifieduser(id):
         "certificate_issue_date":user.certificate_issue_date,
         "certificate_status":user.certificate_status,
         "Address":user.Address
+        
         
     })
         else:

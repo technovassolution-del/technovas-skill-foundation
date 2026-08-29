@@ -14,7 +14,6 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
-
 # =========================================================
 # UPLOAD CONFIGURATION
 # =========================================================
@@ -74,18 +73,16 @@ def allowed_file(filename):
 
 def get_db_connection():
 
-    return mssql_python.connect(
-
-        "Server=DESKTOP-B4RCPPB\\SQLEXPRESS;"
-
-        "Database=technovas_masterdb;"
-
-        "Trusted_Connection=yes;"
-
-        "Encrypt=yes;"
-
-        "TrustServerCertificate=yes;"
-    )
+   return mssql_python.connect(
+           "Server=103.14.121.8,34569;"
+           "Database=technova_db;"
+           "User Id=technova;"
+           "Password=fUwAzxRZBN6t4fz%;"
+           "Trusted_Connection=yes;"
+           "Encrypt=yes;"
+           "TrustServerCertificate=yes;"
+       )
+   
 
 
 # =========================================================
