@@ -1,3 +1,5 @@
+from multiprocessing.dummy.connection import Client
+
 from flask import (
     Blueprint,
     render_template,
@@ -512,23 +514,25 @@ def view_batch(batch_id):
         # Only users whose role = STUDENT
         # ==================================================
 
-        cursor.execute(
-            """
-            SELECT
-                id,
-                name,
-                userid
+        
+        
+        
+        wsdl = "https://technovas.in/WebService.asmx?WSDL"
+        client = Client(wsdl)
+        users = client.service.GetAllUsers()
+        students = []
+        for user in users:
+            students.append({
+                        "Id": user.Id,
+                        "Name": user.Name
+                        
+                    
+                })
 
-            FROM users
 
-            WHERE role = 'STUDENT'
 
-            ORDER BY
-                name ASC
-            """
-        )
-
-        all_students = cursor.fetchall()
+        #all_students = cursor.fetchall()
+        all_students=students;
 
         # ==================================================
         # REMOVE STUDENTS ALREADY ASSIGNED TO THIS BATCH
