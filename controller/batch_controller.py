@@ -1563,7 +1563,7 @@ def student_batch_schedule(student_id):
                 programcode,
                 programname
             FROM users
-            WHERE id = %s
+            WHERE enrollmentid = %s
               AND role = 'STUDENT'
             LIMIT 1
             """,
