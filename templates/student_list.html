@@ -1930,45 +1930,20 @@ tbody tr:hover {
 
                 <tr>
 
-                    <th>
-                        Entry
-                    </th>
+                    <th>Entry</th>
+                    <th>Name</th>
+                    <th>User ID</th>
+                    <th>Enrollment ID</th>
+                    <th>Program Code</th>
+                    <th>Program Name</th>
+                    <th>Batch</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Admission Date</th>
+                    <th>Photo</th>
+                    <th>QR Code</th>
+                    <th>Password</th>
 
-                    <th>
-                        Name
-                    </th>
-
-                    <th>
-                        User ID
-                    </th>
-
-                    <th>
-                        Enrollment ID
-                    </th>
-
-                    <th>
-                        Program Code
-                    </th>
-
-                    <th>
-                        Program Name
-                    </th>
-
-                    <th>
-                        Batch Schedule
-                    </th>
-
-                    <th>
-                        Role
-                    </th>
-
-                    <th>
-                        Status
-                    </th>
-
-                    <th>
-                        Created At
-                    </th>
 
                 </tr>
 
@@ -1992,11 +1967,8 @@ tbody tr:hover {
 
                         <td>
 
-                            <span class="entry-no">
+                             <span class="entry-no">{{loop.index}}</span>
 
-                                № {{ student.id }}
-
-                            </span>
 
                         </td>
 
@@ -2008,7 +1980,7 @@ tbody tr:hover {
 
                             <span class="student-name">
 
-                                {{ student.name or '-' }}
+                                {{ student.Name or '-' }}
 
                             </span>
 
@@ -2022,7 +1994,7 @@ tbody tr:hover {
 
                             <span class="mono-field">
 
-                                {{ student.userid or '-' }}
+                                {{ student.UserId or '-' }}
 
                             </span>
 
@@ -2036,7 +2008,7 @@ tbody tr:hover {
 
                             <span class="mono-field">
 
-                                {{ student.enrollmentid or '-' }}
+                                {{ student.Id or '-' }}
 
                             </span>
 
@@ -2050,7 +2022,7 @@ tbody tr:hover {
 
                             <span class="mono-field">
 
-                                {{ student.programcode or '-' }}
+                                {{ student.ProgramCode or '-' }}
 
                             </span>
 
@@ -2062,7 +2034,7 @@ tbody tr:hover {
 
                         <td>
 
-                            {{ student.programname or '-' }}
+                            {{ student.ProgramName or '-' }}
 
                         </td>
 
@@ -2079,10 +2051,10 @@ tbody tr:hover {
                                 type="button"
                                 class="batch-link"
                                 onclick="openBatchSchedule(
-                                    {{ student.id }},
+                                    {{ student.Id }},
                                     '{{ url_for(
                                         'batch.student_batch_schedule',
-                                        student_id=student.id
+                                        student_id=student.Id
                                     ) }}'
                                 )"
                             >
@@ -2104,7 +2076,7 @@ tbody tr:hover {
 
                             <span class="role-tag">
 
-                                {{ student.role or '-' }}
+                                {{ student.Userrole or '-' }}
 
                             </span>
 
@@ -2117,23 +2089,20 @@ tbody tr:hover {
                         <td>
 
 
-                            {% if student.is_active == 1 %}
+                            {% if student.coursestatus=="Ongoing" %}
 
                                 <span class="status active">
-
-                                    ● Active
-
+                                    Active
                                 </span>
 
                             {% else %}
 
                                 <span class="status inactive">
-
-                                    ● Inactive
-
+                                    Completed
                                 </span>
 
                             {% endif %}
+
 
 
                         </td>
@@ -2144,13 +2113,30 @@ tbody tr:hover {
 
                         <td>
 
-                            <span class="mono-field">
+                            <span class="mono-field">{{ student.adminssion_date }}</span>
+                        </td>
 
-                                {{ student.created_at or '-' }}
-
-                            </span>
+                         <td>
+                   <img src="https://www.technovas.in/Admin/AdmissionDocs/PHOTO/{{ student.PhotoPath }}"
+                                 width="60"
+                                 height="60"
+                                 style="object-fit:cover;
+                                        border-radius:50%;">
 
                         </td>
+
+                        <td>
+
+                             <img src="https://www.technovas.in/Admin/QRCode/{{student.QRCodePath }}"
+                         width="80"
+                         height="80">
+                        </td>
+
+                       
+                          <td>
+                            <span class="mono-field">{{ student.pwd }}</span>
+                        </td>
+
 
 
                     </tr>
