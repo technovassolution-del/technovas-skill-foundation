@@ -1,4 +1,5 @@
 import os
+import traceback
 import xml
 from flask import Flask, Response, render_template, request, jsonify,redirect,url_for,session
 import mysql.connector
@@ -445,49 +446,63 @@ def upload():
 
 @app.route('/manageuser')
 def manageuser():
-    wsdl = "https://technovas.in/WebService.asmx?WSDL"
-    client = Client(wsdl)
-    users = client.service.GetAllUsers()
-    students = []
-    for user in users:
-      students.append({
-        "Id": user.Id,
-        "Name": user.Name,
-        "Email": user.Email,
-        "Userrole": user.Userrole,
-        "UserId": user.UserId,
-        "ProgramCode": user.ProgramCode,
-        "ProgramName": user.ProgramName,
-        "Batch_Name": user.Batch_Name,
-        "PhotoPath": user.Photo_path,
-        "QRCodePath": user.QRCode_path,
-        "pwd": user.Password,
-        "coursestatus": user.CourseStatus,
-        "adminssion_date": user.admission_date
-        
-    })
-    print(students);
-    total_students = len(students)
-    total_ongoing = sum(
+
+    try:
+        wsdl = "https://technovas.in/WebService.asmx?WSDL"
+        client = Client(wsdl)
+        users = client.service.GetAllUsers()
+        students = []
+        for user in users:
+            students.append({
+                "Id": user.Id,
+                "Name": user.Name,
+                "Email": user.Email,
+                "Userrole": user.Userrole,
+                "UserId": user.UserId,
+                "ProgramCode": user.ProgramCode,
+                "ProgramName": user.ProgramName,
+                "Batch_Name": user.Batch_Name,
+                "PhotoPath": user.Photo_path,
+                "QRCodePath": user.QRCode_path,
+                "pwd": user.Password,
+                "coursestatus": user.CourseStatus,
+                "adminssion_date": user.admission_date
+            
+        })
+        print(students);
+        total_students = len(students)
+        total_ongoing = sum(
+                1 for student in students
+                if student.get("coursestatus","").lower()=="ongoing"
+            )
+
+        total_completed = sum(
             1 for student in students
-            if student.get("coursestatus","").lower()=="ongoing"
+            if student.get("coursestatus", "").lower() == "completed"
         )
 
-    total_completed = sum(
-        1 for student in students
-        if student.get("coursestatus", "").lower() == "completed"
-    )
+        session['all_users'] = students
+        return render_template('student_list.html', students=students)
 
-    session['all_users'] = students
-    return render_template('student_list.html', students=students)
+        """
+        return render_template('student_list.html', students=students,
+        total_students=total_students,
+        total_completed=total_completed,
+        total_ongoing=total_ongoing)
+        """
+    except Exception as e:
 
-    """
-    return render_template('student_list.html', students=students,
-    total_students=total_students,
-    total_completed=total_completed,
-    total_ongoing=total_ongoing)
-    """
+        print("====================================")
+        print("MANAGEUSER ERROR")
+        print("====================================")
+        print(str(e))
+        traceback.print_exc()
+        print("====================================")
 
+        return f"""
+        <h2>Manage User Error</h2>
+        <pre>{str(e)}</pre>
+        """, 500
 
 @app.route('/certifieduser/<int:id>')
 def certifieduser(id):
