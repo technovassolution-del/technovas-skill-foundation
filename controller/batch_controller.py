@@ -1526,32 +1526,28 @@ def format_time_for_input(value):
     return ""
 
 
-# =========================================================
-# STUDENT COMPLETE BATCH SCHEDULE
-# =========================================================
-
-@batch_bp.route('/student/<int:student_id>/schedule')
-def student_batch_schedule(student_id):
+@batch_bp.route('/student/<int:enrollment_id>/schedule')
+def student_batch_schedule(enrollment_id):
 
     db = None
     cursor = None
 
     try:
 
-        # -------------------------------------------------
+        # =====================================================
         # DATABASE CONNECTION
-        # -------------------------------------------------
+        # =====================================================
 
         db = get_db_connection()
 
         cursor = db.cursor(dictionary=True)
 
-        # -------------------------------------------------
-        # GET STUDENT INFORMATION
-        # IMPORTANT:
-        # Do NOT use email because your users table
-        # does not contain an email column.
-        # -------------------------------------------------
+        # =====================================================
+        # STEP 1
+        # FIND STUDENT USING ENROLLMENT ID
+        #
+        # DO NOT USE users.id HERE
+        # =====================================================
 
         cursor.execute(
             """
@@ -1561,31 +1557,73 @@ def student_batch_schedule(student_id):
                 userid,
                 enrollmentid,
                 programcode,
-                programname
+                programname,
+                role
             FROM users
             WHERE enrollmentid = %s
               AND role = 'STUDENT'
             LIMIT 1
             """,
-            (student_id,)
+            (enrollment_id,)
         )
 
         student = cursor.fetchone()
 
-        # -------------------------------------------------
+        # =====================================================
         # STUDENT NOT FOUND
-        # -------------------------------------------------
+        # =====================================================
 
         if not student:
 
+            print()
+            print("=" * 70)
+            print("STUDENT NOT FOUND")
+            print("=" * 70)
+            print("Enrollment ID:", enrollment_id)
+            print("=" * 70)
+            print()
+
             return jsonify({
+
                 "success": False,
-                "message": "Student not found."
+
+                "message":
+                    f"Student not found for Enrollment ID: {enrollment_id}",
+
+                "enrollment_id":
+                    enrollment_id
+
             }), 404
 
-        # -------------------------------------------------
-        # GET ALL ACTIVE BATCHES ASSIGNED TO STUDENT
-        # -------------------------------------------------
+        # =====================================================
+        # DEBUG
+        # =====================================================
+
+        print()
+        print("=" * 70)
+        print("STUDENT SCHEDULE REQUEST")
+        print("=" * 70)
+        print("Enrollment ID:", enrollment_id)
+        print("User DB ID:", student.get("id"))
+        print("Student Name:", student.get("name"))
+        print("User ID:", student.get("userid"))
+        print("=" * 70)
+        print()
+
+        # =====================================================
+        # STEP 2
+        # GET ACTIVE BATCHES
+        #
+        # IMPORTANT:
+        #
+        # batch_students.student_id
+        # contains ENROLLMENT ID
+        #
+        # Therefore:
+        #
+        # bs.student_id = users.enrollmentid
+        #
+        # =====================================================
 
         cursor.execute(
             """
@@ -1627,68 +1665,113 @@ def student_batch_schedule(student_id):
 
             ORDER BY
 
-                CASE UPPER(b.day_of_week)
+                CASE
+                    WHEN UPPER(TRIM(b.day_of_week)) = 'MONDAY'
+                        THEN 1
 
-                    WHEN 'MONDAY' THEN 1
-                    WHEN 'TUESDAY' THEN 2
-                    WHEN 'WEDNESDAY' THEN 3
-                    WHEN 'THURSDAY' THEN 4
-                    WHEN 'FRIDAY' THEN 5
-                    WHEN 'SATURDAY' THEN 6
-                    WHEN 'SUNDAY' THEN 7
+                    WHEN UPPER(TRIM(b.day_of_week)) = 'TUESDAY'
+                        THEN 2
+
+                    WHEN UPPER(TRIM(b.day_of_week)) = 'WEDNESDAY'
+                        THEN 3
+
+                    WHEN UPPER(TRIM(b.day_of_week)) = 'THURSDAY'
+                        THEN 4
+
+                    WHEN UPPER(TRIM(b.day_of_week)) = 'FRIDAY'
+                        THEN 5
+
+                    WHEN UPPER(TRIM(b.day_of_week)) = 'SATURDAY'
+                        THEN 6
+
+                    WHEN UPPER(TRIM(b.day_of_week)) = 'SUNDAY'
+                        THEN 7
 
                     ELSE 8
-
                 END,
 
-                b.start_time
+                b.start_time ASC
 
             """,
-            (student_id,)
+            (student["enrollmentid"],)
         )
 
         schedules = cursor.fetchall()
 
-        # -------------------------------------------------
-        # FORMAT SCHEDULE DATA
-        # -------------------------------------------------
+        # =====================================================
+        # DEBUG BATCH COUNT
+        # =====================================================
+
+        print(
+            "Active batches found:",
+            len(schedules)
+        )
+
+        # =====================================================
+        # FORMAT SCHEDULE
+        # =====================================================
 
         formatted_schedules = []
 
         for schedule in schedules:
 
+            day_of_week = (
+                str(
+                    schedule.get("day_of_week")
+                    or "-"
+                )
+                .strip()
+                .upper()
+            )
+
+            start_time = (
+                schedule.get("start_time")
+                or "-"
+            )
+
+            end_time = (
+                schedule.get("end_time")
+                or "-"
+            )
+
             formatted_schedules.append({
 
-                "batch_id": schedule.get("batch_id"),
+                "batch_id":
+                    schedule.get("batch_id"),
 
-                "batch_code": schedule.get("batch_code") or "-",
+                "batch_code":
+                    schedule.get("batch_code")
+                    or "-",
 
-                "batch_name": schedule.get("batch_name") or "-",
+                "batch_name":
+                    schedule.get("batch_name")
+                    or "-",
 
-                "course_name": schedule.get("course_name") or "-",
+                "course_name":
+                    schedule.get("course_name")
+                    or "-",
 
-                "day_of_week": (
-                    str(schedule.get("day_of_week") or "-")
-                    .upper()
-                ),
+                "day_of_week":
+                    day_of_week,
 
-                "start_time": schedule.get("start_time") or "-",
+                "start_time":
+                    start_time,
 
-                "end_time": schedule.get("end_time") or "-",
+                "end_time":
+                    end_time,
 
-                "class_time": (
-                    f"{schedule.get('start_time') or '-'}"
-                    f" - "
-                    f"{schedule.get('end_time') or '-'}"
-                ),
+                "class_time":
+                    f"{start_time} - {end_time}",
 
-                "status": schedule.get("status") or "ACTIVE"
+                "status":
+                    schedule.get("status")
+                    or "ACTIVE"
 
             })
 
-        # -------------------------------------------------
-        # FINAL RESPONSE
-        # -------------------------------------------------
+        # =====================================================
+        # FINAL JSON RESPONSE
+        # =====================================================
 
         return jsonify({
 
@@ -1696,65 +1779,76 @@ def student_batch_schedule(student_id):
 
             "student": {
 
-                "id": student.get("id"),
+                "id":
+                    student.get("id"),
 
-                "name": student.get("name") or "-",
+                "name":
+                    student.get("name")
+                    or "-",
 
-                "userid": student.get("userid") or "-",
+                "userid":
+                    student.get("userid")
+                    or "-",
 
-                "enrollmentid": (
-                    student.get("enrollmentid") or "-"
-                ),
+                "enrollmentid":
+                    student.get("enrollmentid")
+                    or "-",
 
-                "programcode": (
-                    student.get("programcode") or "-"
-                ),
+                "programcode":
+                    student.get("programcode")
+                    or "-",
 
-                "programname": (
-                    student.get("programname") or "-"
-                )
+                "programname":
+                    student.get("programname")
+                    or "-",
+
+                "role":
+                    student.get("role")
+                    or "STUDENT"
 
             },
 
-            "total_batches": len(formatted_schedules),
+            "total_batches":
+                len(formatted_schedules),
 
-            "schedules": formatted_schedules
+            "schedules":
+                formatted_schedules
 
         })
 
-    # -----------------------------------------------------
+    # =========================================================
     # ERROR HANDLING
-    # -----------------------------------------------------
+    # =========================================================
 
     except Exception as e:
 
-        print(
-            "=============================================="
-        )
-
-        print(
-            "STUDENT BATCH SCHEDULE ERROR:"
-        )
-
-        print(
-            str(e)
-        )
-
-        print(
-            "=============================================="
-        )
+        print()
+        print("=" * 70)
+        print("STUDENT BATCH SCHEDULE ERROR")
+        print("=" * 70)
+        print("Enrollment ID:", enrollment_id)
+        print("Error:", str(e))
+        print("=" * 70)
+        print()
 
         return jsonify({
 
             "success": False,
 
-            "message": str(e)
+            "message":
+                "Unable to load student schedule.",
+
+            "error":
+                str(e),
+
+            "enrollment_id":
+                enrollment_id
 
         }), 500
 
-    # -----------------------------------------------------
+    # =========================================================
     # CLOSE DATABASE
-    # -----------------------------------------------------
+    # =========================================================
 
     finally:
 
