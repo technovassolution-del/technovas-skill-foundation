@@ -481,15 +481,15 @@ def manageuser():
             if student.get("coursestatus", "").lower() == "completed"
         )
 
-        session['all_users'] = students
-        return render_template('student_list.html', students=students)
+        
+        #return render_template('student_list.html', students=students)
 
-        """
+        
         return render_template('student_list.html', students=students,
         total_students=total_students,
         total_completed=total_completed,
         total_ongoing=total_ongoing)
-        """
+        
     except Exception as e:
 
         print("====================================")
