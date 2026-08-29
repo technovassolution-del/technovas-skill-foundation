@@ -443,15 +443,13 @@ def upload():
         "file": file.filename
     })
 
-@app.route('/manageuser')
-def manageuser():
+@app.route('/studentlist')
+def studentlist():
     wsdl = "https://technovas.in/WebService.asmx?WSDL"
     client = Client(wsdl)
     users = client.service.GetAllUsers()
     students = []
-
     for user in users:
-
       students.append({
         "Id": user.Id,
         "Name": user.Name,
@@ -469,9 +467,7 @@ def manageuser():
         
     })
     print(students);
-
     total_students = len(students)
-
     total_ongoing = sum(
             1 for student in students
             if student.get("coursestatus","").lower()=="ongoing"
@@ -528,11 +524,6 @@ def certifieduser(id):
          print("No certified user found with ID:", id)  # Debugging line to check if no user is found
     print("Selected user:", selected_user)  # Debugging line to check the received ID
     return render_template('certificate_details.html', users=selected_user)
-
-
-
-    
-     
 
 
 if __name__ == '__main__':
