@@ -1,12 +1,11 @@
-from multiprocessing.dummy.connection import Client
-
 from flask import (
     Blueprint,
     render_template,
     request,
     redirect,
     url_for,
-    flash
+    flash,
+    jsonify
 )
 
 from config import get_db_connection
@@ -514,25 +513,23 @@ def view_batch(batch_id):
         # Only users whose role = STUDENT
         # ==================================================
 
-        
-        
-        
-        wsdl = "https://technovas.in/WebService.asmx?WSDL"
-        client = Client(wsdl)
-        users = client.service.GetAllUsers()
-        students = []
-        for user in users:
-            students.append({
-                        "Id": user.Id,
-                        "Name": user.Name
-                        
-                    
-                })
+        cursor.execute(
+            """
+            SELECT
+                id,
+                name,
+                userid
 
+            FROM users
 
+            WHERE role = 'STUDENT'
 
-        #all_students = cursor.fetchall()
-        all_students=students;
+            ORDER BY
+                name ASC
+            """
+        )
+
+        all_students = cursor.fetchall()
 
         # ==================================================
         # REMOVE STUDENTS ALREADY ASSIGNED TO THIS BATCH
@@ -1527,3 +1524,250 @@ def format_time_for_input(value):
         return value
 
     return ""
+
+
+# =========================================================
+# STUDENT COMPLETE BATCH SCHEDULE
+# =========================================================
+
+@batch_bp.route('/student/<int:student_id>/schedule')
+def student_batch_schedule(student_id):
+
+    db = None
+    cursor = None
+
+    try:
+
+        # -------------------------------------------------
+        # DATABASE CONNECTION
+        # -------------------------------------------------
+
+        db = get_db_connection()
+
+        cursor = db.cursor(dictionary=True)
+
+        # -------------------------------------------------
+        # GET STUDENT INFORMATION
+        # IMPORTANT:
+        # Do NOT use email because your users table
+        # does not contain an email column.
+        # -------------------------------------------------
+
+        cursor.execute(
+            """
+            SELECT
+                id,
+                name,
+                userid,
+                enrollmentid,
+                programcode,
+                programname
+            FROM users
+            WHERE id = %s
+              AND role = 'STUDENT'
+            LIMIT 1
+            """,
+            (student_id,)
+        )
+
+        student = cursor.fetchone()
+
+        # -------------------------------------------------
+        # STUDENT NOT FOUND
+        # -------------------------------------------------
+
+        if not student:
+
+            return jsonify({
+                "success": False,
+                "message": "Student not found."
+            }), 404
+
+        # -------------------------------------------------
+        # GET ALL ACTIVE BATCHES ASSIGNED TO STUDENT
+        # -------------------------------------------------
+
+        cursor.execute(
+            """
+            SELECT
+
+                b.id AS batch_id,
+
+                b.batch_code,
+
+                b.batch_name,
+
+                b.course_name,
+
+                b.day_of_week,
+
+                TIME_FORMAT(
+                    b.start_time,
+                    '%h:%i %p'
+                ) AS start_time,
+
+                TIME_FORMAT(
+                    b.end_time,
+                    '%h:%i %p'
+                ) AS end_time,
+
+                b.status
+
+            FROM batch_students bs
+
+            INNER JOIN batches b
+                ON b.id = bs.batch_id
+
+            WHERE
+                bs.student_id = %s
+
+                AND bs.status = 'ACTIVE'
+
+                AND b.status = 'ACTIVE'
+
+            ORDER BY
+
+                CASE UPPER(b.day_of_week)
+
+                    WHEN 'MONDAY' THEN 1
+                    WHEN 'TUESDAY' THEN 2
+                    WHEN 'WEDNESDAY' THEN 3
+                    WHEN 'THURSDAY' THEN 4
+                    WHEN 'FRIDAY' THEN 5
+                    WHEN 'SATURDAY' THEN 6
+                    WHEN 'SUNDAY' THEN 7
+
+                    ELSE 8
+
+                END,
+
+                b.start_time
+
+            """,
+            (student_id,)
+        )
+
+        schedules = cursor.fetchall()
+
+        # -------------------------------------------------
+        # FORMAT SCHEDULE DATA
+        # -------------------------------------------------
+
+        formatted_schedules = []
+
+        for schedule in schedules:
+
+            formatted_schedules.append({
+
+                "batch_id": schedule.get("batch_id"),
+
+                "batch_code": schedule.get("batch_code") or "-",
+
+                "batch_name": schedule.get("batch_name") or "-",
+
+                "course_name": schedule.get("course_name") or "-",
+
+                "day_of_week": (
+                    str(schedule.get("day_of_week") or "-")
+                    .upper()
+                ),
+
+                "start_time": schedule.get("start_time") or "-",
+
+                "end_time": schedule.get("end_time") or "-",
+
+                "class_time": (
+                    f"{schedule.get('start_time') or '-'}"
+                    f" - "
+                    f"{schedule.get('end_time') or '-'}"
+                ),
+
+                "status": schedule.get("status") or "ACTIVE"
+
+            })
+
+        # -------------------------------------------------
+        # FINAL RESPONSE
+        # -------------------------------------------------
+
+        return jsonify({
+
+            "success": True,
+
+            "student": {
+
+                "id": student.get("id"),
+
+                "name": student.get("name") or "-",
+
+                "userid": student.get("userid") or "-",
+
+                "enrollmentid": (
+                    student.get("enrollmentid") or "-"
+                ),
+
+                "programcode": (
+                    student.get("programcode") or "-"
+                ),
+
+                "programname": (
+                    student.get("programname") or "-"
+                )
+
+            },
+
+            "total_batches": len(formatted_schedules),
+
+            "schedules": formatted_schedules
+
+        })
+
+    # -----------------------------------------------------
+    # ERROR HANDLING
+    # -----------------------------------------------------
+
+    except Exception as e:
+
+        print(
+            "=============================================="
+        )
+
+        print(
+            "STUDENT BATCH SCHEDULE ERROR:"
+        )
+
+        print(
+            str(e)
+        )
+
+        print(
+            "=============================================="
+        )
+
+        return jsonify({
+
+            "success": False,
+
+            "message": str(e)
+
+        }), 500
+
+    # -----------------------------------------------------
+    # CLOSE DATABASE
+    # -----------------------------------------------------
+
+    finally:
+
+        if cursor:
+
+            try:
+                cursor.close()
+            except Exception:
+                pass
+
+        if db:
+
+            try:
+                db.close()
+            except Exception:
+                pass

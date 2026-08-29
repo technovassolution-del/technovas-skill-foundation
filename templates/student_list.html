@@ -1,512 +1,3195 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Students</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <style>
+    <title>All Students | Batch Schedule</title>
 
-        :root {
-            --ink: #1B2A4A;
-            --ink-soft: #4A5A7A;
-            --paper: #F6F2E8;
-            --paper-dark: #ECE4D2;
-            --rule: #C9BFA4;
-            --brass: #8A6A2F;
-            --brass-light: #EFE3C4;
-            --brick: #A23F32;
-            --brick-light: #F3E1DA;
-            --white: #FFFCF5;
-        }
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
 
-        body {
-            font-family: 'IBM Plex Sans', Arial, sans-serif;
-            background: var(--paper);
-            background-image:
-                repeating-linear-gradient(
-                    to bottom,
-                    transparent,
-                    transparent 39px,
-                    rgba(180, 160, 120, 0.10) 40px
-                );
-            color: var(--ink);
-            padding: 40px 30px 60px;
-        }
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet"
+    >
 
-        .container {
-            max-width: 1500px;
-            margin: auto;
-        }
 
-        /* ---------- Header: ledger cover plate ---------- */
+<style>
 
-        .header {
-            background: var(--ink);
-            color: var(--white);
-            padding: 34px 40px;
-            border-radius: 4px 4px 0 0;
-            position: relative;
-            overflow: hidden;
-            border-bottom: 5px double var(--brass);
-        }
+/* =========================================================
+   ROOT
+========================================================= */
 
-        .header::before {
-            content: "";
-            position: absolute;
-            top: 0; right: 0;
-            width: 220px; height: 220px;
-            background: radial-gradient(circle at top right, rgba(138,106,47,0.35), transparent 70%);
-            pointer-events: none;
-        }
+:root {
 
-        .header .eyebrow {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 11px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--brass-light);
-            margin-bottom: 10px;
-        }
+    --ink: #1B2A4A;
+    --ink-dark: #10192D;
+    --ink-soft: #52627F;
 
-        .header h1 {
-            font-family: 'Fraunces', serif;
-            font-weight: 600;
-            font-size: 40px;
-            letter-spacing: 0.2px;
-        }
+    --paper: #F6F2E8;
+    --paper-dark: #ECE4D2;
 
-        .header p {
-            font-style: italic;
-            font-family: 'Fraunces', serif;
-            font-weight: 500;
-            color: #CBD3E5;
-            margin-top: 6px;
-            font-size: 15px;
-        }
+    --white: #FFFCF5;
 
-        /* ---------- Top bar: index-card search slot ---------- */
+    --rule: #C9BFA4;
 
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            background: var(--paper-dark);
-            padding: 18px 40px;
-            border-left: 1px solid var(--rule);
-            border-right: 1px solid var(--rule);
-        }
+    --brass: #8A6A2F;
+    --brass-light: #EFE3C4;
 
-        .search-box {
-            width: 360px;
-            max-width: 100%;
-            position: relative;
-        }
+    --blue: #2563EB;
+    --blue-light: #DBEAFE;
 
-        .search-box::before {
-            content: "SEEK";
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 10px;
-            letter-spacing: 2px;
-            color: var(--ink-soft);
-            pointer-events: none;
-        }
+    --green: #15803D;
+    --green-light: #DCFCE7;
 
-        .search-box input {
-            width: 100%;
-            padding: 12px 15px 12px 68px;
-            border: 1px solid var(--rule);
-            background: var(--white);
-            border-radius: 3px;
-            outline: none;
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 14px;
-            color: var(--ink);
-        }
+    --red: #B42318;
+    --red-light: #FEE2E2;
 
-        .search-box input:focus {
-            border-color: var(--brass);
-            box-shadow: 0 0 0 3px var(--brass-light);
-        }
+    --purple: #7C3AED;
+    --purple-light: #EDE9FE;
 
-        .student-count {
-            font-family: 'IBM Plex Mono', monospace;
-            background: var(--ink);
-            color: var(--brass-light);
-            padding: 12px 20px;
-            border-radius: 3px;
-            font-size: 13px;
-            letter-spacing: 1px;
-            white-space: nowrap;
-        }
+}
 
-        .student-count strong {
-            color: var(--white);
-            font-size: 15px;
-        }
 
-        /* ---------- Table: the ledger body ---------- */
+/* =========================================================
+   RESET
+========================================================= */
 
-        .table-container {
-            background: var(--white);
-            border-radius: 0 0 4px 4px;
-            overflow-x: auto;
-            border: 1px solid var(--rule);
-            border-top: none;
-            box-shadow: 0 12px 30px rgba(27, 42, 74, 0.08);
-        }
+* {
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 1240px;
-        }
+    margin: 0;
+    padding: 0;
 
-        thead tr {
-            border-bottom: 3px double var(--brass);
-        }
+    box-sizing: border-box;
 
-        th {
-            background: var(--ink);
-            color: var(--brass-light);
-            padding: 15px 14px;
-            text-align: left;
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 11px;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            font-weight: 500;
-        }
+}
 
-        td {
-            padding: 15px 14px;
-            border-bottom: 1px solid #EAE2CC;
-            font-size: 14px;
-            vertical-align: middle;
-        }
 
-        tbody tr:nth-child(even) {
-            background: #FBF8F0;
-        }
+/* =========================================================
+   BODY
+========================================================= */
 
-        tbody tr:hover {
-            background: var(--brass-light);
-        }
+body {
 
-        .entry-no {
-            font-family: 'IBM Plex Mono', monospace;
-            color: var(--brass);
-            font-size: 13px;
-        }
+    min-height: 100vh;
 
-        .entry-no::before {
-            content: "№ ";
-            color: var(--rule);
-        }
+    font-family:
+        'IBM Plex Sans',
+        Arial,
+        sans-serif;
 
-        td strong {
-            font-family: 'Fraunces', serif;
-            font-weight: 600;
-            font-size: 15.5px;
-            color: var(--ink);
-        }
+    background:
+        var(--paper);
 
-        .mono-field {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 13px;
-            color: var(--ink-soft);
-        }
+    color:
+        var(--ink);
 
-        .role-tag {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 11.5px;
-            letter-spacing: 0.5px;
-            color: var(--ink-soft);
-            text-transform: capitalize;
-        }
+    padding:
+        28px
+        25px
+        60px;
 
-        /* ---------- Status: registrar ink stamp ---------- */
+}
 
-        .status {
-            display: inline-block;
-            padding: 5px 13px;
-            border-radius: 20px;
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 10.5px;
-            font-weight: 600;
-            letter-spacing: 1.8px;
-            text-transform: uppercase;
-            border: 1.5px dashed currentColor;
-            transform: rotate(-2deg);
-        }
 
-        .active {
-            background: var(--brass-light);
-            color: var(--brass);
-        }
+/* =========================================================
+   CONTAINER
+========================================================= */
 
-        .inactive {
-            background: var(--brick-light);
-            color: var(--brick);
-            transform: rotate(2deg);
-        }
+.container {
 
-        .no-data {
-            text-align: center;
-            padding: 60px 40px;
-            color: var(--ink-soft);
-            font-family: 'Fraunces', serif;
-            font-style: italic;
-            font-size: 16px;
-        }
+    width: 100%;
 
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 18px;
-            background: transparent;
-            color: var(--ink);
-            text-decoration: none;
-            border: 1px solid var(--rule);
-            border-radius: 3px;
-            margin-bottom: 18px;
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 12.5px;
-            letter-spacing: 0.5px;
-            transition: background 0.15s ease, border-color 0.15s ease;
-        }
+    max-width:
+        1550px;
 
-        .back-btn:hover {
-            background: var(--ink);
-            color: var(--white);
-            border-color: var(--ink);
-        }
+    margin:
+        0 auto;
 
-        @media (max-width: 700px) {
-            body { padding: 20px 14px 40px; }
-            .header { padding: 26px 22px; }
-            .header h1 { font-size: 30px; }
-            .top-bar { padding: 16px 22px; }
-        }
+}
 
-    </style>
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+.back-btn {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        8px;
+
+    padding:
+        11px
+        18px;
+
+    margin-bottom:
+        20px;
+
+    text-decoration:
+        none;
+
+    color:
+        var(--ink);
+
+    background:
+        transparent;
+
+    border:
+        1px solid
+        var(--rule);
+
+    border-radius:
+        5px;
+
+    font-family:
+        'IBM Plex Mono',
+        monospace;
+
+    font-size:
+        12px;
+
+    letter-spacing:
+        .5px;
+
+    transition:
+        all .2s ease;
+
+}
+
+
+.back-btn:hover {
+
+    background:
+        var(--ink);
+
+    color:
+        white;
+
+    border-color:
+        var(--ink);
+
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.header {
+
+    position:
+        relative;
+
+    overflow:
+        hidden;
+
+    background:
+        var(--ink);
+
+    color:
+        white;
+
+    padding:
+        36px
+        42px;
+
+    border-radius:
+        6px
+        6px
+        0
+        0;
+
+    border-bottom:
+        5px double
+        var(--brass);
+
+}
+
+
+.header::after {
+
+    content:
+        "";
+
+    position:
+        absolute;
+
+    right:
+        -80px;
+
+    top:
+        -100px;
+
+    width:
+        330px;
+
+    height:
+        330px;
+
+    border-radius:
+        50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(138,106,47,.35),
+            transparent 68%
+        );
+
+}
+
+
+.eyebrow {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    font-family:
+        'IBM Plex Mono',
+        monospace;
+
+    font-size:
+        11px;
+
+    letter-spacing:
+        3px;
+
+    text-transform:
+        uppercase;
+
+    color:
+        var(--brass-light);
+
+    margin-bottom:
+        10px;
+
+}
+
+
+.header h1 {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    font-family:
+        'Fraunces',
+        serif;
+
+    font-size:
+        42px;
+
+    font-weight:
+        600;
+
+}
+
+
+.header p {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    margin-top:
+        7px;
+
+    color:
+        #CBD3E5;
+
+    font-family:
+        'Fraunces',
+        serif;
+
+    font-size:
+        15px;
+
+    font-style:
+        italic;
+
+}
+
+
+/* =========================================================
+   TOP BAR
+========================================================= */
+
+.top-bar {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        20px;
+
+    flex-wrap:
+        wrap;
+
+    padding:
+        20px
+        42px;
+
+    background:
+        var(--paper-dark);
+
+    border-left:
+        1px solid
+        var(--rule);
+
+    border-right:
+        1px solid
+        var(--rule);
+
+}
+
+
+.search-box {
+
+    position:
+        relative;
+
+    width:
+        390px;
+
+    max-width:
+        100%;
+
+}
+
+
+.search-box::before {
+
+    content:
+        "SEEK";
+
+    position:
+        absolute;
+
+    left:
+        16px;
+
+    top:
+        50%;
+
+    transform:
+        translateY(-50%);
+
+    font-family:
+        'IBM Plex Mono',
+        monospace;
+
+    font-size:
+        10px;
+
+    letter-spacing:
+        2px;
+
+    color:
+        var(--ink-soft);
+
+    pointer-events:
+        none;
+
+}
+
+
+.search-box input {
+
+    width:
+        100%;
+
+    padding:
+        13px
+        16px
+        13px
+        70px;
+
+    outline:
+        none;
+
+    border:
+        1px solid
+        var(--rule);
+
+    border-radius:
+        5px;
+
+    background:
+        var(--white);
+
+    color:
+        var(--ink);
+
+    font-family:
+        'IBM Plex Mono',
+        monospace;
+
+    font-size:
+        13px;
+
+    transition:
+        all .2s ease;
+
+}
+
+
+.search-box input:focus {
+
+    border-color:
+        var(--brass);
+
+    box-shadow:
+        0 0 0 3px
+        var(--brass-light);
+
+}
+
+
+.student-count {
+
+    padding:
+        12px
+        20px;
+
+    border-radius:
+        5px;
+
+    background:
+        var(--ink);
+
+    color:
+        var(--brass-light);
+
+    font-family:
+        'IBM Plex Mono',
+        monospace;
+
+    font-size:
+        12px;
+
+    letter-spacing:
+        1.5px;
+
+}
+
+
+.student-count strong {
+
+    color:
+        white;
+
+    font-size:
+        15px;
+
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.table-container {
+
+    overflow-x:
+        auto;
+
+    background:
+        var(--white);
+
+    border:
+        1px solid
+        var(--rule);
+
+    border-top:
+        none;
+
+    border-radius:
+        0
+        0
+        7px
+        7px;
+
+    box-shadow:
+        0 15px 35px
+        rgba(27,42,74,.08);
+
+}
+
+
+table {
+
+    width:
+        100%;
+
+    min-width:
+        1400px;
+
+    border-collapse:
+        collapse;
+
+}
+
+
+thead tr {
+
+    border-bottom:
+        3px double
+        var(--brass);
+
+}
+
+
+th {
+
+    padding:
+        16px
+        14px;
+
+    text-align:
+        left;
+
+    background:
+        var(--ink);
+
+    color:
+        var(--brass-light);
+
+    font-family:
+        'IBM Plex Mono',
+        monospace;
+
+    font-size:
+        10.5px;
+
+    font-weight:
+        500;
+
+    letter-spacing:
+        1.5px;
+
+    text-transform:
+        uppercase;
+
+}
+
+
+td {
+
+    padding:
+        15px
+        14px;
+
+    border-bottom:
+        1px solid
+        #EAE2CC;
+
+    vertical-align:
+        middle;
+
+    font-size:
+        13.5px;
+
+}
+
+
+tbody tr:nth-child(even) {
+
+    background:
+        #FBF8F0;
+
+}
+
+
+tbody tr:hover {
+
+    background:
+        var(--brass-light);
+
+}
+
+
+.entry-no {
+
+    font-family:
+        'IBM Plex Mono',
+        monospace;
+
+    color:
+        var(--brass);
+
+}
+
+
+.student-name {
+
+    font-family:
+        'Fraunces',
+        serif;
+
+    font-size:
+        16px;
+
+    font-weight:
+        600;
+
+    color:
+        var(--ink);
+
+}
+
+
+.mono-field {
+
+    font-family:
+        'IBM Plex Mono',
+        monospace;
+
+    font-size:
+        12px;
+
+    color:
+        var(--ink-soft);
+
+}
+
+
+/* =========================================================
+   BATCH BUTTON
+========================================================= */
+
+.batch-link {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    gap:
+        7px;
+
+    min-width:
+        130px;
+
+    padding:
+        9px
+        14px;
+
+    border:
+        none;
+
+    border-radius:
+        6px;
+
+    background:
+        var(--blue-light);
+
+    color:
+        #1D4ED8;
+
+    cursor:
+        pointer;
+
+    font-family:
+        'IBM Plex Mono',
+        monospace;
+
+    font-size:
+        11px;
+
+    font-weight:
+        600;
+
+    transition:
+        all .2s ease;
+
+}
+
+
+.batch-link:hover {
+
+    background:
+        var(--blue);
+
+    color:
+        white;
+
+    transform:
+        translateY(-1px);
+
+    box-shadow:
+        0 6px 16px
+        rgba(37,99,235,.2);
+
+}
+
+
+.batch-link.no-batch {
+
+    background:
+        #F3F4F6;
+
+    color:
+        #6B7280;
+
+    cursor:
+        default;
+
+}
+
+
+.batch-link.no-batch:hover {
+
+    background:
+        #F3F4F6;
+
+    color:
+        #6B7280;
+
+    transform:
+        none;
+
+    box-shadow:
+        none;
+
+}
+
+
+.batch-count {
+
+    margin-left:
+        5px;
+
+    padding:
+        2px
+        6px;
+
+    border-radius:
+        10px;
+
+    background:
+        rgba(37,99,235,.12);
+
+    font-size:
+        10px;
+
+}
+
+
+.batch-link:hover .batch-count {
+
+    background:
+        rgba(255,255,255,.2);
+
+}
+
+
+/* =========================================================
+   ROLE
+========================================================= */
+
+.role-tag {
+
+    font-family:
+        'IBM Plex Mono',
+        monospace;
+
+    font-size:
+        11px;
+
+    text-transform:
+        uppercase;
+
+    letter-spacing:
+        .8px;
+
+    color:
+        var(--ink-soft);
+
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.status {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        6px;
+
+    padding:
+        6px
+        12px;
+
+    border-radius:
+        20px;
+
+    font-family:
+        'IBM Plex Mono',
+        monospace;
+
+    font-size:
+        10px;
+
+    font-weight:
+        600;
+
+    letter-spacing:
+        1px;
+
+    text-transform:
+        uppercase;
+
+}
+
+
+.status.active {
+
+    color:
+        var(--green);
+
+    background:
+        var(--green-light);
+
+}
+
+
+.status.inactive {
+
+    color:
+        var(--red);
+
+    background:
+        var(--red-light);
+
+}
+
+
+/* =========================================================
+   EMPTY TABLE
+========================================================= */
+
+.no-data {
+
+    text-align:
+        center;
+
+    padding:
+        70px
+        30px;
+
+    color:
+        var(--ink-soft);
+
+}
+
+
+.no-data-icon {
+
+    font-size:
+        45px;
+
+    margin-bottom:
+        10px;
+
+}
+
+
+.no-data h3 {
+
+    font-family:
+        'Fraunces',
+        serif;
+
+    font-size:
+        22px;
+
+    margin-bottom:
+        5px;
+
+}
+
+
+/* =========================================================
+   MODAL OVERLAY
+========================================================= */
+
+.modal-overlay {
+
+    position:
+        fixed;
+
+    inset:
+        0;
+
+    z-index:
+        99999;
+
+    display:
+        none;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    padding:
+        20px;
+
+    background:
+        rgba(10,18,35,.76);
+
+    backdrop-filter:
+        blur(8px);
+
+}
+
+
+.modal-overlay.show {
+
+    display:
+        flex;
+
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.schedule-modal {
+
+    width:
+        100%;
+
+    max-width:
+        1000px;
+
+    max-height:
+        92vh;
+
+    overflow-y:
+        auto;
+
+    background:
+        var(--white);
+
+    border-radius:
+        15px;
+
+    box-shadow:
+        0 35px 100px
+        rgba(0,0,0,.4);
+
+    animation:
+        modalIn .22s ease;
+
+}
+
+
+@keyframes modalIn {
+
+    from {
+
+        opacity:
+            0;
+
+        transform:
+            translateY(25px)
+            scale(.97);
+
+    }
+
+    to {
+
+        opacity:
+            1;
+
+        transform:
+            translateY(0)
+            scale(1);
+
+    }
+
+}
+
+
+/* =========================================================
+   MODAL HEADER
+========================================================= */
+
+.modal-header {
+
+    display:
+        flex;
+
+    align-items:
+        flex-start;
+
+    justify-content:
+        space-between;
+
+    gap:
+        20px;
+
+    padding:
+        28px
+        32px;
+
+    background:
+        var(--ink);
+
+    color:
+        white;
+
+}
+
+
+.modal-title-area h2 {
+
+    font-family:
+        'Fraunces',
+        serif;
+
+    font-size:
+        30px;
+
+    font-weight:
+        600;
+
+}
+
+
+.modal-title-area p {
+
+    margin-top:
+        5px;
+
+    color:
+        #C9D2E4;
+
+    font-size:
+        13px;
+
+}
+
+
+.close-modal {
+
+    width:
+        40px;
+
+    height:
+        40px;
+
+    flex:
+        0 0 auto;
+
+    border:
+        none;
+
+    border-radius:
+        50%;
+
+    background:
+        rgba(255,255,255,.12);
+
+    color:
+        white;
+
+    cursor:
+        pointer;
+
+    font-size:
+        23px;
+
+    transition:
+        all .2s ease;
+
+}
+
+
+.close-modal:hover {
+
+    background:
+        var(--red);
+
+    transform:
+        rotate(90deg);
+
+}
+
+
+/* =========================================================
+   STUDENT INFO
+========================================================= */
+
+.student-info {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:
+        12px;
+
+    padding:
+        20px
+        25px;
+
+    background:
+        var(--paper-dark);
+
+    border-bottom:
+        1px solid
+        var(--rule);
+
+}
+
+
+.info-box {
+
+    padding:
+        13px
+        15px;
+
+    background:
+        var(--white);
+
+    border:
+        1px solid
+        var(--rule);
+
+    border-radius:
+        7px;
+
+}
+
+
+.info-label {
+
+    margin-bottom:
+        5px;
+
+    font-family:
+        'IBM Plex Mono',
+        monospace;
+
+    font-size:
+        9px;
+
+    letter-spacing:
+        1.5px;
+
+    color:
+        var(--ink-soft);
+
+    text-transform:
+        uppercase;
+
+}
+
+
+.info-value {
+
+    font-size:
+        14px;
+
+    font-weight:
+        600;
+
+    color:
+        var(--ink);
+
+}
+
+
+/* =========================================================
+   SCHEDULE HEADER
+========================================================= */
+
+.schedule-heading {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        15px;
+
+    padding:
+        24px
+        28px
+        10px;
+
+}
+
+
+.schedule-heading h3 {
+
+    font-family:
+        'Fraunces',
+        serif;
+
+    font-size:
+        23px;
+
+}
+
+
+.total-badge {
+
+    padding:
+        8px
+        14px;
+
+    border-radius:
+        20px;
+
+    background:
+        var(--green-light);
+
+    color:
+        var(--green);
+
+    font-family:
+        'IBM Plex Mono',
+        monospace;
+
+    font-size:
+        11px;
+
+    font-weight:
+        600;
+
+}
+
+
+/* =========================================================
+   SCHEDULE LIST
+========================================================= */
+
+.schedule-list {
+
+    padding:
+        12px
+        28px
+        30px;
+
+}
+
+
+/* =========================================================
+   SCHEDULE ROW
+========================================================= */
+
+.schedule-row {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        125px
+        110px
+        1fr
+        190px;
+
+    align-items:
+        center;
+
+    gap:
+        16px;
+
+    padding:
+        16px;
+
+    margin-bottom:
+        10px;
+
+    border:
+        1px solid
+        #EAE2CC;
+
+    border-radius:
+        9px;
+
+    background:
+        #FBF8F0;
+
+    transition:
+        all .2s ease;
+
+}
+
+
+.schedule-row:hover {
+
+    transform:
+        translateX(4px);
+
+    box-shadow:
+        0 7px 18px
+        rgba(27,42,74,.08);
+
+}
+
+
+/* =========================================================
+   DAY
+========================================================= */
+
+.day-badge {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    min-width:
+        105px;
+
+    padding:
+        8px
+        10px;
+
+    border-radius:
+        6px;
+
+    background:
+        var(--purple-light);
+
+    color:
+        var(--purple);
+
+    font-family:
+        'IBM Plex Mono',
+        monospace;
+
+    font-size:
+        10px;
+
+    font-weight:
+        600;
+
+}
+
+
+/* =========================================================
+   BATCH CODE
+========================================================= */
+
+.batch-code {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    padding:
+        8px
+        10px;
+
+    border-radius:
+        6px;
+
+    background:
+        var(--blue-light);
+
+    color:
+        #1D4ED8;
+
+    font-family:
+        'IBM Plex Mono',
+        monospace;
+
+    font-size:
+        12px;
+
+    font-weight:
+        600;
+
+}
+
+
+/* =========================================================
+   BATCH DETAILS
+========================================================= */
+
+.batch-name {
+
+    font-size:
+        14px;
+
+    font-weight:
+        600;
+
+    color:
+        var(--ink);
+
+}
+
+
+.course-name {
+
+    margin-top:
+        4px;
+
+    color:
+        var(--ink-soft);
+
+    font-size:
+        11px;
+
+}
+
+
+/* =========================================================
+   TIME
+========================================================= */
+
+.class-time {
+
+    text-align:
+        right;
+
+    font-family:
+        'IBM Plex Mono',
+        monospace;
+
+    font-size:
+        12px;
+
+    font-weight:
+        600;
+
+    color:
+        var(--ink);
+
+}
+
+
+.room-info {
+
+    margin-top:
+        5px;
+
+    text-align:
+        right;
+
+    color:
+        var(--ink-soft);
+
+    font-size:
+        10px;
+
+}
+
+
+/* =========================================================
+   EMPTY SCHEDULE
+========================================================= */
+
+.empty-schedule {
+
+    text-align:
+        center;
+
+    padding:
+        60px
+        25px;
+
+    color:
+        var(--ink-soft);
+
+}
+
+
+.empty-schedule .emoji {
+
+    margin-bottom:
+        12px;
+
+    font-size:
+        45px;
+
+}
+
+
+.empty-schedule h4 {
+
+    margin-bottom:
+        5px;
+
+    font-family:
+        'Fraunces',
+        serif;
+
+    font-size:
+        21px;
+
+}
+
+
+.empty-schedule p {
+
+    font-size:
+        13px;
+
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.loading {
+
+    text-align:
+        center;
+
+    padding:
+        60px
+        20px;
+
+    color:
+        var(--ink-soft);
+
+}
+
+
+.loader {
+
+    width:
+        38px;
+
+    height:
+        38px;
+
+    margin:
+        0 auto 15px;
+
+    border:
+        3px solid
+        #E5E7EB;
+
+    border-top-color:
+        var(--blue);
+
+    border-radius:
+        50%;
+
+    animation:
+        spin .8s linear infinite;
+
+}
+
+
+@keyframes spin {
+
+    to {
+
+        transform:
+            rotate(360deg);
+
+    }
+
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.schedule-error {
+
+    text-align:
+        center;
+
+    padding:
+        50px 25px;
+
+}
+
+
+.schedule-error .error-icon {
+
+    font-size:
+        42px;
+
+    margin-bottom:
+        10px;
+
+}
+
+
+.schedule-error h4 {
+
+    font-family:
+        'Fraunces',
+        serif;
+
+    font-size:
+        21px;
+
+    color:
+        var(--red);
+
+    margin-bottom:
+        6px;
+
+}
+
+
+.schedule-error p {
+
+    color:
+        var(--ink-soft);
+
+    font-family:
+        'IBM Plex Mono',
+        monospace;
+
+    font-size:
+        11px;
+
+    word-break:
+        break-word;
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width: 900px) {
+
+    body {
+
+        padding:
+            18px
+            12px
+            40px;
+
+    }
+
+
+    .header {
+
+        padding:
+            28px
+            24px;
+
+    }
+
+
+    .header h1 {
+
+        font-size:
+            32px;
+
+    }
+
+
+    .top-bar {
+
+        padding:
+            16px
+            22px;
+
+    }
+
+
+    .student-info {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .schedule-row {
+
+        grid-template-columns:
+            1fr;
+
+        gap:
+            9px;
+
+    }
+
+
+    .day-badge {
+
+        width:
+            fit-content;
+
+    }
+
+
+    .class-time,
+    .room-info {
+
+        text-align:
+            left;
+
+    }
+
+}
+
+
+@media(max-width: 600px) {
+
+    .modal-header {
+
+        padding:
+            22px;
+
+    }
+
+
+    .modal-title-area h2 {
+
+        font-size:
+            24px;
+
+    }
+
+
+    .schedule-heading {
+
+        padding:
+            20px
+            20px
+            10px;
+
+    }
+
+
+    .schedule-list {
+
+        padding:
+            10px
+            20px
+            25px;
+
+    }
+
+}
+
+</style>
+
 </head>
+
 
 <body>
 
+
 <div class="container">
 
-    <a href="{{ url_for('admin_dashboard') }}" class="back-btn">
+
+    <!-- =====================================================
+         BACK
+    ====================================================== -->
+
+    <a
+        href="{{ url_for('admin_dashboard') }}"
+        class="back-btn"
+    >
+
         ← Back to Dashboard
+
     </a>
 
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
     <div class="header">
-        <div class="eyebrow">Registrar · Enrollment Records</div>
-        <h1>All Students</h1>
-        <p>Every entry on file, drawn from the users table</p>
+
+        <div class="eyebrow">
+            Registrar · Enrollment Records
+        </div>
+
+        <h1>
+            All Students
+        </h1>
+
+        <p>
+            Every student and their complete batch schedule
+        </p>
+
     </div>
+
+
+
+    <!-- =====================================================
+         SEARCH BAR
+    ====================================================== -->
 
     <div class="top-bar">
 
         <div class="search-box">
+
             <input
                 type="text"
                 id="studentSearch"
-                placeholder="name, ID, program, batch..."
-                onkeyup="searchStudents()"
+                placeholder="name, ID, enrollment, program..."
+                oninput="searchStudents()"
             >
+
         </div>
+
 
         <div class="student-count">
-            ON RECORD &nbsp;<strong>{{total_students}}</strong>
-        </div>
 
-        <div class="student-count">
-            ON GOING &nbsp;<strong>{{total_ongoing}}</strong>
-        </div>
+            ON RECORD&nbsp;
 
-         <div class="student-count">
-            COMPLETED &nbsp;<strong>{{total_completed}}</strong>
+            <strong>
+                {{ students|length }}
+            </strong>
+
         </div>
 
     </div>
+
+
+
+    <!-- =====================================================
+         STUDENT TABLE
+    ====================================================== -->
 
     <div class="table-container">
 
         <table id="studentTable">
 
+
             <thead>
+
                 <tr>
-                    <th>Entry</th>
-                    <th>Name</th>
-                    <th>User ID</th>
-                    <th>Enrollment ID</th>
-                    <th>Program Code</th>
-                    <th>Program Name</th>
-                    <th>Batch</th>
-                    <th>Role</th>
-                    <th>Status</th>
-                    <th>Admission Date</th>
-                    <th>Photo</th>
-                    <th>QR Code</th>
-                    <th>Password</th>
+
+                    <th>
+                        Entry
+                    </th>
+
+                    <th>
+                        Name
+                    </th>
+
+                    <th>
+                        User ID
+                    </th>
+
+                    <th>
+                        Enrollment ID
+                    </th>
+
+                    <th>
+                        Program Code
+                    </th>
+
+                    <th>
+                        Program Name
+                    </th>
+
+                    <th>
+                        Batch Schedule
+                    </th>
+
+                    <th>
+                        Role
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th>
+                        Created At
+                    </th>
 
                 </tr>
+
             </thead>
+
+
 
             <tbody>
 
+
                 {% if students %}
+
 
                     {% for student in students %}
 
+
                     <tr>
 
+
+                        <!-- ENTRY -->
+
                         <td>
-                            <span class="entry-no">{{loop.index}}</span>
+
+                            <span class="entry-no">
+
+                                № {{ student.id }}
+
+                            </span>
+
                         </td>
 
+
+
+                        <!-- NAME -->
+
                         <td>
-                            <strong>
-                                {{ student.Name or '-' }}
-                            </strong>
+
+                            <span class="student-name">
+
+                                {{ student.name or '-' }}
+
+                            </span>
+
                         </td>
 
+
+
+                        <!-- USER ID -->
+
                         <td>
-                            <span class="mono-field">{{ student.UserId }}</span>
+
+                            <span class="mono-field">
+
+                                {{ student.userid or '-' }}
+
+                            </span>
+
                         </td>
 
+
+
+                        <!-- ENROLLMENT -->
+
                         <td>
-                            <span class="mono-field">{{ student.Id or '-' }}</span>
+
+                            <span class="mono-field">
+
+                                {{ student.enrollmentid or '-' }}
+
+                            </span>
+
                         </td>
 
+
+
+                        <!-- PROGRAM CODE -->
+
                         <td>
-                            <span class="mono-field">{{ student.ProgramCode or '-' }}</span>
+
+                            <span class="mono-field">
+
+                                {{ student.programcode or '-' }}
+
+                            </span>
+
                         </td>
 
+
+
+                        <!-- PROGRAM NAME -->
+
                         <td>
-                            {{ student.ProgramName or '-' }}
+
+                            {{ student.programname or '-' }}
+
                         </td>
 
+
+
+                        <!-- =================================================
+                             BATCH SCHEDULE
+                        ================================================== -->
+
                         <td>
-                            {{ student.Batch_Name or '-' }}
+
+
+                            <button
+                                type="button"
+                                class="batch-link"
+                                onclick="openBatchSchedule(
+                                    {{ student.id }},
+                                    '{{ url_for(
+                                        'batch.student_batch_schedule',
+                                        student_id=student.id
+                                    ) }}'
+                                )"
+                            >
+
+                                📚
+
+                                View Schedule
+
+                            </button>
+
+
                         </td>
 
+
+
+                        <!-- ROLE -->
+
                         <td>
-                            <span class="role-tag">{{student.Userrole }}</span>
+
+                            <span class="role-tag">
+
+                                {{ student.role or '-' }}
+
+                            </span>
+
                         </td>
 
+
+
+                        <!-- STATUS -->
+
                         <td>
 
-                            {% if student.coursestatus=="Ongoing" %}
+
+                            {% if student.is_active == 1 %}
 
                                 <span class="status active">
-                                    Active
+
+                                    ● Active
+
                                 </span>
 
                             {% else %}
 
                                 <span class="status inactive">
-                                    Completed
+
+                                    ● Inactive
+
                                 </span>
 
                             {% endif %}
 
-                        </td>
-
-                         <td>
-                            <span class="mono-field">{{ student.adminssion_date }}</span>
-                        </td>
-
-
-                        <td>
-                   <img src="https://www.technovas.in/Admin/AdmissionDocs/PHOTO/{{ student.PhotoPath }}"
-                                 width="60"
-                                 height="60"
-                                 style="object-fit:cover;
-                                        border-radius:50%;">
 
                         </td>
+
+
+
+                        <!-- CREATED -->
 
                         <td>
 
-                             <img src="https://www.technovas.in/Admin/QRCode/{{student.QRCodePath }}"
-                         width="80"
-                         height="80">
+                            <span class="mono-field">
+
+                                {{ student.created_at or '-' }}
+
+                            </span>
+
                         </td>
 
-                       
-                          <td>
-                            <span class="mono-field">{{ student.pwd }}</span>
-                        </td>
 
                     </tr>
+
 
                     {% endfor %}
 
+
                 {% else %}
 
+
                     <tr>
-                        <td colspan="10" class="no-data">
-                            No entries found in the register.
+
+                        <td
+                            colspan="10"
+                            class="no-data"
+                        >
+
+                            <div class="no-data-icon">
+                                👨‍🎓
+                            </div>
+
+                            <h3>
+                                No Students Found
+                            </h3>
+
+                            <p>
+                                No student records are currently available.
+                            </p>
+
                         </td>
+
                     </tr>
+
 
                 {% endif %}
 
+
             </tbody>
 
+
         </table>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =========================================================
+     STUDENT SCHEDULE MODAL
+========================================================= -->
+
+<div
+    id="scheduleModal"
+    class="modal-overlay"
+    onclick="closeModalOutside(event)"
+>
+
+
+    <div
+        class="schedule-modal"
+        onclick="event.stopPropagation()"
+    >
+
+
+        <!-- =================================================
+             MODAL HEADER
+        ================================================== -->
+
+        <div class="modal-header">
+
+
+            <div class="modal-title-area">
+
+                <h2 id="modalStudentName">
+
+                    Student Schedule
+
+                </h2>
+
+                <p id="modalStudentId">
+
+                    Complete weekly batch schedule
+
+                </p>
+
+            </div>
+
+
+
+            <button
+                type="button"
+                class="close-modal"
+                onclick="closeScheduleModal()"
+            >
+
+                ×
+
+            </button>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             STUDENT INFORMATION
+        ================================================== -->
+
+        <div class="student-info">
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Student Name
+                </div>
+
+                <div
+                    class="info-value"
+                    id="infoName"
+                >
+                    -
+                </div>
+
+            </div>
+
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Student ID
+                </div>
+
+                <div
+                    class="info-value"
+                    id="infoUserid"
+                >
+                    -
+                </div>
+
+            </div>
+
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Enrollment ID
+                </div>
+
+                <div
+                    class="info-value"
+                    id="infoEnrollment"
+                >
+                    -
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             SCHEDULE HEADING
+        ================================================== -->
+
+        <div class="schedule-heading">
+
+
+            <h3>
+                Weekly Class Schedule
+            </h3>
+
+
+            <div
+                class="total-badge"
+                id="totalBatches"
+            >
+
+                0 Batches
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             LOADING
+        ================================================== -->
+
+        <div
+            id="scheduleLoading"
+            class="loading"
+        >
+
+            <div class="loader"></div>
+
+            Loading student schedule...
+
+        </div>
+
+
+
+        <!-- =================================================
+             SCHEDULE LIST
+        ================================================== -->
+
+        <div
+            id="scheduleList"
+            class="schedule-list"
+            style="display:none;"
+        >
+
+        </div>
+
+
+
+        <!-- =================================================
+             EMPTY
+        ================================================== -->
+
+        <div
+            id="emptySchedule"
+            class="empty-schedule"
+            style="display:none;"
+        >
+
+            <div class="emoji">
+                📚
+            </div>
+
+            <h4>
+                No Active Batch Assigned
+            </h4>
+
+            <p>
+                This student is not currently assigned
+                to any active batch.
+            </p>
+
+        </div>
+
+
+
+        <!-- =================================================
+             ERROR
+        ================================================== -->
+
+        <div
+            id="scheduleError"
+            class="schedule-error"
+            style="display:none;"
+        >
+
+            <div class="error-icon">
+                ⚠️
+            </div>
+
+            <h4>
+                Unable to Load Schedule
+            </h4>
+
+            <p id="scheduleErrorMessage">
+                Something went wrong.
+            </p>
+
+        </div>
+
 
     </div>
 
 </div>
 
 
+
 <script>
+
+/* =========================================================
+   SEARCH STUDENTS
+========================================================= */
 
 function searchStudents() {
 
-    let input =
-        document.getElementById("studentSearch")
-        .value
-        .toLowerCase();
+    const input =
+        document
+            .getElementById("studentSearch")
+            .value
+            .toLowerCase()
+            .trim();
 
-    let rows =
-        document.querySelectorAll("#studentTable tbody tr");
+
+    const rows =
+        document.querySelectorAll(
+            "#studentTable tbody tr"
+        );
+
 
     rows.forEach(function(row) {
 
-        let text = row.innerText.toLowerCase();
+        const text =
+            row.innerText
+                .toLowerCase();
+
 
         if (text.includes(input)) {
+
             row.style.display = "";
+
         } else {
+
             row.style.display = "none";
+
         }
 
     });
 
 }
 
+
+/* =========================================================
+   OPEN STUDENT BATCH SCHEDULE
+========================================================= */
+
+async function openBatchSchedule(
+    studentId,
+    scheduleUrl
+) {
+
+
+    const modal =
+        document.getElementById(
+            "scheduleModal"
+        );
+
+
+    const loading =
+        document.getElementById(
+            "scheduleLoading"
+        );
+
+
+    const scheduleList =
+        document.getElementById(
+            "scheduleList"
+        );
+
+
+    const emptySchedule =
+        document.getElementById(
+            "emptySchedule"
+        );
+
+
+    const errorBox =
+        document.getElementById(
+            "scheduleError"
+        );
+
+
+    const errorMessage =
+        document.getElementById(
+            "scheduleErrorMessage"
+        );
+
+
+    const totalBatches =
+        document.getElementById(
+            "totalBatches"
+        );
+
+
+    /* =====================================================
+       SHOW MODAL
+    ===================================================== */
+
+    modal.classList.add("show");
+
+
+    /* =====================================================
+       RESET
+    ===================================================== */
+
+    loading.style.display =
+        "block";
+
+
+    scheduleList.style.display =
+        "none";
+
+
+    emptySchedule.style.display =
+        "none";
+
+
+    errorBox.style.display =
+        "none";
+
+
+    scheduleList.innerHTML =
+        "";
+
+
+    totalBatches.innerText =
+        "Loading...";
+
+
+    /* =====================================================
+       VALIDATE URL
+    ===================================================== */
+
+    if (!scheduleUrl) {
+
+        loading.style.display =
+            "none";
+
+        errorBox.style.display =
+            "block";
+
+        errorMessage.innerText =
+            "Schedule URL is missing.";
+
+        return;
+
+    }
+
+
+    try {
+
+
+        /* =================================================
+           FETCH
+        ================================================= */
+
+        const response =
+            await fetch(
+                scheduleUrl,
+                {
+                    method: "GET",
+                    headers: {
+                        "Accept":
+                            "application/json"
+                    }
+                }
+            );
+
+
+        /* =================================================
+           CHECK HTTP STATUS
+        ================================================= */
+
+        if (!response.ok) {
+
+            let message =
+                "Server returned HTTP " +
+                response.status;
+
+            try {
+
+                const errorData =
+                    await response.json();
+
+                if (
+                    errorData &&
+                    errorData.message
+                ) {
+
+                    message =
+                        errorData.message;
+
+                }
+
+            } catch (_) {
+
+                /* Ignore JSON parse error */
+
+            }
+
+
+            throw new Error(message);
+
+        }
+
+
+        /* =================================================
+           JSON
+        ================================================= */
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            throw new Error(
+                data.message ||
+                "Unable to load student schedule."
+            );
+
+        }
+
+
+        /* =================================================
+           STUDENT INFORMATION
+        ================================================= */
+
+        const student =
+            data.student || {};
+
+
+        document.getElementById(
+            "modalStudentName"
+        ).innerText =
+            student.name ||
+            "Student Schedule";
+
+
+        document.getElementById(
+            "modalStudentId"
+        ).innerText =
+            "Complete weekly batch schedule · " +
+            (
+                student.userid ||
+                ""
+            );
+
+
+        document.getElementById(
+            "infoName"
+        ).innerText =
+            student.name ||
+            "-";
+
+
+        document.getElementById(
+            "infoUserid"
+        ).innerText =
+            student.userid ||
+            "-";
+
+
+        document.getElementById(
+            "infoEnrollment"
+        ).innerText =
+            student.enrollmentid ||
+            "-";
+
+
+        /* =================================================
+           SCHEDULE DATA
+        ================================================= */
+
+        const schedules =
+            Array.isArray(
+                data.schedules
+            )
+                ? data.schedules
+                : [];
+
+
+        const total =
+            Number(
+                data.total_batches ??
+                schedules.length
+            );
+
+
+        totalBatches.innerText =
+            total +
+            (
+                total === 1
+                    ? " Batch"
+                    : " Batches"
+            );
+
+
+        /* =================================================
+           STOP LOADING
+        ================================================= */
+
+        loading.style.display =
+            "none";
+
+
+        /* =================================================
+           NO BATCH
+        ================================================= */
+
+        if (
+            schedules.length === 0
+        ) {
+
+            emptySchedule.style.display =
+                "block";
+
+            return;
+
+        }
+
+
+        /* =================================================
+           BUILD SCHEDULE
+        ================================================= */
+
+        scheduleList.innerHTML =
+            "";
+
+
+        schedules.forEach(
+            function(schedule) {
+
+
+                const row =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                row.className =
+                    "schedule-row";
+
+
+                /* =========================================
+                   DAY
+                ========================================= */
+
+                const day =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                const dayValue =
+                    schedule.day_of_week ||
+                    "-";
+
+
+                day.innerHTML = `
+
+                    <span class="day-badge">
+
+                        ${escapeHtml(
+                            dayValue
+                        )}
+
+                    </span>
+
+                `;
+
+
+                /* =========================================
+                   BATCH CODE
+                ========================================= */
+
+                const code =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                code.innerHTML = `
+
+                    <div class="batch-code">
+
+                        ${escapeHtml(
+                            schedule.batch_code ||
+                            "-"
+                        )}
+
+                    </div>
+
+                `;
+
+
+                /* =========================================
+                   BATCH DETAILS
+                ========================================= */
+
+                const batch =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                batch.innerHTML = `
+
+                    <div class="batch-name">
+
+                        ${escapeHtml(
+                            schedule.batch_name ||
+                            "-"
+                        )}
+
+                    </div>
+
+                    <div class="course-name">
+
+                        ${escapeHtml(
+                            schedule.course_name ||
+                            "-"
+                        )}
+
+                    </div>
+
+                `;
+
+
+                /* =========================================
+                   TIME
+                ========================================= */
+
+                const time =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                const startTime =
+                    schedule.start_time ||
+                    "-";
+
+
+                const endTime =
+                    schedule.end_time ||
+                    "-";
+
+
+                let timeHtml = `
+
+                    <div class="class-time">
+
+                        🕐
+
+                        ${escapeHtml(
+                            startTime
+                        )}
+
+                        –
+
+                        ${escapeHtml(
+                            endTime
+                        )}
+
+                    </div>
+
+                `;
+
+
+                /* =========================================
+                   FACULTY / ROOM
+                ========================================= */
+
+                if (
+                    schedule.faculty_name
+                ) {
+
+                    timeHtml += `
+
+                        <div class="room-info">
+
+                            Faculty:
+                            ${escapeHtml(
+                                schedule.faculty_name
+                            )}
+
+                        </div>
+
+                    `;
+
+                }
+
+
+                if (
+                    schedule.room_no
+                ) {
+
+                    timeHtml += `
+
+                        <div class="room-info">
+
+                            Room:
+                            ${escapeHtml(
+                                schedule.room_no
+                            )}
+
+                        </div>
+
+                    `;
+
+                }
+
+
+                time.innerHTML =
+                    timeHtml;
+
+
+                /* =========================================
+                   APPEND
+                ========================================= */
+
+                row.appendChild(
+                    day
+                );
+
+                row.appendChild(
+                    code
+                );
+
+                row.appendChild(
+                    batch
+                );
+
+                row.appendChild(
+                    time
+                );
+
+
+                scheduleList.appendChild(
+                    row
+                );
+
+
+            }
+        );
+
+
+        /* =================================================
+           SHOW LIST
+        ================================================= */
+
+        scheduleList.style.display =
+            "block";
+
+
+    }
+
+
+    catch (error) {
+
+
+        console.error(
+            "STUDENT SCHEDULE ERROR:",
+            error
+        );
+
+
+        loading.style.display =
+            "none";
+
+
+        scheduleList.style.display =
+            "none";
+
+
+        emptySchedule.style.display =
+            "none";
+
+
+        errorBox.style.display =
+            "block";
+
+
+        errorMessage.innerText =
+            error.message ||
+            "Unable to load student schedule.";
+
+
+        totalBatches.innerText =
+            "Error";
+
+
+    }
+
+}
+
+
+/* =========================================================
+   CLOSE MODAL
+========================================================= */
+
+function closeScheduleModal() {
+
+    const modal =
+        document.getElementById(
+            "scheduleModal"
+        );
+
+
+    modal.classList.remove(
+        "show"
+    );
+
+}
+
+
+/* =========================================================
+   CLOSE OUTSIDE
+========================================================= */
+
+function closeModalOutside(
+    event
+) {
+
+    if (
+        event.target.id ===
+        "scheduleModal"
+    ) {
+
+        closeScheduleModal();
+
+    }
+
+}
+
+
+/* =========================================================
+   ESC KEY
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key ===
+            "Escape"
+        ) {
+
+            closeScheduleModal();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   HTML ESCAPE
+========================================================= */
+
+function escapeHtml(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =========================================================
+   PREVENT BODY SCROLL WHEN MODAL OPEN
+========================================================= */
+
+const originalOpen =
+    window.openBatchSchedule;
+
+
+window.openBatchSchedule =
+    async function(
+        studentId,
+        scheduleUrl
+    ) {
+
+        document.body.style.overflow =
+            "hidden";
+
+        try {
+
+            await originalOpen(
+                studentId,
+                scheduleUrl
+            );
+
+        } catch (error) {
+
+            console.error(error);
+
+        }
+
+    };
+
+
+const originalClose =
+    window.closeScheduleModal;
+
+
+window.closeScheduleModal =
+    function() {
+
+        document.body.style.overflow =
+            "";
+
+        originalClose();
+
+    };
+
 </script>
 
+
 </body>
+
 </html>
