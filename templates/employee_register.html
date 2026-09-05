@@ -857,12 +857,9 @@ function loadEmployeeCode() {
 
     .catch(error => {
 
-        console.error(error);
+         console.error(error);
 
-        showMessage(
-            "Unable to generate Employee Code",
-            "danger"
-        );
+            alert("Unable to generate Employee Code");
 
     });
 
