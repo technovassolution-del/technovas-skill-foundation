@@ -6,7 +6,6 @@ import cv2
 import base64
 import json
 from datetime import datetime
-
 app = Flask(__name__)
 
 

@@ -1,512 +1,460 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>Employee Registration</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css"
+        rel="stylesheet">
 
     <style>
 
         body {
             background: #f4f6f9;
+            font-family: Arial, sans-serif;
         }
 
-        .registration-card {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        .page-header {
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 20px 0;
         }
 
-        .section-title {
-            font-size: 18px;
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .page-subtitle {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        }
+
+        .card-header {
+            background: #ffffff;
+            border-bottom: 1px solid #eef0f3;
+            padding: 20px;
             font-weight: 600;
-            color: #0d6efd;
-            margin-top: 25px;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 8px;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 8px;
+            padding: 11px 12px;
+            border: 1px solid #d1d5db;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+        .camera-box {
+            background: #111827;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
         }
 
         #video {
             width: 100%;
-            max-width: 320px;
-            height: 280px;
+            max-height: 360px;
             object-fit: cover;
-            border-radius: 10px;
-            border: 3px solid #0d6efd;
+            border-radius: 8px;
             background: #000;
-        }
-
-        #photoPreview {
-            width: 100%;
-            max-width: 250px;
-            height: 250px;
-            object-fit: cover;
-            border-radius: 10px;
-            border: 3px solid #198754;
-            background: #f1f1f1;
         }
 
         #canvas {
             display: none;
         }
 
+        .photo-preview {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #e5e7eb;
+            display: none;
+            margin: auto;
+        }
+
+        .photo-placeholder {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: auto;
+            color: #9ca3af;
+            font-size: 14px;
+            border: 2px dashed #d1d5db;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            border: none;
+            border-radius: 8px;
+            padding: 11px 22px;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-secondary {
+            border-radius: 8px;
+            padding: 11px 22px;
+        }
+
+        .required {
+            color: #dc2626;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 20px;
+        }
+
+        .crop-container {
+            max-height: 450px;
+            overflow: hidden;
+        }
+
+        #cropImage {
+            max-width: 100%;
+            display: block;
+        }
+
     </style>
+
 </head>
 
 <body>
 
-<div class="container py-5">
+    <!-- HEADER -->
 
-    <div class="row justify-content-center">
+    <div class="page-header">
 
-        <div class="col-lg-10">
+        <div class="container">
 
-            <div class="registration-card">
+            <div class="page-title">
+                Employee Registration
+            </div>
 
-                <div class="text-center mb-4">
+            <div class="page-subtitle">
+                Register employee details and capture a face photo
+            </div>
 
-                    <h2 class="fw-bold">
-                        Employee Registration
-                    </h2>
+        </div>
 
-                    <p class="text-muted">
-                        Register employee details and capture live photo.
-                    </p>
+    </div>
+
+
+    <!-- MAIN -->
+
+    <div class="container py-4">
+
+        <form id="employeeForm">
+
+            <div class="row g-4">
+
+                <!-- LEFT -->
+
+                <div class="col-lg-8">
+
+                    <div class="card">
+
+                        <div class="card-header">
+                            Employee Information
+                        </div>
+
+                        <div class="card-body">
+
+                            <div class="section-title">
+                                Basic Details
+                            </div>
+
+                            <div class="row g-3">
+
+                                <div class="col-md-6">
+
+                                    <label class="form-label">
+                                        Employee Code
+                                        <span class="required">*</span>
+                                    </label>
+
+                                    <input
+                                        type="text" readonly="true"
+                                        class="form-control"
+                                        id="employeeCode"
+                                        required
+                                    >
+
+                                </div>
+
+                                <div class="col-md-6">
+
+                                    <label class="form-label">
+                                        Full Name
+                                        <span class="required">*</span>
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="fullName"
+                                        required
+                                    >
+
+                                </div>
+
+                                <div class="col-md-6">
+
+                                    <label class="form-label">
+                                        Mobile
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="mobile"
+                                    >
+
+                                </div>
+
+                                <div class="col-md-6">
+
+                                    <label class="form-label">
+                                        Email
+                                    </label>
+
+                                    <input
+                                        type="email"
+                                        class="form-control"
+                                        id="email"
+                                    >
+
+                                </div>
+
+                               
+
+         
+
+                            <!-- Address --> <div class="col-md-12"> <label class="form-label"> Address <span class="required">*</span> </label> <textarea class="form-control" id="address" name="address" rows="3" placeholder="Enter complete address" required ></textarea> </div>
+
+<!-- City --> <div class="col-md-4"> <label class="form-label"> City </label> <input type="text" class="form-control" id="city" name="city" placeholder="Enter city" > </div> <!-- State --> <div class="col-md-4"> <label class="form-label"> State </label> <input type="text" class="form-control" id="state" name="state" placeholder="Enter state" > </div>
+
+<!-- Pincode --> <div class="col-md-4"> <label class="form-label"> Pincode </label> <input type="text" class="form-control" id="pincode" name="pincode" maxlength="6" placeholder="Enter pincode" > </div>                            
+
+
+
+
+</div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ================= IDENTITY DETAILS ================= --> <div class="card shadow-sm mb-4"> <div class="card-header bg-primary text-white"> <h5 class="mb-0"> <i class="bi bi-card-text"></i> Identity Details </h5> </div> <div class="card-body"> <div class="row g-3"> <!-- Aadhar Number --> <div class="col-md-6"> <label class="form-label"> Aadhar Number </label> <input type="text" class="form-control" id="aadharNumber" name="aadharNumber" maxlength="12" placeholder="Enter 12 digit Aadhar number" > </div> <!-- Aadhar Card Upload --> <div class="col-md-6"> <label class="form-label"> Aadhar Card </label> <input type="file" class="form-control" id="aadharFile" name="aadharFile" accept=".jpg,.jpeg,.png,.pdf" > <small class="text-muted"> JPG, PNG or PDF </small> </div> <!-- PAN Number --> <div class="col-md-6"> <label class="form-label"> PAN Number </label> <input type="text" class="form-control text-uppercase" id="panNo" name="panNo" maxlength="10" placeholder="ABCDE1234F" > </div> <!-- PAN Card Upload --> <div class="col-md-6"> <label class="form-label"> PAN Card </label> <input type="file" class="form-control" id="panFile" name="panFile" accept=".jpg,.jpeg,.png,.pdf" > <small class="text-muted"> JPG, PNG or PDF </small> </div> </div> </div> </div> <!-- ================= BANK DETAILS ================= --> <div class="card shadow-sm mb-4"> <div class="card-header bg-primary text-white"> <h5 class="mb-0"> <i class="bi bi-bank"></i> Bank Details </h5> </div> <div class="card-body"> <div class="row g-3"> <!-- Bank Name --> <div class="col-md-6"> <label class="form-label"> Bank Name </label> <input type="text" class="form-control" id="bankName" name="bankName" placeholder="Enter bank name" > </div> <!-- Account Number --> <div class="col-md-6"> <label class="form-label"> Account Number </label> <input type="text" class="form-control" id="accountNo" name="accountNo" placeholder="Enter account number" > </div> <!-- IFSC --> <div class="col-md-6"> <label class="form-label"> IFSC Code </label> <input type="text" class="form-control text-uppercase" id="ifscCode" name="ifscCode" maxlength="11" placeholder="Enter IFSC code" > </div> </div> </div> </div>
+
+                   
+                    
+                    
+                    <!-- CAMERA -->
+
+                    <div class="card mt-4">
+
+                        <div class="card-header">
+                            Capture Employee Photo
+                        </div>
+
+                        <div class="card-body">
+
+                            <div class="camera-box">
+
+                                <video
+                                    id="video"
+                                    autoplay
+                                    playsinline
+                                ></video>
+
+                                <canvas id="canvas"></canvas>
+
+                            </div>
+
+                            <div class="d-flex gap-2 mt-3">
+
+                                <button
+                                    type="button"
+                                    class="btn btn-primary"
+                                    id="captureBtn"
+                                >
+                                    Capture Photo
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="btn btn-secondary"
+                                    id="retakeBtn"
+                                >
+                                    Retake
+                                </button>
+
+                            </div>
+
+                            <div
+                                class="alert alert-info mt-3 mb-0"
+                                style="font-size:13px;"
+                            >
+                                Keep your face centered and ensure good lighting.
+                                Only one face should be visible.
+                            </div>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
 
-                <form id="employeeForm"
-                      method="POST"
-                      action="/employee/register"
-                      enctype="multipart/form-data">
+                <!-- RIGHT -->
 
+                <div class="col-lg-4">
 
-                    <!-- PHOTO SECTION -->
+                    <div class="card">
 
-                    <div class="section-title">
-                        Live Camera Photo
-                    </div>
+                        <div class="card-header">
+                            Face Preview
+                        </div>
 
+                        <div class="card-body text-center">
 
-                    <div class="row">
-
-                        <!-- CAMERA -->
-
-                        <div class="col-md-6 text-center">
-
-                            <h6 class="mb-3">
-                                Live Camera
-                            </h6>
-
-                            <video id="video"
-                                   autoplay
-                                   playsinline>
-                            </video>
-
-
-                            <div class="mt-3">
-
-                                <button type="button"
-                                        class="btn btn-success"
-                                        onclick="startCamera()">
-
-                                    Start Camera
-
-                                </button>
-
-
-                                <button type="button"
-                                        class="btn btn-danger"
-                                        onclick="stopCamera()">
-
-                                    Stop Camera
-
-                                </button>
-
+                            <div
+                                class="photo-placeholder"
+                                id="photoPlaceholder"
+                            >
+                                No Photo
                             </div>
 
-                        </div>
+                            <img
+                                id="photoPreview"
+                                class="photo-preview"
+                            >
 
+                            <p
+                                class="text-muted mt-3"
+                                style="font-size:13px;"
+                            >
+                                Capture and crop a clear face photo.
+                            </p>
 
-                        <!-- PHOTO PREVIEW -->
-
-                        <div class="col-md-6 text-center">
-
-                            <h6 class="mb-3">
-                                Captured Employee Photo
-                            </h6>
-
-
-                            <img id="photoPreview"
-                                 src="https://via.placeholder.com/250?text=Employee+Photo"
-                                 alt="Employee Photo">
-
-
-                            <canvas id="canvas"></canvas>
-
-
-                            <div class="mt-3">
-
-                                <button type="button"
-                                        class="btn btn-primary"
-                                        onclick="capturePhoto()">
-
-                                    Capture Photo
-
-                                </button>
-
-                            </div>
+                            <button
+                                type="submit"
+                                class="btn btn-primary w-100 mt-3"
+                            >
+                                Register Employee
+                            </button>
 
                         </div>
 
                     </div>
 
+                </div>
 
-                    <!-- HIDDEN PHOTO DATA -->
+            </div>
 
-                    <input type="hidden"
-                           id="capturedPhoto"
-                           name="capturedPhoto">
+        </form>
 
+    </div>
 
-                    <hr>
 
+    <!-- CROP MODAL -->
 
-                    <!-- PERSONAL DETAILS -->
+    <div
+        class="modal fade"
+        id="cropModal"
+        tabindex="-1"
+    >
 
-                    <div class="section-title">
-                        Employee Details
-                    </div>
+        <div class="modal-dialog modal-lg modal-dialog-centered">
 
+            <div class="modal-content">
 
-                    <div class="row g-3">
+                <div class="modal-header">
 
+                    <h5 class="modal-title">
+                        Crop Face Photo
+                    </h5>
 
-                       
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                    ></button>
 
+                </div>
 
-                        <div class="col-md-4">
+                <div class="modal-body">
 
-                            <label class="form-label">
-                                Full Name
-                            </label>
+                    <div class="crop-container">
 
-                            <input type="text"
-                                   class="form-control"
-                                   name="fullName"
-                                   placeholder="Enter Full Name"
-                                   required>
-
-                        </div>
-
-
-                        <div class="col-md-4">
-
-                            <label class="form-label">
-                                Mobile Number
-                            </label>
-
-                            <input type="tel"
-                                   class="form-control"
-                                   name="mobile"
-                                   placeholder="Enter Mobile Number"
-                                   maxlength="10"
-                                   required>
-
-                        </div>
-
-
-                        <div class="col-md-4">
-
-                            <label class="form-label">
-                                Email Address
-                            </label>
-
-                            <input type="email"
-                                   class="form-control"
-                                   name="email"
-                                   placeholder="Enter Email">
-
-                        </div>
-
-
-                        <div class="col-md-4">
-
-                            <label class="form-label">
-                                Gender
-                            </label>
-
-                            <select class="form-select"
-                                    name="gender">
-
-                                <option value="">
-                                    Select Gender
-                                </option>
-
-                                <option value="Male">
-                                    Male
-                                </option>
-
-                                <option value="Female">
-                                    Female
-                                </option>
-
-                                <option value="Other">
-                                    Other
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <div class="col-md-4">
-
-                            <label class="form-label">
-                                Date of Birth
-                            </label>
-
-                            <input type="date"
-                                   class="form-control"
-                                   name="dob">
-
-                        </div>
-
-                         <div class="col-md-4">
-
-                            <label class="form-label">
-                                Heighest Educational Qualification
-                            </label>
-
-                            <select class="form-select"
-                                    name="qualification">
-
-                                 <option value="">-- Select Highest Qualification --</option>
-    <option value="Below 10th">Below 10th</option>
-    <option value="10th Pass">10th Pass (SSC)</option>
-    <option value="12th Pass">12th Pass (HSC)</option>
-    <option value="ITI">ITI</option>
-    <option value="Diploma">Diploma</option>
-    <option value="Undergraduate">Undergraduate</option>
-    <option value="Graduate">Graduate / Bachelor's Degree</option>
-    <option value="Postgraduate">Postgraduate / Master's Degree</option>
-    <option value="M.Phil">M.Phil</option>
-    <option value="Ph.D">Ph.D / Doctorate</option>
-    <option value="Professional Qualification">Professional Qualification</option>
-    <option value="Other">Other</option>
-
-                            </select>
-
-                        </div>
-
-
-
-
-                                          <div class="col-md-4">
-
-                            <label class="form-label">
-                                Bank Name
-                            </label>
-
-                            <select class="form-select"
-                                    name="bankName">
-
-                                <option value="">
-                                    Select Bank
-                                </option>
-
-                                <option value="State Bank of India">
-                                    State Bank of India
-                                </option>
-
-                                <option value="HDFC Bank">
-                                    HDFC Bank
-                                </option>
-
-                                <option value="ICICI Bank">
-                                    ICICI Bank
-                                </option>
-
-                                 <option value="KOTAK MAHINDRA BANK">
-                                    KOTAK MAHINDRA BANK
-                                </option>
-
-                            </select>
-
-                        </div>
-           
-<div class="col-md-4">
-
-                            <label class="form-label">
-                                Bank Account Number
-                            </label>
-
-                            <input type="text"
-                                   class="form-control"
-                                   name="accountNo"
-                                   placeholder="Enter Bank Account Number"
-                                   required>
-
-                        </div>
-
-                        <div class="col-md-4">
-
-                            <label class="form-label">
-                                IFSC Code
-                            </label>
-
-                            <input type="text"
-                                   class="form-control"
-                                   name="ifscCode"
-                                   placeholder="Enter IFSC Code"
-                                   required>
-
-                        </div>
-
-
-                        <div class="col-md-4">
-
-                            <label class="form-label">
-                                PAN NUMBER
-                            </label>
-
-                            <input type="text"
-                                   class="form-control"
-                                   name="panNo"
-                                   placeholder="Enter PAN NUMBER"
-                                   required>
-
-                        </div>
-
-
-                        <div class="col-md-6">
-
-                            <label class="form-label">
-                                Address
-                            </label>
-
-                            <textarea class="form-control"
-                                      name="address"
-                                      rows="3"></textarea>
-
-                        </div>
-
-
-                        <div class="col-md-6">
-
-                            <label class="form-label">
-                                Aadhaar / ID Number
-                            </label>
-
-                            <input type="text"
-                                   class="form-control"
-                                   name="aadharNumber"
-                                   placeholder="Enter Aadhaar Number">
-
-                        </div>
-
-
-
-
-
-
-                                    
-
-                               
-
-                           
-
-
-
-
-
-                         
-                         
-
-
+                        <img
+                            id="cropImage"
+                        >
 
                     </div>
 
+                </div>
 
-                    <!-- DOCUMENT UPLOAD -->
+                <div class="modal-footer">
 
-                    <div class="section-title">
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                    >
+                        Cancel
+                    </button>
 
-                        Document Upload
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        id="cropBtn"
+                    >
+                        Crop & Use Photo
+                    </button>
 
-                    </div>
-
-
-                    <div class="row g-3">
-
-
-                        <div class="col-md-6">
-
-                            <label class="form-label">
-                                Aadhaar Card
-                            </label>
-
-                            <input type="file"
-                                   class="form-control"
-                                   name="aadhar_file"
-                                   accept=".jpg,.jpeg,.png,.pdf">
-
-                        </div>
-
-
-                        <div class="col-md-6">
-
-                            <label class="form-label">
-                                PAN Card
-                            </label>
-
-                            <input type="file"
-                                   class="form-control"
-                                   name="panDocument"
-                                   accept=".jpg,.jpeg,.png,.pdf">
-
-                        </div>
-
-
-                        
-
-
-             
-
-
-                    </div>
-
-
-                    <!-- SUBMIT BUTTON -->
-
-                    <div class="text-center mt-5">
-
-                        <button type="submit"
-                                class="btn btn-primary px-5">
-
-                            Register Employee
-
-                        </button>
-
-
-                        <button type="reset"
-                                class="btn btn-secondary px-4 ms-2">
-
-                            Reset
-
-                        </button>
-
-                    </div>
-
-
-                </form>
+                </div>
 
             </div>
 
@@ -514,190 +462,429 @@
 
     </div>
 
-</div>
 
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
 
-<script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js">
+    </script>
 
-let stream = null;
 
-const video = document.getElementById("video");
-const canvas = document.getElementById("canvas");
-const photoPreview = document.getElementById("photoPreview");
-const capturedPhoto = document.getElementById("capturedPhoto");
+    <script>
 
+        let stream = null;
 
-/* ===============================
-   START LIVE CAMERA
-================================ */
+        let cropper = null;
 
-async function startCamera() {
+        let capturedPhoto = null;
 
-    try {
+        const video =
+            document.getElementById("video");
 
-        stream = await navigator.mediaDevices.getUserMedia({
+        const canvas =
+            document.getElementById("canvas");
 
-            video: {
+        const cropImage =
+            document.getElementById("cropImage");
 
-                width: 640,
-                height: 480,
+        const cropModal =
+            new bootstrap.Modal(
+                document.getElementById("cropModal")
+            );
 
-                facingMode: "user"
 
-            },
+        // ----------------------------------------
+        // START CAMERA
+        // ----------------------------------------
 
-            audio: false
+        async function startCamera() {
 
-        });
+            try {
 
+                stream =
+                    await navigator.mediaDevices.getUserMedia({
+                        video: {
+                            width: 640,
+                            height: 480,
+                            facingMode: "user"
+                        },
+                        audio: false
+                    });
 
-        video.srcObject = stream;
+                video.srcObject = stream;
 
+            } catch (error) {
 
-    }
-    catch (error) {
+                alert(
+                    "Unable to access camera. Please allow camera permission."
+                );
 
-        console.error(error);
+                console.error(error);
 
-        alert(
-            "Camera access denied or camera not available."
-        );
+            }
 
-    }
+        }
 
-}
 
+        // ----------------------------------------
+        // CAPTURE PHOTO
+        // ----------------------------------------
 
+        document
+            .getElementById("captureBtn")
+            .addEventListener("click", function() {
 
-/* ===============================
-   STOP CAMERA
-================================ */
+                if (!stream) {
 
-function stopCamera() {
+                    alert("Camera is not ready");
 
-    if (stream) {
+                    return;
 
-        stream.getTracks().forEach(function(track) {
+                }
 
-            track.stop();
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
 
-        });
+                const context =
+                    canvas.getContext("2d");
 
+                context.drawImage(
+                    video,
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                );
 
-        video.srcObject = null;
+                const imageData =
+                    canvas.toDataURL(
+                        "image/jpeg",
+                        0.90
+                    );
 
-        stream = null;
+                cropImage.src = imageData;
 
-    }
+                cropModal.show();
 
-}
+                document
+                    .getElementById("cropModal")
+                    .addEventListener(
+                        "shown.bs.modal",
+                        function() {
 
+                            if (cropper) {
 
+                                cropper.destroy();
 
-/* ===============================
-   CAPTURE LIVE PHOTO
-================================ */
+                            }
 
-function capturePhoto() {
+                            cropper = new Cropper(
+                                cropImage,
+                                {
+                                    aspectRatio: 1,
+                                    viewMode: 1,
+                                    autoCropArea: 0.8,
+                                    responsive: true,
+                                    background: false
+                                }
+                            );
 
-    if (!stream) {
+                        },
+                        { once: true }
+                    );
 
-        alert(
-            "Please start the camera first."
-        );
+            });
 
-        return;
 
-    }
+        // ----------------------------------------
+        // CROP PHOTO
+        // ----------------------------------------
 
+        document
+            .getElementById("cropBtn")
+            .addEventListener("click", function() {
 
-    canvas.width = video.videoWidth;
+                if (!cropper) {
 
-    canvas.height = video.videoHeight;
+                    return;
 
+                }
 
-    const context = canvas.getContext("2d");
+                const croppedCanvas =
+                    cropper.getCroppedCanvas({
+                        width: 400,
+                        height: 400,
+                        imageSmoothingEnabled: true,
+                        imageSmoothingQuality: "high"
+                    });
 
+                capturedPhoto =
+                    croppedCanvas.toDataURL(
+                        "image/jpeg",
+                        0.90
+                    );
 
-    context.drawImage(
+                document
+                    .getElementById("photoPreview")
+                    .src = capturedPhoto;
 
-        video,
+                document
+                    .getElementById("photoPreview")
+                    .style.display = "block";
 
-        0,
-        0,
+                document
+                    .getElementById("photoPlaceholder")
+                    .style.display = "none";
 
-        canvas.width,
-        canvas.height
+                cropModal.hide();
 
-    );
+            });
 
 
-    const imageData = canvas.toDataURL(
+        // ----------------------------------------
+        // RETAKE
+        // ----------------------------------------
 
-        "image/jpeg",
+        document
+            .getElementById("retakeBtn")
+            .addEventListener("click", function() {
 
-        0.90
+                capturedPhoto = null;
 
-    );
+                document
+                    .getElementById("photoPreview")
+                    .style.display = "none";
 
+                document
+                    .getElementById("photoPlaceholder")
+                    .style.display = "flex";
 
-    /* Show captured photo */
+            });
 
-    photoPreview.src = imageData;
 
+        // ----------------------------------------
+        // SUBMIT FORM
+        // ----------------------------------------
 
-    /* Save Base64 photo */
+// ----------------------------------------
+// SUBMIT FORM
+// ----------------------------------------
 
-    capturedPhoto.value = imageData;
-
-
-    alert(
-        "Employee photo captured successfully."
-    );
-
-}
-
-
-
-/* ===============================
-   FORM VALIDATION
-================================ */
-
-document.getElementById("employeeForm")
-.addEventListener("submit", function(event) {
-
-    if (!capturedPhoto.value) {
+document
+    .getElementById("employeeForm")
+    .addEventListener("submit", async function (event) {
 
         event.preventDefault();
 
-        alert(
-            "Please capture the employee photo before registration."
+        if (!capturedPhoto) {
+            alert("Please capture and crop a face photo");
+            return;
+        }
+
+        // Create FormData
+        const formData = new FormData();
+
+        // Text fields
+        formData.append(
+            "employeeCode",
+            document.getElementById("employeeCode").value
         );
 
-    }
+        formData.append(
+            "fullName",
+            document.getElementById("fullName").value
+        );
 
-});
+        formData.append(
+            "mobile",
+            document.getElementById("mobile").value
+        );
+
+        formData.append(
+            "email",
+            document.getElementById("email").value
+        );
+
+        formData.append(
+            "address",
+            document.getElementById("address").value
+        );
+
+        formData.append(
+            "city",
+            document.getElementById("city").value
+        );
+
+        formData.append(
+            "state",
+            document.getElementById("state").value
+        );
+
+        formData.append(
+            "pincode",
+            document.getElementById("pincode").value
+        );
+
+        formData.append(
+            "aadharNumber",
+            document.getElementById("aadharNumber").value
+        );
+
+        formData.append(
+            "panNumber",
+            document.getElementById("panNo").value
+        );
+
+        formData.append(
+            "bankName",
+            document.getElementById("bankName").value
+        );
+
+        formData.append(
+            "accountNumber",
+            document.getElementById("accountNo").value
+        );
+
+        formData.append(
+            "ifscCode",
+            document.getElementById("ifscCode").value
+        );
+
+        // Face photo
+        formData.append(
+            "capturedPhoto",
+            capturedPhoto
+        );
+
+        // IMPORTANT: Append actual files
+        const aadharFile =
+            document.getElementById("aadharFile").files[0];
+
+        const panFile =
+            document.getElementById("panFile").files[0];
+
+        if (aadharFile) {
+            formData.append("aadharFile", aadharFile);
+        }
+
+        if (panFile) {
+            formData.append("panFile", panFile);
+        }
+
+        try {
+
+            const response = await fetch(
+                "/employee/register",
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
+
+            const result = await response.json();
+
+            if (result.success) {
+
+                alert(result.message);
+
+                document
+                    .getElementById("employeeForm")
+                    .reset();
+
+                capturedPhoto = null;
+
+                document
+                    .getElementById("photoPreview")
+                    .style.display = "none";
+
+                document
+                    .getElementById("photoPlaceholder")
+                    .style.display = "flex";
+
+            } else {
+
+                alert(result.message);
+
+            }
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Something went wrong while registering employee"
+            );
+
+        }
+
+    });
+
+
+        startCamera();
+
+
+        // =====================================================
+// LOAD NEXT EMPLOYEE CODE
+// =====================================================
+
+function loadEmployeeCode() {
+
+    fetch("/employee/next-employee-code")
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        if (data.success) {
+
+            document.getElementById(
+                "employeeCode"
+            ).value = data.employeeCode;
+
+        }
+        else {
+
+            showMessage(
+                data.message,
+                "danger"
+            );
+
+        }
+
+    })
+
+    .catch(error => {
+
+        console.error(error);
+
+        showMessage(
+            "Unable to generate Employee Code",
+            "danger"
+        );
+
+    });
+
+}
 
 
 
-/* ===============================
-   STOP CAMERA ON PAGE CLOSE
-================================ */
+        // =====================================================
+// PAGE LOAD
+// =====================================================
 
-window.addEventListener(
-    "beforeunload",
+document.addEventListener(
+    "DOMContentLoaded",
     function() {
 
-        stopCamera();
+        loadEmployeeCode();
 
     }
 );
 
-</script>
-
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-</script>
+    </script>
 
 </body>
+
 </html>

@@ -15,6 +15,8 @@ from controller.exam_controller import exam_bp
 from controller.question_controller import question_bp   
 from controller.user_controller import user_bp
 from controller.batch_controller import batch_bp
+from controller.employee_controller import employee_bp
+from controller.attendance_controller import attendance_bp
 app = Flask(__name__)
 app.secret_key = "secret123"
 # Register Blueprints
@@ -23,10 +25,10 @@ app.register_blueprint(question_bp)
 app.register_blueprint(batch_bp)
 # Register Blueprint
 app.register_blueprint(user_bp) 
+app.register_blueprint(employee_bp) 
+app.register_blueprint(attendance_bp) 
 db=get_db_connection()
 cursor = db.cursor()
-
-
 
 # Home page
 @app.route('/')

@@ -116,9 +116,7 @@ def register_employee():
         # GET FORM DATA
         # =================================================
 
-        employee_id = request.form.get(
-            "employeeId"
-        )
+        
 
         full_name = request.form.get(
             "fullName"
@@ -499,35 +497,7 @@ def register_employee():
         cursor = db.cursor()
 
 
-        # =================================================
-        # CHECK DUPLICATE EMPLOYEE ID
-        # =================================================
 
-        cursor.execute(
-
-            """
-            SELECT COUNT(*)
-            FROM employees
-            WHERE employee_id = ?
-            """,
-
-            (employee_id,)
-        )
-
-
-        result = cursor.fetchone()
-
-
-        if result[0] > 0:
-
-            return jsonify({
-
-                "success": False,
-
-                "message":
-                    "Employee ID already exists"
-
-            }), 409
 
 
         # =================================================
@@ -574,9 +544,9 @@ def register_employee():
             VALUES
             (
 
-                ?, ?, ?, ?, ?, ?, ?,
+                %?,%?, %?, %?, %?, %?, %?,
 
-                ?, ?, ?, ?, ?, ?,?,?
+                %?, %?, %?, %?, %?, %?,%?,%?
 
             )
 
@@ -639,8 +609,8 @@ def register_employee():
             "message":
                 "Employee registered successfully",
 
-            "employee_id":
-                employee_id
+            "employee_id":""
+                
 
         })
 
