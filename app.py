@@ -27,6 +27,12 @@ app.register_blueprint(batch_bp)
 app.register_blueprint(user_bp) 
 app.register_blueprint(employee_bp) 
 app.register_blueprint(attendance_bp) 
+
+from controller.attendance_viewcontroller import student_attendance_bp
+
+app.register_blueprint(student_attendance_bp)
+
+
 db=get_db_connection()
 cursor = db.cursor()
 
