@@ -1,0 +1,1848 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Edit Student - Technovas Skill Foundation</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Font Awesome -->
+    <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        body {
+            background: #f4f7fb;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .page-header {
+            background: linear-gradient(
+                135deg,
+                #0d6efd,
+                #084298
+            );
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .page-header h2 {
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .page-header p {
+            margin: 5px 0 0;
+            opacity: 0.9;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow:
+                0 5px 20px rgba(0, 0, 0, 0.06);
+            margin-bottom: 25px;
+        }
+
+        .card-header {
+            background: white;
+            border-bottom: 1px solid #e9ecef;
+            padding: 18px 22px;
+            font-weight: 700;
+            color: #17365d;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #344054;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 8px;
+            min-height: 45px;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #0d6efd;
+            box-shadow:
+                0 0 0 0.2rem rgba(
+                    13,
+                    110,
+                    253,
+                    0.12
+                );
+        }
+
+        .readonly-field {
+            background-color: #e9ecef !important;
+            font-weight: 700;
+        }
+
+        .photo-box {
+            border: 2px dashed #cbd5e1;
+            border-radius: 15px;
+            padding: 20px;
+            background: #f8fafc;
+            text-align: center;
+        }
+
+        #photoPreview {
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 5px solid white;
+            box-shadow:
+                0 5px 20px rgba(0, 0, 0, 0.15);
+            background: #e9ecef;
+        }
+
+        #camera {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 12px;
+            background: black;
+            display: none;
+            margin-top: 15px;
+        }
+
+        #canvas {
+            display: none;
+        }
+
+        .section-icon {
+            color: #0d6efd;
+            margin-right: 8px;
+        }
+
+        .required::after {
+            content: " *";
+            color: red;
+        }
+
+        .sticky-actions {
+            position: sticky;
+            bottom: 0;
+            z-index: 100;
+            background: rgba(
+                255,
+                255,
+                255,
+                0.96
+            );
+            backdrop-filter: blur(8px);
+            border-top: 1px solid #ddd;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-weight: 600;
+        }
+
+        .student-code {
+            font-size: 18px;
+            letter-spacing: 1px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container-fluid py-4">
+
+    <!-- ================================================== -->
+    <!-- HEADER -->
+    <!-- ================================================== -->
+
+    <div class="page-header">
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
+
+            <div>
+
+                <h2>
+                    <i class="fa-solid fa-user-pen"></i>
+                    Edit Student
+                </h2>
+
+                <p>
+                    Update student admission information
+                </p>
+
+            </div>
+
+            <div class="mt-3 mt-md-0">
+
+                <a
+                    href="{{ url_for('student_listing.student_list') }}"
+                    class="btn btn-light"
+                >
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Back to Students
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================== -->
+    <!-- FLASH MESSAGES -->
+    <!-- ================================================== -->
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% if messages %}
+
+            {% for category, message in messages %}
+
+                <div
+                    class="alert alert-{{ category }} alert-dismissible fade show"
+                    role="alert"
+                >
+
+                    {% if category == "success" %}
+                        <i class="fa-solid fa-circle-check"></i>
+                    {% elif category == "danger" %}
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                    {% else %}
+                        <i class="fa-solid fa-circle-info"></i>
+                    {% endif %}
+
+                    {{ message }}
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                    ></button>
+
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- ================================================== -->
+    <!-- FORM -->
+    <!-- ================================================== -->
+
+    <form
+        id="studentEditForm"
+        method="POST"
+        action="{{ url_for('student_listing.edit_student', admission_no=student.AdmissionNo) }}"
+    >
+
+        <!-- ================================================== -->
+        <!-- BASIC INFORMATION -->
+        <!-- ================================================== -->
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <i class="fa-solid fa-id-card section-icon"></i>
+
+                Student Information
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row g-4">
+
+                    <!-- Admission Number -->
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Admission Number
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control readonly-field student-code"
+                            value="{{ student.AdmissionNo or '' }}"
+                            readonly
+                        >
+
+                        <!-- IMPORTANT:
+                             hidden field is optional.
+                             Controller uses URL admission_no.
+                        -->
+
+                        <input
+                            type="hidden"
+                            name="admissionNo"
+                            value="{{ student.AdmissionNo or '' }}"
+                        >
+
+                    </div>
+
+
+                    <!-- Full Name -->
+
+                    <div class="col-md-8">
+
+                        <label class="form-label required">
+                            Full Name
+                        </label>
+
+                        <input
+                            type="text"
+                            name="fullName"
+                            class="form-control"
+                            value="{{ student.FullName or '' }}"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- DOB -->
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Date of Birth
+                        </label>
+
+                        <input
+                            type="date"
+                            name="dob"
+                            class="form-control"
+                            value="{% if student.DOB %}{{ student.DOB.strftime('%Y-%m-%d') }}{% endif %}"
+                        >
+
+                    </div>
+
+
+                    <!-- Nationality -->
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Nationality
+                        </label>
+
+                        <input
+                            type="text"
+                            name="nationality"
+                            class="form-control"
+                            value="{{ student.Nationality or '' }}"
+                        >
+
+                    </div>
+
+
+                    <!-- Government ID -->
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Government ID
+                        </label>
+
+                        <input
+                            type="text"
+                            name="governmentId"
+                            class="form-control"
+                            value="{{ student.GovernmentId or '' }}"
+                        >
+
+                    </div>
+
+
+                    <!-- Gender -->
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Gender
+                        </label>
+
+                        <select
+                            name="gender"
+                            class="form-select"
+                        >
+
+                            <option value="">
+                                Select Gender
+                            </option>
+
+                            <option
+                                value="Male"
+                                {% if student.Gender == "Male" %}selected{% endif %}
+                            >
+                                Male
+                            </option>
+
+                            <option
+                                value="Female"
+                                {% if student.Gender == "Female" %}selected{% endif %}
+                            >
+                                Female
+                            </option>
+
+                            <option
+                                value="Other"
+                                {% if student.Gender == "Other" %}selected{% endif %}
+                            >
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Blood Group -->
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Blood Group
+                        </label>
+
+                        <select
+                            name="bloodGroup"
+                            class="form-select"
+                        >
+
+                            <option value="">
+                                Select Blood Group
+                            </option>
+
+                            {% for group in [
+                                "A+",
+                                "A-",
+                                "B+",
+                                "B-",
+                                "AB+",
+                                "AB-",
+                                "O+",
+                                "O-"
+                            ] %}
+
+                                <option
+                                    value="{{ group }}"
+                                    {% if student.BloodGroup == group %}selected{% endif %}
+                                >
+                                    {{ group }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Category -->
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Category
+                        </label>
+
+                        <select
+                            name="category"
+                            class="form-select"
+                        >
+
+                            <option value="">
+                                Select Category
+                            </option>
+
+                            {% for item in [
+                                "General",
+                                "OBC",
+                                "SC",
+                                "ST",
+                                "EWS",
+                                "Other"
+                            ] %}
+
+                                <option
+                                    value="{{ item }}"
+                                    {% if student.Category == item %}selected{% endif %}
+                                >
+                                    {{ item }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Email -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            name="email"
+                            class="form-control"
+                            value="{{ student.Email or '' }}"
+                        >
+
+                    </div>
+
+
+                    <!-- Mobile -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Mobile
+                        </label>
+
+                        <input
+                            type="text"
+                            name="mobile"
+                            class="form-control"
+                            value="{{ student.Mobile or '' }}"
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================== -->
+        <!-- PHOTO -->
+        <!-- ================================================== -->
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <i class="fa-solid fa-camera section-icon"></i>
+
+                Student Photo
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row g-4 align-items-center">
+
+                    <div class="col-md-5">
+
+                        <div class="photo-box">
+
+                            {% if student.PhotoBase64 %}
+
+                                <img
+                                    id="photoPreview"
+                                    src="data:image/jpeg;base64,{{ student.PhotoBase64 }}"
+                                    alt="Student Photo"
+                                >
+
+                            {% else %}
+
+                                <img
+                                    id="photoPreview"
+                                    src=""
+                                    alt="Student Photo"
+                                    style="display:none;"
+                                >
+
+                                <div
+                                    id="noPhoto"
+                                    class="text-muted py-5"
+                                >
+
+                                    <i
+                                        class="fa-solid fa-user fa-4x mb-3"
+                                    ></i>
+
+                                    <div>
+                                        No photo available
+                                    </div>
+
+                                </div>
+
+                            {% endif %}
+
+                            <div class="mt-3">
+
+                                <button
+                                    type="button"
+                                    id="startCameraBtn"
+                                    class="btn btn-primary"
+                                >
+
+                                    <i class="fa-solid fa-camera"></i>
+                                    Open Camera
+
+                                </button>
+
+                                <button
+                                    type="button"
+                                    id="captureBtn"
+                                    class="btn btn-success"
+                                    style="display:none;"
+                                >
+
+                                    <i class="fa-solid fa-camera-retro"></i>
+                                    Capture Photo
+
+                                </button>
+
+                                <button
+                                    type="button"
+                                    id="stopCameraBtn"
+                                    class="btn btn-danger"
+                                    style="display:none;"
+                                >
+
+                                    <i class="fa-solid fa-stop"></i>
+                                    Stop Camera
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-7">
+
+                        <video
+                            id="camera"
+                            autoplay
+                            playsinline
+                        ></video>
+
+                        <canvas
+                            id="canvas"
+                            width="640"
+                            height="480"
+                        ></canvas>
+
+                        <input
+                            type="hidden"
+                            name="capturedPhoto"
+                            id="capturedPhoto"
+                        >
+
+                        <div
+                            id="cameraMessage"
+                            class="alert alert-info mt-3"
+                            style="display:none;"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================== -->
+        <!-- PARENT / GUARDIAN -->
+        <!-- ================================================== -->
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <i class="fa-solid fa-people-roof section-icon"></i>
+
+                Parent / Guardian Information
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row g-4">
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Father's Name
+                        </label>
+
+                        <input
+                            type="text"
+                            name="fatherName"
+                            class="form-control"
+                            value="{{ student.FatherName or '' }}"
+                        >
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Father's Mobile
+                        </label>
+
+                        <input
+                            type="text"
+                            name="fatherMobile"
+                            class="form-control"
+                            value="{{ student.FatherMobile or '' }}"
+                        >
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Mother's Name
+                        </label>
+
+                        <input
+                            type="text"
+                            name="motherName"
+                            class="form-control"
+                            value="{{ student.MotherName or '' }}"
+                        >
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Mother's Mobile
+                        </label>
+
+                        <input
+                            type="text"
+                            name="motherMobile"
+                            class="form-control"
+                            value="{{ student.MotherMobile or '' }}"
+                        >
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Guardian Name
+                        </label>
+
+                        <input
+                            type="text"
+                            name="guardianName"
+                            class="form-control"
+                            value="{{ student.GuardianName or '' }}"
+                        >
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Guardian Mobile
+                        </label>
+
+                        <input
+                            type="text"
+                            name="guardianMobile"
+                            class="form-control"
+                            value="{{ student.GuardianMobile or '' }}"
+                        >
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Father's Occupation
+                        </label>
+
+                        <input
+                            type="text"
+                            name="fatherOccupation"
+                            class="form-control"
+                            value="{{ student.FatherOccupation or '' }}"
+                        >
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Mother's Occupation
+                        </label>
+
+                        <input
+                            type="text"
+                            name="motherOccupation"
+                            class="form-control"
+                            value="{{ student.MotherOccupation or '' }}"
+                        >
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Guardian Income
+                        </label>
+
+                        <input
+                            type="number"
+                            step="0.01"
+                            name="guardianIncome"
+                            class="form-control"
+                            value="{{ student.GuardianIncome or '' }}"
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================== -->
+        <!-- ADDRESS -->
+        <!-- ================================================== -->
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <i class="fa-solid fa-location-dot section-icon"></i>
+
+                Address Information
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row g-4">
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Permanent Address
+                        </label>
+
+                        <textarea
+                            name="permanentAddress"
+                            class="form-control"
+                            rows="4"
+                        >{{ student.PermanentAddress or '' }}</textarea>
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Current Address
+                        </label>
+
+                        <textarea
+                            name="currentAddress"
+                            class="form-control"
+                            rows="4"
+                        >{{ student.CurrentAddress or '' }}</textarea>
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            City
+                        </label>
+
+                        <input
+                            type="text"
+                            name="city"
+                            class="form-control"
+                            value="{{ student.City or '' }}"
+                        >
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            State
+                        </label>
+
+                        <input
+                            type="text"
+                            name="state"
+                            class="form-control"
+                            value="{{ student.State or '' }}"
+                        >
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            PIN Code
+                        </label>
+
+                        <input
+                            type="text"
+                            name="pinCode"
+                            class="form-control"
+                            value="{{ student.PinCode or '' }}"
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================== -->
+        <!-- EDUCATION -->
+        <!-- ================================================== -->
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <i class="fa-solid fa-graduation-cap section-icon"></i>
+
+                Educational Information
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row g-4">
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Highest Qualification
+                        </label>
+
+                        <input
+                            type="text"
+                            name="highestQualification"
+                            class="form-control"
+                            value="{{ student.HighestQualification or '' }}"
+                        >
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Board / University
+                        </label>
+
+                        <input
+                            type="text"
+                            name="boardUniversity"
+                            class="form-control"
+                            value="{{ student.BoardUniversity or '' }}"
+                        >
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            School / College
+                        </label>
+
+                        <input
+                            type="text"
+                            name="schoolCollege"
+                            class="form-control"
+                            value="{{ student.SchoolCollege or '' }}"
+                        >
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Passing Year
+                        </label>
+
+                        <input
+                            type="number"
+                            name="passingYear"
+                            class="form-control"
+                            value="{{ student.PassingYear or '' }}"
+                        >
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Percentage / CGPA
+                        </label>
+
+                        <input
+                            type="text"
+                            name="percentageCgpa"
+                            class="form-control"
+                            value="{{ student.PercentageCgpa or '' }}"
+                        >
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Medium
+                        </label>
+
+                        <input
+                            type="text"
+                            name="medium"
+                            class="form-control"
+                            value="{{ student.Medium or '' }}"
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================== -->
+        <!-- COURSE -->
+        <!-- ================================================== -->
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <i class="fa-solid fa-book section-icon"></i>
+
+                Course Information
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row g-4">
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Course Name
+                        </label>
+
+                        <select
+                            name="courseName"
+                            class="form-select"
+                        >
+
+                            <option value="">
+                                Select Course
+                            </option>
+
+                            <option
+                                value="Computer Course"
+                                {% if student.CourseName == "Computer Course" %}selected{% endif %}
+                            >
+                                Computer Course
+                            </option>
+
+                            <option
+                                value="Drawing Course"
+                                {% if student.CourseName == "Drawing Course" %}selected{% endif %}
+                            >
+                                Drawing Course
+                            </option>
+
+                            <option
+                                value="Other"
+                                {% if student.CourseName == "Other" %}selected{% endif %}
+                            >
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Preferred Batch
+                        </label>
+
+                        <input
+                            type="text"
+                            name="preferredBatch"
+                            class="form-control"
+                            value="{{ student.PreferredBatch or '' }}"
+                        >
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Study Mode
+                        </label>
+
+                        <select
+                            name="studyMode"
+                            class="form-select"
+                        >
+
+                            <option value="">
+                                Select Mode
+                            </option>
+
+                            <option
+                                value="Offline"
+                                {% if student.StudyMode == "Offline" %}selected{% endif %}
+                            >
+                                Offline
+                            </option>
+
+                            <option
+                                value="Online"
+                                {% if student.StudyMode == "Online" %}selected{% endif %}
+                            >
+                                Online
+                            </option>
+
+                            <option
+                                value="Hybrid"
+                                {% if student.StudyMode == "Hybrid" %}selected{% endif %}
+                            >
+                                Hybrid
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="col-12">
+
+                        <label class="form-label">
+                            Documents Path
+                        </label>
+
+                        <input
+                            type="text"
+                            name="documentsPath"
+                            class="form-control"
+                            value="{{ student.DocumentsPath or '' }}"
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================== -->
+        <!-- MEDICAL -->
+        <!-- ================================================== -->
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <i class="fa-solid fa-heart-pulse section-icon"></i>
+
+                Medical / Emergency Information
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row g-4">
+
+                    <div class="col-12">
+
+                        <label class="form-label">
+                            Medical Conditions
+                        </label>
+
+                        <textarea
+                            name="medicalConditions"
+                            class="form-control"
+                            rows="3"
+                        >{{ student.MedicalConditions or '' }}</textarea>
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Emergency Contact Name
+                        </label>
+
+                        <input
+                            type="text"
+                            name="emergencyName"
+                            class="form-control"
+                            value="{{ student.EmergencyName or '' }}"
+                        >
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Emergency Contact Number
+                        </label>
+
+                        <input
+                            type="text"
+                            name="emergencyNumber"
+                            class="form-control"
+                            value="{{ student.EmergencyNumber or '' }}"
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================== -->
+        <!-- DECLARATION -->
+        <!-- ================================================== -->
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <i class="fa-solid fa-file-signature section-icon"></i>
+
+                Declaration
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row g-4">
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Applicant Signature
+                        </label>
+
+                        <input
+                            type="text"
+                            name="applicantSignature"
+                            class="form-control"
+                            value="{{ student.ApplicantSignature or '' }}"
+                        >
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Signature Date
+                        </label>
+
+                        <input
+                            type="date"
+                            name="signatureDate"
+                            class="form-control"
+                            value="{% if student.SignatureDate %}{{ student.SignatureDate.strftime('%Y-%m-%d') }}{% endif %}"
+                        >
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Place
+                        </label>
+
+                        <input
+                            type="text"
+                            name="place"
+                            class="form-control"
+                            value="{{ student.Place or '' }}"
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================== -->
+        <!-- ADMINISTRATION -->
+        <!-- ================================================== -->
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <i class="fa-solid fa-user-shield section-icon"></i>
+
+                Admission Administration
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row g-4">
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Reviewed By
+                        </label>
+
+                        <input
+                            type="text"
+                            name="reviewedBy"
+                            class="form-control"
+                            value="{{ student.ReviewedBy or '' }}"
+                        >
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Admission Status
+                        </label>
+
+                        <select
+                            name="admissionStatus"
+                            class="form-select"
+                        >
+
+                            <option value="">
+                                Select Status
+                            </option>
+
+                            <option
+                                value="Active"
+                                {% if student.AdmissionStatus == "Active" %}selected{% endif %}
+                            >
+                                Active
+                            </option>
+
+                            <option
+                                value="Hold"
+                                {% if student.AdmissionStatus == "Hold" %}selected{% endif %}
+                            >
+                                Hold
+                            </option>
+
+                            <option
+                                value="Completed"
+                                {% if student.AdmissionStatus == "Completed" %}selected{% endif %}
+                            >
+                                Completed
+                            </option>
+
+                            <option
+                                value="Drop Out"
+                                {% if student.AdmissionStatus == "Drop Out" %}selected{% endif %}
+                            >
+                                Drop Out
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================== -->
+        <!-- ACTIONS -->
+        <!-- ================================================== -->
+
+        <div class="sticky-actions">
+
+            <div class="container-fluid">
+
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+                    <div class="text-muted">
+
+                        <i class="fa-solid fa-circle-info"></i>
+
+                        Admission No:
+                        <strong>
+                            {{ student.AdmissionNo }}
+                        </strong>
+
+                    </div>
+
+                    <div>
+
+                        <a
+                            href="{{ url_for('student_listing.student_list') }}"
+                            class="btn btn-secondary"
+                        >
+
+                            <i class="fa-solid fa-xmark"></i>
+
+                            Cancel
+
+                        </a>
+
+
+                        <button
+                            type="submit"
+                            id="updateBtn"
+                            class="btn btn-primary"
+                        >
+
+                            <i class="fa-solid fa-floppy-disk"></i>
+
+                            Update Student
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<!-- ====================================================== -->
+<!-- BOOTSTRAP JS -->
+<!-- ====================================================== -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+></script>
+
+
+<!-- ====================================================== -->
+<!-- CAMERA JAVASCRIPT -->
+<!-- ====================================================== -->
+
+<script>
+
+let cameraStream = null;
+
+const camera = document.getElementById("camera");
+
+const canvas = document.getElementById("canvas");
+
+const photoPreview =
+    document.getElementById("photoPreview");
+
+const capturedPhoto =
+    document.getElementById("capturedPhoto");
+
+const startCameraBtn =
+    document.getElementById("startCameraBtn");
+
+const captureBtn =
+    document.getElementById("captureBtn");
+
+const stopCameraBtn =
+    document.getElementById("stopCameraBtn");
+
+const cameraMessage =
+    document.getElementById("cameraMessage");
+
+const noPhoto =
+    document.getElementById("noPhoto");
+
+
+/* ======================================================
+   Show message
+   ====================================================== */
+
+function showCameraMessage(
+    message,
+    type = "info"
+) {
+
+    cameraMessage.className =
+        "alert alert-" + type + " mt-3";
+
+    cameraMessage.innerHTML = message;
+
+    cameraMessage.style.display = "block";
+
+}
+
+
+/* ======================================================
+   START CAMERA
+   ====================================================== */
+
+startCameraBtn.addEventListener(
+    "click",
+    async function () {
+
+        try {
+
+            if (
+                !navigator.mediaDevices ||
+                !navigator.mediaDevices.getUserMedia
+            ) {
+
+                showCameraMessage(
+                    "Camera is not supported by this browser.",
+                    "danger"
+                );
+
+                return;
+            }
+
+
+            cameraStream =
+                await navigator.mediaDevices.getUserMedia(
+                    {
+                        video: {
+                            width: {
+                                ideal: 640
+                            },
+                            height: {
+                                ideal: 480
+                            },
+                            facingMode: "user"
+                        },
+                        audio: false
+                    }
+                );
+
+
+            camera.srcObject =
+                cameraStream;
+
+
+            camera.style.display =
+                "block";
+
+
+            captureBtn.style.display =
+                "inline-block";
+
+
+            stopCameraBtn.style.display =
+                "inline-block";
+
+
+            startCameraBtn.style.display =
+                "none";
+
+
+            showCameraMessage(
+                "Camera started. Position the student's face inside the camera and click Capture Photo.",
+                "success"
+            );
+
+        }
+        catch (error) {
+
+            console.error(
+                "Camera error:",
+                error
+            );
+
+            showCameraMessage(
+                "Unable to access camera. Please allow camera permission and try again.<br><small>" +
+                error.message +
+                "</small>",
+                "danger"
+            );
+
+        }
+
+    }
+);
+
+
+/* ======================================================
+   CAPTURE PHOTO
+   ====================================================== */
+
+captureBtn.addEventListener(
+    "click",
+    function () {
+
+        if (!cameraStream) {
+
+            showCameraMessage(
+                "Camera is not running.",
+                "warning"
+            );
+
+            return;
+        }
+
+
+        const context =
+            canvas.getContext("2d");
+
+
+        canvas.width =
+            camera.videoWidth || 640;
+
+
+        canvas.height =
+            camera.videoHeight || 480;
+
+
+        context.drawImage(
+            camera,
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+
+        const imageData =
+            canvas.toDataURL(
+                "image/jpeg",
+                0.90
+            );
+
+
+        capturedPhoto.value =
+            imageData;
+
+
+        photoPreview.src =
+            imageData;
+
+
+        photoPreview.style.display =
+            "inline-block";
+
+
+        if (noPhoto) {
+
+            noPhoto.style.display =
+                "none";
+
+        }
+
+
+        showCameraMessage(
+            "Photo captured successfully. Click Update Student to save it.",
+            "success"
+        );
+
+    }
+);
+
+
+/* ======================================================
+   STOP CAMERA
+   ====================================================== */
+
+stopCameraBtn.addEventListener(
+    "click",
+    function () {
+
+        stopCamera();
+
+        showCameraMessage(
+            "Camera stopped.",
+            "info"
+        );
+
+    }
+);
+
+
+/* ======================================================
+   STOP CAMERA FUNCTION
+   ====================================================== */
+
+function stopCamera() {
+
+    if (cameraStream) {
+
+        cameraStream
+            .getTracks()
+            .forEach(
+                function (track) {
+                    track.stop();
+                }
+            );
+
+        cameraStream = null;
+
+    }
+
+
+    camera.srcObject =
+        null;
+
+
+    camera.style.display =
+        "none";
+
+
+    captureBtn.style.display =
+        "none";
+
+
+    stopCameraBtn.style.display =
+        "none";
+
+
+    startCameraBtn.style.display =
+        "inline-block";
+
+}
+
+
+/* ======================================================
+   BEFORE SUBMIT
+   ====================================================== */
+
+document.getElementById(
+    "studentEditForm"
+).addEventListener(
+    "submit",
+    function () {
+
+        const updateBtn =
+            document.getElementById(
+                "updateBtn"
+            );
+
+
+        updateBtn.disabled =
+            true;
+
+
+        updateBtn.innerHTML =
+            '<span class="spinner-border spinner-border-sm me-2"></span>' +
+            'Updating...';
+
+
+        /*
+         * Stop camera after photo capture.
+         * The captured image is already stored
+         * in hidden input.
+         */
+
+        stopCamera();
+
+    }
+);
+
+
+/* ======================================================
+   PAGE EXIT
+   ====================================================== */
+
+window.addEventListener(
+    "beforeunload",
+    function () {
+
+        stopCamera();
+
+    }
+);
+
+</script>
+
+</body>
+
+</html>

@@ -24,14 +24,22 @@ import mssql_python
 
 def get_sql_server_connection():
 
+   # connection_string = (
+    #    "Server=103.14.121.8,34569;"
+     #   "Database=technova_db;"
+      #  "UID=technova;"
+       # "PWD=fUwAzxRZBN6t4fz%;"
+        #"Encrypt=yes;"
+        #"TrustServerCertificate=yes;"
+    #)
+
     connection_string = (
-        "Server=103.14.121.8,34569;"
-        "Database=technova_db;"
-        "UID=technova;"
-        "PWD=fUwAzxRZBN6t4fz%;"
-        "Encrypt=yes;"
-        "TrustServerCertificate=yes;"
-    )
+    "Server=127.0.0.1;"
+    "Database=technovas_masterdb;"
+    "Trusted_Connection=yes;"
+    "Encrypt=yes;"
+    "TrustServerCertificate=yes;"
+)
 
     return mssql_python.connect(connection_string)
         

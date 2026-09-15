@@ -17,6 +17,16 @@ from controller.user_controller import user_bp
 from controller.batch_controller import batch_bp
 from controller.employee_controller import employee_bp
 from controller.attendance_controller import attendance_bp
+from controller.attendance_viewcontroller import student_attendance_bp
+from controller.student_admission_controller import student_admission
+from controller.student_attendance_controller import student_qrattendance
+from controller.student_controller import view_student_listing
+from controller.student_listing import student_listing
+
+
+
+
+
 app = Flask(__name__)
 app.secret_key = "secret123"
 # Register Blueprints
@@ -27,10 +37,11 @@ app.register_blueprint(batch_bp)
 app.register_blueprint(user_bp) 
 app.register_blueprint(employee_bp) 
 app.register_blueprint(attendance_bp) 
-
-from controller.attendance_viewcontroller import student_attendance_bp
-
 app.register_blueprint(student_attendance_bp)
+app.register_blueprint(student_admission)
+app.register_blueprint(student_qrattendance)
+app.register_blueprint(view_student_listing)
+app.register_blueprint(student_listing)
 
 
 db=get_db_connection()

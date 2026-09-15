@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>
+        Student - {{ student.FullName }}
+    </title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f6f8;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .photo {
+            width: 150px;
+            height: 180px;
+            object-fit: cover;
+            border: 1px solid #ccc;
+        }
+
+        .section {
+            margin-top: 25px;
+        }
+
+        .section h2 {
+            background: #eee;
+            padding: 10px;
+            font-size: 18px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td {
+            padding: 9px;
+            border: 1px solid #ddd;
+        }
+
+        td:first-child {
+            width: 30%;
+            font-weight: bold;
+            background: #fafafa;
+        }
+
+        .buttons {
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 16px;
+            background: #1f6feb;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-right: 5px;
+        }
+
+        .print {
+            background: #6f42c1;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="buttons">
+
+        <a
+            href="{{ url_for('view_student_listing.students') }}"
+            class="btn"
+        >
+            ← Back
+        </a>
+
+        <a
+            href="{{ url_for(
+                'view_student_listing.print_student',
+                admission_no=student.AdmissionNo
+            ) }}"
+            class="btn print"
+            target="_blank"
+        >
+            🖨 Print Full Admission Form
+        </a>
+
+       
+    </div>
+
+
+    <div class="top">
+
+        <div>
+
+            <h1>
+                {{ student.FullName }}
+            </h1>
+
+            <p>
+                <strong>Admission No:</strong>
+                {{ student.AdmissionNo }}
+            </p>
+
+            <p>
+                <strong>Status:</strong>
+                {{ student.AdmissionStatus }}
+            </p>
+
+        </div>
+
+
+        <div>
+
+            {% if student.Photo %}
+
+                <img
+                    src="{{ student.Photo }}"
+                    class="photo"
+                >
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- PERSONAL -->
+
+    <div class="section">
+
+        <h2>1. Personal Information</h2>
+
+        <table>
+
+            <tr>
+                <td>Full Name</td>
+                <td>{{ student.FullName }}</td>
+            </tr>
+
+            <tr>
+                <td>Date of Birth</td>
+                <td>{{ student.DOB or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>Nationality</td>
+                <td>{{ student.Nationality or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>Government ID</td>
+                <td>{{ student.GovernmentId or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>Gender</td>
+                <td>{{ student.Gender or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>Blood Group</td>
+                <td>{{ student.BloodGroup or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>Category</td>
+                <td>{{ student.Category or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>Email</td>
+                <td>{{ student.Email or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>Mobile</td>
+                <td>{{ student.Mobile or "" }}</td>
+            </tr>
+
+        </table>
+
+    </div>
+
+
+    <!-- PARENTS -->
+
+    <div class="section">
+
+        <h2>2. Parent / Guardian Information</h2>
+
+        <table>
+
+            <tr>
+                <td>Father Name</td>
+                <td>{{ student.FatherName or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>Father Mobile</td>
+                <td>{{ student.FatherMobile or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>Father Occupation</td>
+                <td>{{ student.FatherOccupation or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>Mother Name</td>
+                <td>{{ student.MotherName or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>Mother Mobile</td>
+                <td>{{ student.MotherMobile or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>Mother Occupation</td>
+                <td>{{ student.MotherOccupation or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>Guardian Name</td>
+                <td>{{ student.GuardianName or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>Guardian Mobile</td>
+                <td>{{ student.GuardianMobile or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>Guardian Income</td>
+                <td>{{ student.GuardianIncome or "" }}</td>
+            </tr>
+
+        </table>
+
+    </div>
+
+
+    <!-- ADDRESS -->
+
+    <div class="section">
+
+        <h2>3. Address</h2>
+
+        <table>
+
+            <tr>
+                <td>Permanent Address</td>
+                <td>{{ student.PermanentAddress or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>Current Address</td>
+                <td>{{ student.CurrentAddress or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>City</td>
+                <td>{{ student.City or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>State</td>
+                <td>{{ student.State or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>PIN Code</td>
+                <td>{{ student.PinCode or "" }}</td>
+            </tr>
+
+        </table>
+
+    </div>
+
+
+    <!-- EDUCATION -->
+
+    <div class="section">
+
+        <h2>4. Educational Qualification</h2>
+
+        <table>
+
+            <tr>
+                <td>Highest Qualification</td>
+                <td>{{ student.HighestQualification or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>Board / University</td>
+                <td>{{ student.BoardUniversity or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>School / College</td>
+                <td>{{ student.SchoolCollege or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>Passing Year</td>
+                <td>{{ student.PassingYear or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>Percentage / CGPA</td>
+                <td>{{ student.PercentageCgpa or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>Medium</td>
+                <td>{{ student.Medium or "" }}</td>
+            </tr>
+
+        </table>
+
+    </div>
+
+
+    <!-- COURSE -->
+
+    <div class="section">
+
+        <h2>5. Course Information</h2>
+
+        <table>
+
+            <tr>
+                <td>Course Name</td>
+                <td>{{ student.CourseName or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>Preferred Batch</td>
+                <td>{{ student.PreferredBatch or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>Study Mode</td>
+                <td>{{ student.StudyMode or "" }}</td>
+            </tr>
+
+        </table>
+
+    </div>
+
+
+    <!-- MEDICAL -->
+
+    <div class="section">
+
+        <h2>6. Medical / Emergency Information</h2>
+
+        <table>
+
+            <tr>
+                <td>Medical Conditions</td>
+                <td>{{ student.MedicalConditions or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>Emergency Name</td>
+                <td>{{ student.EmergencyName or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>Emergency Number</td>
+                <td>{{ student.EmergencyNumber or "" }}</td>
+            </tr>
+
+        </table>
+
+    </div>
+
+
+    <!-- APPLICATION -->
+
+    <div class="section">
+
+        <h2>7. Application Details</h2>
+
+        <table>
+
+            <tr>
+                <td>Place</td>
+                <td>{{ student.Place or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>Signature Date</td>
+                <td>{{ student.SignatureDate or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>Reviewed By</td>
+                <td>{{ student.ReviewedBy or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>Admission Status</td>
+                <td>{{ student.AdmissionStatus or "" }}</td>
+            </tr>
+
+            <tr>
+                <td>QR Token</td>
+                <td>{{ student.QrToken or "" }}</td>
+            </tr>
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

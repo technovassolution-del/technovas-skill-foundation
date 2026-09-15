@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Technovas Solution - QR Attendance</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>body{background:#f4f6f9;font-family:Arial}.card{border:0;border-radius:14px;box-shadow:0 4px 20px rgba(0,0,0,.05);margin-bottom:20px}#reader{max-width:520px;margin:auto}.student{display:none}</style>
+</head><body>
+<header class="bg-white border-bottom py-3"><div class="container"><b>TECHNOVAS SOLUTION</b><div class="fw-semibold">A Unit of Technovas Skill Foundation</div><small class="text-secondary">STUDENT QR ATTENDANCE</small></div></header>
+<main class="container py-4">
+<div class="d-flex justify-content-between mb-3"><h4>Scan Student QR Code</h4><a href="/student/admission" class="btn btn-outline-secondary">Admission Form</a></div>
+<div class="card"><div class="card-header fw-bold">QR SCANNER</div><div class="card-body">
+<div id="reader"></div><div id="msg" class="alert d-none mt-3"></div>
+<div id="student" class="student alert alert-success mt-3"><b id="name"></b><br>Admission No: <span id="adm"></span><br>Course: <span id="course"></span><br>Time: <span id="time"></span></div>
+<label class="form-label mt-3">Remarks (optional)</label><input id="remarks" class="form-control" placeholder="Optional attendance remark">
+</div></div>
+<div class="card"><div class="card-header fw-bold">TODAY'S ATTENDANCE</div><div class="card-body table-responsive">
+<table class="table table-sm"><thead><tr><th>Time</th><th>Admission No</th><th>Name</th><th>Course</th><th>Status</th></tr></thead><tbody id="rows"></tbody></table>
+</div></div>
+</main>
+<script src="https://unpkg.com/html5-qrcode"></script>
+<script>
+let busy=false;
+function msg(t,c){let e=document.getElementById("msg");e.className="alert alert-"+c+" mt-3";e.textContent=t}
+async function scan(token){
+ if(busy)return; busy=true;
+ try{
+  let r=await fetch("/student/attendance/scan",{method:"POST",headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({qrToken:token,remarks:document.getElementById("remarks").value})});
+  let x=await r.json(); msg(x.message,x.success?"success":(r.status===409?"warning":"danger"));
+  if(x.success){document.getElementById("student").style.display="block";document.getElementById("name").textContent=x.student.fullName;
+   document.getElementById("adm").textContent=x.student.admissionNo;document.getElementById("course").textContent=x.student.courseName;
+   document.getElementById("time").textContent=x.attendanceTime;document.getElementById("remarks").value="";load()}
+ }catch(e){msg("Server connection failed.","danger")} finally{setTimeout(()=>busy=false,1500)}
+}
+new Html5QrcodeScanner("reader",{fps:10,qrbox:{width:250,height:250}},false).render(t=>scan(t.trim()),()=>{});
+async function load(){let r=await fetch("/student/attendance/list"),x=await r.json(),b=document.getElementById("rows");b.innerHTML="";
+(x.attendance||[]).forEach(a=>b.innerHTML+=`<tr><td>${a.attendanceTime}</td><td>${a.admissionNo}</td><td>${a.fullName}</td><td>${a.courseName}</td><td>${a.status}</td></tr>`)}
+load();
+</script></body></html>
